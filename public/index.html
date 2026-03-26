@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>My Collection</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #0d0015;
+  color: #f0e8ff;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== BACKGROUND AMBIENT ===== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(130,40,200,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(220,50,80,0.2) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 50% 50%, rgba(160,20,120,0.1) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== PAGE TRANSITIONS ===== */
+.page {
+  display: none;
+  padding: 20px 16px 100px;
+  max-width: 520px;
+  margin: 0 auto;
+  animation: fadeSlideIn 0.28s ease;
+  position: relative;
+  z-index: 1;
+}
+.page.active { display: block; }
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== TOP BAR ===== */
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  padding: 12px 0 8px;
+}
+.back-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(200,100,255,0.1);
+  border: 1px solid rgba(200,100,255,0.2);
+  color: #d080ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.back-arrow:hover, .back-arrow:active { background: rgba(200,100,255,0.22); color: #fff; }
+.back-arrow svg { width: 20px; height: 20px; }
+
+/* ===== TYPOGRAPHY ===== */
+.page-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(120deg, #fff 0%, #e090ff 50%, #ff6080 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.page-subtitle {
+  font-size: 13px;
+  color: rgba(200,160,255,0.6);
+  margin-top: 4px;
+  line-height: 1.55;
+}
+
+/* ===== HOME BANNER ===== */
+.home-banner {
+  margin: 16px 0 20px;
+  padding: 22px 20px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(100,20,160,0.5) 0%, rgba(180,30,100,0.4) 60%, rgba(220,60,60,0.3) 100%);
+  border: 1px solid rgba(200,100,255,0.2);
+  position: relative;
+  overflow: hidden;
+}
+.home-banner::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,120,200,0.15) 0%, transparent 70%);
+}
+.home-banner-title {
+  font-size: 22px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #fff 0%, #ffb0d0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+.home-banner-sub {
+  font-size: 12px;
+  color: rgba(255,200,240,0.7);
+  line-height: 1.5;
+}
+
+/* ===== FOLDER BUTTONS ===== */
+.folder {
+  width: 100%;
+  padding: 18px 22px;
+  margin: 10px 0;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 18px;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.22s ease;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.1px;
+}
+.folder-icon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.folder-icon-wrap {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.folder-chevron svg { width: 18px; height: 18px; opacity: 0.6; }
+.folder:active { transform: scale(0.98); }
+
+/* Movies - deep violet to electric purple */
+.folder-movies {
+  background: linear-gradient(135deg, #2a0050 0%, #5a0090 50%, #8b20d0 100%);
+  border: 1px solid rgba(180,60,255,0.3);
+  color: #e8c0ff;
+  box-shadow: 0 4px 20px rgba(120,0,200,0.3);
+}
+.folder-movies .folder-icon-wrap { background: rgba(255,255,255,0.1); }
+
+/* Series - magenta to crimson */
+.folder-series {
+  background: linear-gradient(135deg, #3a0040 0%, #800050 50%, #c00060 100%);
+  border: 1px solid rgba(220,60,150,0.3);
+  color: #ffb0d8;
+  box-shadow: 0 4px 20px rgba(180,0,80,0.3);
+}
+.folder-series .folder-icon-wrap { background: rgba(255,255,255,0.1); }
+
+/* Web Series - sunset magenta to orange */
+.folder-web {
+  background: linear-gradient(135deg, #3a0030 0%, #900040 50%, #d04020 100%);
+  border: 1px solid rgba(240,80,80,0.3);
+  color: #ffcaa0;
+  box-shadow: 0 4px 20px rgba(200,40,20,0.3);
+}
+.folder-web .folder-icon-wrap { background: rgba(255,255,255,0.1); }
+
+/* Anime - coral to golden orange */
+.folder-anime {
+  background: linear-gradient(135deg, #2a0020 0%, #700030 50%, #c04010 100%);
+  border: 1px solid rgba(240,100,40,0.3);
+  color: #ffd0a0;
+  box-shadow: 0 4px 20px rgba(180,60,0,0.3);
+}
+.folder-anime .folder-icon-wrap { background: rgba(255,255,255,0.1); }
+
+.folder-sub {
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.08) 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #e0c0ff;
+  box-shadow: none;
+}
+.folder-sub .folder-icon-wrap { background: rgba(255,255,255,0.08); }
+
+/* ===== GLASS CARD ===== */
+.card {
+  background: rgba(100,20,140,0.12);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(200,100,255,0.12);
+  border-radius: 20px;
+  padding: 20px;
+  margin: 20px 0;
+}
+.card h2 {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(200,140,255,0.7);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 16px;
+}
+
+/* ===== GRAPHS ===== */
+.graphs { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+#donut { width: 160px; height: 160px; position: relative; flex-shrink: 0; }
+#donut canvas { width: 100%; height: 100%; display: block; }
+.donut-checks {
+  position: absolute; bottom: -28px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 8px;
+}
+.donut-checks label {
+  font-size: 11px; display: flex; align-items: center;
+  gap: 3px; cursor: pointer; color: rgba(200,150,255,0.8);
+}
+.donut-checks input[type="checkbox"] { width: 13px; height: 13px; accent-color: #c040ff; }
+.linear { flex: 1; min-width: 140px; }
+.linear .stat { margin: 10px 0; }
+.label-row { display: flex; justify-content: space-between; font-size: 12px; color: rgba(200,150,255,0.8); margin-bottom: 4px; font-weight: 500; }
+.bar { height: 7px; background: rgba(255,255,255,0.07); border-radius: 99px; overflow: hidden; }
+.fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+.fill-movies { background: linear-gradient(90deg, #8b20d0, #c060ff); }
+.fill-series { background: linear-gradient(90deg, #c00060, #ff40a0); }
+.fill-web { background: linear-gradient(90deg, #d04020, #ff7040); }
+.fill-anime { background: linear-gradient(90deg, #c04010, #ff9030); }
+
+/* ===== SUMMARY SQUARES ===== */
+.summary-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); gap: 8px; margin-top: 18px; }
+.summary-box {
+  text-align: center;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 12px 6px;
+  border: 1px solid rgba(200,100,255,0.1);
+}
+.summary-box .num { font-size: 22px; font-weight: 800; color: #fff; display: block; }
+.summary-box .lbl { font-size: 10px; color: rgba(200,150,255,0.6); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; display: block; }
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  width: 100%;
+  margin-top: 16px;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  background: linear-gradient(135deg, #7a10c0, #c030a0, #e04040);
+  color: #fff;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 16px rgba(180,20,140,0.35);
+}
+.btn-primary:active { transform: scale(0.98); opacity: 0.9; }
+
+/* ===== SEARCH ROW ===== */
+.search-row { display: flex; align-items: center; gap: 8px; margin: 14px 0; }
+.search-container { flex: 1; }
+.search-container input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(200,100,255,0.15);
+  font-size: 14px;
+  font-family: inherit;
+  background: rgba(100,20,140,0.15);
+  color: #f0e0ff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-container input::placeholder { color: rgba(180,120,255,0.4); }
+.search-container input:focus { border-color: rgba(180,60,255,0.5); }
+.round-add {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(200,100,255,0.2);
+  background: rgba(150,40,220,0.2);
+  color: #d080ff;
+  font-size: 22px;
+  font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.round-add:active { background: rgba(150,40,220,0.4); }
+
+/* ===== SECTION HEADLINE ===== */
+.headline {
+  font-size: 14px;
+  margin: 22px 0 8px;
+  font-weight: 700;
+  color: #c060ff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.3px;
+}
+.headline-parent {
+  font-size: 17px;
+  font-weight: 800;
+  color: rgba(200,140,255,0.5);
+  margin: 28px 0 4px;
+  padding-bottom: 4px;
+}
+.add-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: rgba(180,40,220,0.14);
+  font-size: 12px;
+  cursor: pointer;
+  color: #c060ff;
+  font-weight: 600;
+  border: 1px solid rgba(180,40,220,0.2);
+  transition: all 0.2s;
+}
+.add-btn:active { background: rgba(180,40,220,0.3); }
+
+/* ===== LIST ITEMS ===== */
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  margin: 5px 0;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(200,100,255,0.06);
+  transition: all 0.2s;
+  cursor: pointer;
+  position: relative;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(240,220,255,0.9);
+}
+.item:active { background: rgba(200,100,255,0.08); }
+.serial {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: rgba(180,60,255,0.12);
+  color: #c060ff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+.item.active {
+  background: rgba(180,40,220,0.1);
+  border-color: rgba(180,40,220,0.35);
+  box-shadow: 0 0 20px rgba(180,40,220,0.18);
+  animation: subtleGlow 1.8s ease-in-out infinite alternate;
+}
+@keyframes subtleGlow {
+  from { box-shadow: 0 0 12px rgba(180,40,220,0.12); }
+  to { box-shadow: 0 0 24px rgba(240,80,180,0.28); }
+}
+
+/* ===== HINT TEXT ===== */
+.hint { font-size: 11px; color: rgba(180,120,255,0.4); margin-top: 6px; line-height: 1.5; }
+
+/* ===== BULK CONTROLS ===== */
+.bulk-controls { margin: 10px 0; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+.bulk-controls button {
+  width: auto; padding: 8px 14px; margin-top: 0;
+  border-radius: 10px; font-size: 13px; font-family: inherit; font-weight: 600;
+  border: 1px solid rgba(200,100,255,0.15);
+  background: rgba(180,40,220,0.1);
+  color: #c060ff; cursor: pointer;
+}
+.bulk-toggle-area { display: none; align-items: center; gap: 8px; }
+.bulk-toggle-area label { color: rgba(200,150,255,0.8); font-size: 13px; display: flex; align-items: center; gap: 4px; }
+.bulk-toggle-area button { background: rgba(239,68,68,0.12); color: #f87171; border-color: rgba(239,68,68,0.2); }
+.select-checkbox { margin-right: 4px; accent-color: #c040ff; }
+
+/* ===== DELETE DIALOG ===== */
+.delete-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.delete-dialog {
+  background: #1a0028;
+  border: 1px solid rgba(200,100,255,0.2);
+  border-radius: 22px;
+  padding: 28px 24px;
+  max-width: 300px; width: 85%;
+  text-align: center;
+  animation: scaleIn 0.2s ease;
+  box-shadow: 0 20px 60px rgba(120,0,200,0.4);
+}
+@keyframes scaleIn { from { transform: scale(0.88); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.delete-dialog h3 { margin: 0 0 8px; font-size: 18px; font-weight: 800; color: #fff; }
+.delete-dialog p { margin: 0 0 20px; font-size: 13px; color: rgba(200,150,255,0.6); }
+.delete-dialog-buttons { display: flex; gap: 10px; }
+.delete-dialog-buttons button {
+  flex: 1; padding: 12px; border-radius: 12px;
+  font-size: 14px; font-family: inherit; font-weight: 700;
+  cursor: pointer; border: none; width: auto; margin-top: 0;
+}
+#delCancel { background: rgba(255,255,255,0.08); color: rgba(200,150,255,0.9); }
+#delOk { background: rgba(239,68,68,0.18); color: #f87171; }
+
+/* ===== BOTTOM TOTAL BAR ===== */
+.total-bar {
+  margin: 20px 0 0;
+  padding: 14px 18px;
+  background: rgba(180,40,220,0.1);
+  border: 1px solid rgba(200,100,255,0.15);
+  border-radius: 14px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(220,160,255,0.8);
+}
+.total-bar span { color: #fff; }
+
+/* ===== PAGE ACCENT COLORS for themed pages ===== */
+.page-movies .headline { color: #c060ff; }
+.page-movies .serial { background: rgba(180,60,255,0.12); color: #c060ff; }
+.page-movies .item.active { border-color: rgba(180,60,255,0.4); }
+
+.page-series .headline { color: #ff50a0; }
+.page-series .serial { background: rgba(255,40,120,0.12); color: #ff60b0; }
+.page-series .item.active { border-color: rgba(255,40,120,0.4); }
+
+.page-web .headline { color: #ff8040; }
+.page-web .serial { background: rgba(255,80,30,0.12); color: #ff8050; }
+.page-web .item.active { border-color: rgba(255,80,30,0.4); }
+
+.page-anime .headline { color: #ffb040; }
+.page-anime .serial { background: rgba(255,120,20,0.12); color: #ffa030; }
+.page-anime .item.active { border-color: rgba(255,120,20,0.4); }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<!-- HOME PAGE -->
+<div class="page active" id="home">
+  <div class="top-bar">
+    <h1 class="page-title">My Collection</h1>
+  </div>
+
+  <div class="home-banner">
+    <div class="home-banner-title">Your Universe of Stories</div>
+    <div class="home-banner-sub">Movies, Series, Web Series & Anime — all in one place.</div>
+  </div>
+
+  <div style="margin-top:4px">
+    <!-- Movies -->
+    <div class="folder folder-movies" onclick="go('movies')">
+      <div class="folder-icon">
+        <div class="folder-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="2" y1="17" x2="7" y2="17"/></svg>
+        </div>
+        <span>Movies</span>
+      </div>
+      <div class="folder-chevron">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+
+    <!-- Series (TV / regular series) -->
+    <div class="folder folder-series" onclick="go('series')">
+      <div class="folder-icon">
+        <div class="folder-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
+        </div>
+        <span>Series</span>
+      </div>
+      <div class="folder-chevron">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+
+    <!-- Web Series -->
+    <div class="folder folder-web" onclick="go('web')">
+      <div class="folder-icon">
+        <div class="folder-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <span>Web Series</span>
+      </div>
+      <div class="folder-chevron">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+
+    <!-- Anime -->
+    <div class="folder folder-anime" onclick="go('anime')">
+      <div class="folder-icon">
+        <div class="folder-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <span>Anime</span>
+      </div>
+      <div class="folder-chevron">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Collection Status</h2>
+    <div class="graphs">
+      <div id="donut">
+        <canvas id="donutChart"></canvas>
+        <div class="donut-checks">
+          <label><input type="checkbox" checked id="chkMovies">M</label>
+          <label><input type="checkbox" checked id="chkSeries">S</label>
+          <label><input type="checkbox" checked id="chkWeb">W</label>
+          <label><input type="checkbox" checked id="chkAnime">A</label>
+        </div>
+      </div>
+      <div class="linear">
+        <div class="stat"><div class="label-row"><span>Movies</span><span id="mp">0%</span></div><div class="bar"><div class="fill fill-movies" id="mb"></div></div></div>
+        <div class="stat"><div class="label-row"><span>Series</span><span id="sp">0%</span></div><div class="bar"><div class="fill fill-series" id="sb"></div></div></div>
+        <div class="stat"><div class="label-row"><span>Web Series</span><span id="wp">0%</span></div><div class="bar"><div class="fill fill-web" id="wb"></div></div></div>
+        <div class="stat"><div class="label-row"><span>Anime</span><span id="ap">0%</span></div><div class="bar"><div class="fill fill-anime" id="ab"></div></div></div>
+      </div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-box"><span class="num" id="totalMovies">0</span><span class="lbl">Movies</span></div>
+      <div class="summary-box"><span class="num" id="totalSeries">0</span><span class="lbl">Series</span></div>
+      <div class="summary-box"><span class="num" id="totalWeb">0</span><span class="lbl">Web</span></div>
+      <div class="summary-box"><span class="num" id="totalAnime">0</span><span class="lbl">Anime</span></div>
+      <div class="summary-box"><span class="num" id="grandTotal">0</span><span class="lbl">Total</span></div>
+    </div>
+    <button class="btn-primary" onclick="downloadPDF()">
+      <svg style="display:inline;vertical-align:middle;margin-right:6px" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download PDF
+    </button>
+  </div>
+</div>
+
+<!-- MOVIES PAGE -->
+<div class="page page-movies" id="movies">
+  <div class="top-bar">
+    <div class="back-arrow" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+    <h1 class="page-title">Movies</h1>
+  </div>
+  <p class="page-subtitle">Your favourite movie watchlist. Long-press to delete, or use Select for bulk actions.</p>
+
+  <div class="bulk-controls">
+    <button type="button" onclick="enterSelectMode('movie')">Select</button>
+    <div class="bulk-toggle-area" id="bulkMovies">
+      <label><input type="checkbox" id="selectAllMovies" onchange="toggleSelectAll('movie')"> All</label>
+      <button type="button" onclick="deleteSelected('movie')">Delete</button>
+    </div>
+  </div>
+  <div class="search-row">
+    <div class="search-container"><input type="text" id="searchMovies" placeholder="Search movies..." onkeyup="searchList('movies')"></div>
+    <button class="round-add" type="button" onclick="addItemPrompt('movie','searchMovies')">+</button>
+  </div>
+
+  <div class="headline">MCU Movies <span class="add-btn" onclick="addItemPrompt('movie','MCU Movies')">+ Add</span></div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">1</div>Iron Man (2008)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">2</div>The Incredible Hulk (2008)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">3</div>Iron Man 2 (2010)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">4</div>Thor (2011)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">5</div>Captain America: The First Avenger (2011)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">6</div>Marvel's The Avengers (2012)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">7</div>Iron Man 3 (2013)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">8</div>Thor: The Dark World (2013)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">9</div>Captain America: The Winter Soldier (2014)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">10</div>Guardians of the Galaxy (2014)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">11</div>Avengers: Age of Ultron (2015)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">12</div>Ant-Man (2015)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">13</div>Captain America: Civil War (2016)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">14</div>Doctor Strange (2016)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">15</div>Guardians of the Galaxy Vol. 2 (2017)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">16</div>Spider-Man: Homecoming (2017)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">17</div>Thor: Ragnarok (2017)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">18</div>Black Panther (2018)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">19</div>Avengers: Infinity War (2018)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">20</div>Ant-Man and the Wasp (2018)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">21</div>Captain Marvel (2019)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">22</div>Avengers: Endgame (2019)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">23</div>Spider-Man: Far From Home (2019)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">24</div>Black Widow (2021)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">25</div>Shang-Chi and the Legend of the Ten Rings (2021)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">26</div>Eternals (2021)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">27</div>Spider-Man: No Way Home (2021)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">28</div>Doctor Strange in the Multiverse of Madness (2022)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">29</div>Thor: Love and Thunder (2022)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">30</div>Black Panther: Wakanda Forever (2022)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">31</div>Ant-Man and the Wasp: Quantumania (2023)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">32</div>Guardians of the Galaxy Vol. 3 (2023)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">33</div>The Marvels (2023)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">34</div>Deadpool &amp; Wolverine (2024)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">35</div>Captain America: Brave New World (2025)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">36</div>Thunderbolts (2025)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">37</div>The Fantastic Four: First Steps (2025)</div>
+
+  <div class="headline">Venom Series <span class="add-btn" onclick="addItemPrompt('movie','Venom Series')">+ Add</span></div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">38</div>Venom (2018)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">39</div>Venom: Let There Be Carnage (2021)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">40</div>Venom: The Last Dance (2024)</div>
+
+  <div class="headline">Anaconda Series <span class="add-btn" onclick="addItemPrompt('movie','Anaconda Series')">+ Add</span></div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">41</div>Anaconda (1997)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">42</div>Anacondas: The Hunt for the Blood Orchid (2004)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">43</div>Anaconda 3: Offspring</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">44</div>Anacondas: Trail of Blood (2009)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">45</div>Lake Placid vs. Anaconda (2015)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">46</div>Anaconda: Cursed Jungle (2024/2025)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">47</div>Anaconda (2025)</div>
+
+  <div class="headline">Bruce Lee Movies <span class="add-btn" onclick="addItemPrompt('movie','Bruce Lee Movies')">+ Add</span></div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">48</div>Game of Death</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">49</div>Way of the Dragon</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">50</div>Enter the Dragon</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">51</div>Fist of Fury</div>
+
+  <div class="headline">Jackie Chan (2000–2025) <span class="add-btn" onclick="addItemPrompt('movie','Jackie Chan Movies')">+ Add</span></div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">52</div>The Accidental Spy (2000)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">53</div>Rush Hour 2 (2001)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">54</div>The Tuxedo (2002)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">55</div>Shanghai Knights (2003)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">56</div>The Medallion (2003)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">57</div>Around the World in 80 Days (2004)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">58</div>The Myth (2005)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">59</div>Rush Hour 3 (2007)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">60</div>Kung Fu Panda (2008)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">61</div>The Forbidden Kingdom (2008)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">62</div>The Spy Next Door (2010)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">63</div>Kung Fu Panda 2 (2011)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">64</div>Chinese Zodiac (2012)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">65</div>Police Story: Lockdown (2013)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">66</div>Dragon Blade (2013)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">67</div>Kung Fu Panda 3 (2016)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">68</div>Skiptrace (2016)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">69</div>Bleeding Steel (2017)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">70</div>The Foreigner (2017)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">71</div>Vanguard (2020)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">72</div>Ride On (2023)</div>
+  <div class="item movie" data-builtin="true" onclick="toggleActive(this)"><div class="serial">73</div>Karate Kid: Legends (2025)</div>
+
+  <div class="total-bar">Total Movies: <span id="tm"></span></div>
+  <p class="hint">Tip: Long-press any item to delete it or use Select above.</p>
+</div>
+
+<!-- SERIES PAGE (TV Series) -->
+<div class="page page-series" id="series">
+  <div class="top-bar">
+    <div class="back-arrow" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+    <h1 class="page-title" style="background:linear-gradient(120deg,#fff 0%,#ffb0d8 50%,#ff4060 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Series</h1>
+  </div>
+  <p class="page-subtitle">Your favourite TV series watchlist. Long-press to delete, or use Select for bulk actions.</p>
+
+  <div class="bulk-controls">
+    <button type="button" onclick="enterSelectMode('series')">Select</button>
+    <div class="bulk-toggle-area" id="bulkSeries">
+      <label><input type="checkbox" id="selectAllSeries" onchange="toggleSelectAll('series')"> All</label>
+      <button type="button" onclick="deleteSelected('series')">Delete</button>
+    </div>
+  </div>
+  <div class="search-row">
+    <div class="search-container"><input type="text" id="searchSeries" placeholder="Search series..." onkeyup="searchList('series')"></div>
+    <button class="round-add" type="button" onclick="addItemPrompt('series','searchSeries')" style="background:rgba(200,20,100,0.2);color:#ff50a0;border-color:rgba(220,40,120,0.25)">+</button>
+  </div>
+
+  <div class="headline" style="color:#ff50a0">All Series <span class="add-btn" onclick="addItemPrompt('series','All Series')" style="background:rgba(220,20,100,0.12);color:#ff50a0;border-color:rgba(220,20,100,0.2)">+ Add</span></div>
+  <div class="item series" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,40,120,0.12);color:#ff60b0">1</div>Breaking Bad</div>
+  <div class="item series" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,40,120,0.12);color:#ff60b0">2</div>Game of Thrones</div>
+  <div class="item series" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,40,120,0.12);color:#ff60b0">3</div>The Boys</div>
+  <div class="item series" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,40,120,0.12);color:#ff60b0">4</div>Peaky Blinders</div>
+  <div class="item series" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,40,120,0.12);color:#ff60b0">5</div>The Mandalorian</div>
+  <div class="item series" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,40,120,0.12);color:#ff60b0">6</div>House of the Dragon</div>
+
+  <div class="total-bar" style="background:rgba(220,30,100,0.1);border-color:rgba(255,40,120,0.2);color:rgba(255,180,220,0.8)">Total Series: <span id="ts"></span></div>
+  <p class="hint">Tip: Long-press any item to delete it or use Select above.</p>
+</div>
+
+<!-- WEB SERIES PAGE -->
+<div class="page page-web" id="web">
+  <div class="top-bar">
+    <div class="back-arrow" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+    <h1 class="page-title" style="background:linear-gradient(120deg,#fff 0%,#ffcaa0 50%,#ff4020 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Web Series</h1>
+  </div>
+  <p class="page-subtitle">Your favourite web series watchlist. Long-press to delete, or use Select for bulk actions.</p>
+
+  <div class="bulk-controls">
+    <button type="button" onclick="enterSelectMode('web')" style="background:rgba(200,60,20,0.12);color:#ff8050;border-color:rgba(220,80,30,0.2)">Select</button>
+    <div class="bulk-toggle-area" id="bulkWeb">
+      <label><input type="checkbox" id="selectAllWeb" onchange="toggleSelectAll('web')"> All</label>
+      <button type="button" onclick="deleteSelected('web')">Delete</button>
+    </div>
+  </div>
+  <div class="search-row">
+    <div class="search-container"><input type="text" id="searchWeb" placeholder="Search web series..." onkeyup="searchList('web')"></div>
+    <button class="round-add" type="button" onclick="addItemPrompt('web','searchWeb')" style="background:rgba(200,60,20,0.2);color:#ff8050;border-color:rgba(220,80,30,0.25)">+</button>
+  </div>
+
+  <div class="headline" style="color:#ff8040">All Web Series <span class="add-btn" onclick="addItemPrompt('web','All Web Series')" style="background:rgba(220,80,20,0.12);color:#ff8040;border-color:rgba(220,80,20,0.2)">+ Add</span></div>
+  <div class="item web" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,80,30,0.12);color:#ff8050">1</div>Stranger Things</div>
+  <div class="item web" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,80,30,0.12);color:#ff8050">2</div>Loki</div>
+  <div class="item web" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,80,30,0.12);color:#ff8050">3</div>Money Heist</div>
+  <div class="item web" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,80,30,0.12);color:#ff8050">4</div>Wednesday</div>
+  <div class="item web" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,80,30,0.12);color:#ff8050">5</div>Squid Game</div>
+  <div class="item web" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,80,30,0.12);color:#ff8050">6</div>Harry Potter (Series)</div>
+
+  <div class="total-bar" style="background:rgba(200,60,20,0.1);border-color:rgba(255,80,30,0.2);color:rgba(255,200,160,0.8)">Total Web Series: <span id="tw"></span></div>
+  <p class="hint">Tip: Long-press any item to delete it or use Select above.</p>
+</div>
+
+<!-- ANIME HUB PAGE -->
+<div class="page page-anime" id="anime">
+  <div class="top-bar">
+    <div class="back-arrow" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+    <h1 class="page-title" style="background:linear-gradient(120deg,#fff 0%,#ffd0a0 50%,#ff6020 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Anime</h1>
+  </div>
+  <p class="page-subtitle">All your anime journeys — series and movies in one place.</p>
+  <div style="margin-top:16px">
+    <div class="folder folder-sub" onclick="go('animeSeries')">
+      <div class="folder-icon">
+        <div class="folder-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <span>Anime Series</span>
+      </div>
+      <div class="folder-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
+    </div>
+    <div class="folder folder-sub" onclick="go('animeMovies')">
+      <div class="folder-icon">
+        <div class="folder-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+        </div>
+        <span>Anime Movies</span>
+      </div>
+      <div class="folder-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
+    </div>
+  </div>
+</div>
+
+<!-- ANIME SERIES PAGE -->
+<div class="page page-anime" id="animeSeries">
+  <div class="top-bar">
+    <div class="back-arrow" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+    <h1 class="page-title" style="background:linear-gradient(120deg,#fff 0%,#ffd0a0 50%,#ff6020 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Anime Series</h1>
+  </div>
+  <p class="page-subtitle">Track your favourite anime series.</p>
+
+  <div class="bulk-controls">
+    <button type="button" onclick="enterSelectMode('animeSeries')" style="background:rgba(180,80,10,0.12);color:#ffb040;border-color:rgba(200,100,20,0.2)">Select</button>
+    <div class="bulk-toggle-area" id="bulkAnimeSeries">
+      <label><input type="checkbox" id="selectAllAnimeSeries" onchange="toggleSelectAll('animeSeries')"> All</label>
+      <button type="button" onclick="deleteSelected('animeSeries')">Delete</button>
+    </div>
+  </div>
+  <div class="search-row">
+    <div class="search-container"><input type="text" id="searchAnimeSeries" placeholder="Search anime series..." onkeyup="searchList('animeSeries')"></div>
+    <button class="round-add" type="button" onclick="addItemPrompt('animeSeries','searchAnimeSeries')" style="background:rgba(180,80,10,0.2);color:#ffb040;border-color:rgba(200,100,20,0.25)">+</button>
+  </div>
+
+  <div class="headline" style="color:#ffb040">All Anime Series <span class="add-btn" onclick="addItemPrompt('animeSeries','All Anime Series')" style="background:rgba(200,100,20,0.12);color:#ffb040;border-color:rgba(200,100,20,0.2)">+ Add</span></div>
+  <div class="item animeSeries" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">1</div>Naruto</div>
+  <div class="item animeSeries" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">2</div>Naruto Shippuden</div>
+  <div class="item animeSeries" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">3</div>Boruto</div>
+  <div class="item animeSeries" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">4</div>Dragon Ball Z</div>
+  <div class="item animeSeries" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">5</div>Attack on Titan</div>
+  <div class="item animeSeries" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">6</div>One Piece</div>
+  <div class="item animeSeries" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">7</div>Demon Slayer</div>
+  <div class="item animeSeries" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">8</div>My Hero Academia</div>
+
+  <div class="total-bar" style="background:rgba(180,80,10,0.1);border-color:rgba(255,120,20,0.2);color:rgba(255,210,160,0.8)">Total Anime Series: <span id="tas"></span></div>
+  <p class="hint">Tip: Long-press any item to delete it or use Select above.</p>
+</div>
+
+<!-- ANIME MOVIES PAGE -->
+<div class="page page-anime" id="animeMovies">
+  <div class="top-bar">
+    <div class="back-arrow" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+    <h1 class="page-title" style="background:linear-gradient(120deg,#fff 0%,#ffd0a0 50%,#ff6020 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Anime Movies</h1>
+  </div>
+  <p class="page-subtitle">Your favourite anime movie watchlist.</p>
+
+  <div class="bulk-controls">
+    <button type="button" onclick="enterSelectMode('animeMovie')" style="background:rgba(180,80,10,0.12);color:#ffb040;border-color:rgba(200,100,20,0.2)">Select</button>
+    <div class="bulk-toggle-area" id="bulkAnimeMovies">
+      <label><input type="checkbox" id="selectAllAnimeMovies" onchange="toggleSelectAll('animeMovie')"> All</label>
+      <button type="button" onclick="deleteSelected('animeMovie')">Delete</button>
+    </div>
+  </div>
+  <div class="search-row">
+    <div class="search-container"><input type="text" id="searchAnimeMovies" placeholder="Search anime movies..." onkeyup="searchList('animeMovies')"></div>
+    <button class="round-add" type="button" onclick="addItemPrompt('animeMovie','searchAnimeMovies')" style="background:rgba(180,80,10,0.2);color:#ffb040;border-color:rgba(200,100,20,0.25)">+</button>
+  </div>
+
+  <div class="headline" style="color:#ffb040">All Anime Movies <span class="add-btn" onclick="addItemPrompt('animeMovie','All Anime Movies')" style="background:rgba(200,100,20,0.12);color:#ffb040;border-color:rgba(200,100,20,0.2)">+ Add</span></div>
+  <div class="item animeMovie" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">1</div>Weathering With You</div>
+  <div class="item animeMovie" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">2</div>Your Name</div>
+  <div class="item animeMovie" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">3</div>Spirited Away</div>
+  <div class="item animeMovie" data-builtin="true" onclick="toggleActive(this)"><div class="serial" style="background:rgba(255,120,20,0.12);color:#ffa030">4</div>Princess Mononoke</div>
+
+  <div class="total-bar" style="background:rgba(180,80,10,0.1);border-color:rgba(255,120,20,0.2);color:rgba(255,210,160,0.8)">Total Anime Movies: <span id="tam"></span></div>
+  <p class="hint">Tip: Long-press any item to delete it or use Select above.</p>
+</div>
+
+<script>
+// ===== NAVIGATION WITH HARDWARE BACK BUTTON SUPPORT =====
+var navHistory = ['home'];
+
+// Push an initial state so popstate fires on first back press
+history.replaceState({ page: 'home', idx: 0 }, '', '');
+
+function go(id) {
+  var currentPage = navHistory[navHistory.length - 1];
+  if (currentPage === id) return;
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  navHistory.push(id);
+  // Push a new history state so the hardware back button triggers popstate
+  history.pushState({ page: id, idx: navHistory.length - 1 }, '', '');
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  if (navHistory.length <= 1) return;
+  navHistory.pop();
+  var prevPage = navHistory[navHistory.length - 1];
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById(prevPage).classList.add('active');
+  window.scrollTo(0, 0);
+  // Sync browser history
+  history.replaceState({ page: prevPage, idx: navHistory.length - 1 }, '', '');
+}
+
+// Handle hardware/browser back button
+window.addEventListener('popstate', function(e) {
+  if (navHistory.length > 1) {
+    navHistory.pop();
+    var prevPage = navHistory[navHistory.length - 1];
+    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+    document.getElementById(prevPage).classList.add('active');
+    window.scrollTo(0, 0);
+    // If we're back at home, replace state so next back press exits the app
+    if (navHistory.length === 1) {
+      history.replaceState({ page: 'home', idx: 0 }, '', '');
+    } else {
+      history.pushState({ page: prevPage, idx: navHistory.length - 1 }, '', '');
+    }
+  }
+});
+
+// ===== PERSISTENCE =====
+var DELETED_KEY = 'collectionDeletedBuiltins';
+var ADDED_KEY = 'collectionUserItems';
+
+function getDeletedSet() { return JSON.parse(localStorage.getItem(DELETED_KEY) || '[]'); }
+function saveDeletedSet(arr) { localStorage.setItem(DELETED_KEY, JSON.stringify(arr)); }
+function markAsDeleted(label) {
+  var arr = getDeletedSet();
+  if (arr.indexOf(label) === -1) { arr.push(label); saveDeletedSet(arr); }
+}
+
+function removeDeletedBuiltins() {
+  var deleted = getDeletedSet();
+  if (!deleted.length) return;
+  document.querySelectorAll('.item[data-builtin="true"]').forEach(function(el) {
+    var label = getItemLabel(el);
+    if (deleted.indexOf(label) !== -1) el.parentNode.removeChild(el);
+  });
+}
+
+function getItemLabel(el) {
+  var serial = el.querySelector('.serial');
+  var text = el.textContent.trim();
+  if (serial) {
+    var num = serial.textContent.trim();
+    if (text.indexOf(num) === 0) text = text.slice(num.length).trim();
+  }
+  return text;
+}
+
+// User-added items
+function getUserItems() { return JSON.parse(localStorage.getItem(ADDED_KEY) || '{}'); }
+function saveUserItems(obj) { localStorage.setItem(ADDED_KEY, JSON.stringify(obj)); }
+function addUserItem(type, text, category) {
+  var obj = getUserItems();
+  if (!obj[type]) obj[type] = [];
+  obj[type].push({ text: text, category: category });
+  saveUserItems(obj);
+}
+function removeUserItem(type, text, category) {
+  var obj = getUserItems();
+  if (!obj[type]) return;
+  obj[type] = obj[type].filter(function(i) { return !(i.text === text && i.category === category); });
+  saveUserItems(obj);
+}
+
+// ===== GLOW TOGGLE =====
+function toggleActive(el) {
+  document.querySelectorAll('.item').forEach(function(i) { i.classList.remove('active'); });
+  el.classList.add('active');
+  updateAll();
+}
+
+// ===== SEARCH =====
+function searchList(type) {
+  var input, items;
+  if (type === 'movies') { input = document.getElementById('searchMovies'); items = document.querySelectorAll('.movie'); }
+  else if (type === 'series') { input = document.getElementById('searchSeries'); items = document.querySelectorAll('.series'); }
+  else if (type === 'web') { input = document.getElementById('searchWeb'); items = document.querySelectorAll('.web'); }
+  else if (type === 'animeSeries') { input = document.getElementById('searchAnimeSeries'); items = document.querySelectorAll('.animeSeries'); }
+  else { input = document.getElementById('searchAnimeMovies'); items = document.querySelectorAll('.animeMovie'); }
+  var filter = input.value.toUpperCase();
+  items.forEach(function(i) { i.style.display = i.textContent.toUpperCase().indexOf(filter) !== -1 ? 'flex' : 'none'; });
+}
+
+// ===== ADD ITEM =====
+function addItemPrompt(type, category) {
+  var name = prompt('Enter name:');
+  if (!name || !name.trim()) return;
+  name = name.trim();
+  var page, cls, pageId, serialStyle;
+  if (type === 'movie') {
+    page = document.getElementById('movies'); cls = 'movie'; pageId = 'movies';
+    serialStyle = 'background:rgba(180,60,255,0.12);color:#c060ff';
+  } else if (type === 'series') {
+    page = document.getElementById('series'); cls = 'series'; pageId = 'series';
+    serialStyle = 'background:rgba(255,40,120,0.12);color:#ff60b0';
+  } else if (type === 'web') {
+    page = document.getElementById('web'); cls = 'web'; pageId = 'web';
+    serialStyle = 'background:rgba(255,80,30,0.12);color:#ff8050';
+  } else if (type === 'animeSeries') {
+    page = document.getElementById('animeSeries'); cls = 'animeSeries'; pageId = 'animeSeries';
+    serialStyle = 'background:rgba(255,120,20,0.12);color:#ffa030';
+  } else {
+    page = document.getElementById('animeMovies'); cls = 'animeMovie'; pageId = 'animeMovies';
+    serialStyle = 'background:rgba(255,120,20,0.12);color:#ffa030';
+  }
+  var el = document.createElement('div');
+  el.className = 'item ' + cls;
+  el.setAttribute('data-builtin', 'false');
+  el.onclick = function() { toggleActive(el); };
+  var count = page.querySelectorAll('.' + cls).length + 1;
+  el.innerHTML = '<div class="serial" style="' + serialStyle + '">' + count + '</div>' + name;
+  // Insert before total-bar
+  var totalBar = page.querySelector('.total-bar');
+  page.insertBefore(el, totalBar);
+  attachLongPressDelete(el, type, name, category);
+  addUserItem(type, name, category);
+  renumberAll();
+  updateAll();
+}
+
+// ===== RENUMBER =====
+function renumberAll() {
+  function renumber(selector) {
+    document.querySelectorAll(selector).forEach(function(el, idx) {
+      var serial = el.querySelector('.serial');
+      if (serial) serial.textContent = idx + 1;
+    });
+  }
+  renumber('.movie'); renumber('.series'); renumber('.web'); renumber('.animeSeries'); renumber('.animeMovie');
+}
+
+// ===== DELETE DIALOG =====
+function showDeleteConfirm(onConfirm) {
+  var overlay = document.createElement('div');
+  overlay.className = 'delete-overlay';
+  var dialog = document.createElement('div');
+  dialog.className = 'delete-dialog';
+  dialog.innerHTML = '<h3>Remove item?</h3><p>This will delete the selected entry from your list.</p><div class="delete-dialog-buttons"><button id="delCancel">Cancel</button><button id="delOk">Delete</button></div>';
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+  dialog.querySelector('#delCancel').onclick = function() { document.body.removeChild(overlay); };
+  dialog.querySelector('#delOk').onclick = function() { document.body.removeChild(overlay); onConfirm(); };
+}
+
+// ===== LONG PRESS DELETE =====
+function attachLongPressDelete(el, type, text, category) {
+  var pressTimer = null;
+  var startX = 0, startY = 0;
+  function start(e) {
+    var touch = e.touches ? e.touches[0] : e;
+    startX = touch.clientX; startY = touch.clientY;
+    pressTimer = setTimeout(function() {
+      el.classList.add('active');
+      showDeleteConfirm(function() {
+        var label = getItemLabel(el);
+        var isBuiltin = el.getAttribute('data-builtin') === 'true';
+        el.parentNode.removeChild(el);
+        if (isBuiltin) { markAsDeleted(label); }
+        else { removeUserItem(type, label || text, category); }
+        renumberAll();
+        updateAll();
+      });
+    }, 350);
+  }
+  function cancel(e) {
+    if (!pressTimer) return;
+    var touch = e.changedTouches ? e.changedTouches[0] : e;
+    if (Math.abs(touch.clientX - startX) > 10 || Math.abs(touch.clientY - startY) > 10) {
+      clearTimeout(pressTimer); pressTimer = null; return;
+    }
+    clearTimeout(pressTimer); pressTimer = null;
+  }
+  el.addEventListener('touchstart', start);
+  el.addEventListener('mousedown', start);
+  ['touchend','touchmove','touchcancel','mouseup','mousemove','mouseleave'].forEach(function(ev) {
+    el.addEventListener(ev, cancel);
+  });
+}
+
+function initLongPressAll() {
+  document.querySelectorAll('.movie').forEach(function(el) { attachLongPressDelete(el, 'movie', getItemLabel(el), 'Movies'); });
+  document.querySelectorAll('.series').forEach(function(el) { attachLongPressDelete(el, 'series', getItemLabel(el), 'All Series'); });
+  document.querySelectorAll('.web').forEach(function(el) { attachLongPressDelete(el, 'web', getItemLabel(el), 'All Web Series'); });
+  document.querySelectorAll('.animeSeries').forEach(function(el) { attachLongPressDelete(el, 'animeSeries', getItemLabel(el), 'All Anime Series'); });
+  document.querySelectorAll('.animeMovie').forEach(function(el) { attachLongPressDelete(el, 'animeMovie', getItemLabel(el), 'All Anime Movies'); });
+}
+
+// ===== SELECT MODE =====
+var selectMode = { movie: false, series: false, web: false, animeSeries: false, animeMovie: false };
+
+function enterSelectMode(type) {
+  selectMode[type] = !selectMode[type];
+  var bulkId = type === 'movie' ? 'bulkMovies' : type === 'series' ? 'bulkSeries' : type === 'web' ? 'bulkWeb' : type === 'animeSeries' ? 'bulkAnimeSeries' : 'bulkAnimeMovies';
+  var bulkArea = document.getElementById(bulkId);
+  if (selectMode[type]) { bulkArea.style.display = 'flex'; }
+  else {
+    bulkArea.style.display = 'none';
+    var masterId = type === 'movie' ? 'selectAllMovies' : type === 'series' ? 'selectAllSeries' : type === 'web' ? 'selectAllWeb' : type === 'animeSeries' ? 'selectAllAnimeSeries' : 'selectAllAnimeMovies';
+    document.getElementById(masterId).checked = false;
+  }
+  document.querySelectorAll('.' + type).forEach(function(el) {
+    var cb = el.querySelector('.select-checkbox');
+    if (selectMode[type]) {
+      if (!cb) {
+        cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.className = 'select-checkbox';
+        el.insertBefore(cb, el.firstChild);
+      }
+    } else {
+      if (cb) el.removeChild(cb);
+    }
+  });
+}
+
+function toggleSelectAll(type) {
+  var masterId = type === 'movie' ? 'selectAllMovies' : type === 'series' ? 'selectAllSeries' : type === 'web' ? 'selectAllWeb' : type === 'animeSeries' ? 'selectAllAnimeSeries' : 'selectAllAnimeMovies';
+  var checked = document.getElementById(masterId).checked;
+  document.querySelectorAll('.' + type + ' .select-checkbox').forEach(function(cb) { cb.checked = checked; });
+}
+
+function deleteSelected(type) {
+  var toDelete = [];
+  document.querySelectorAll('.' + type).forEach(function(el) {
+    var cb = el.querySelector('.select-checkbox');
+    if (cb && cb.checked) toDelete.push(el);
+  });
+  if (!toDelete.length) return;
+  showDeleteConfirm(function() {
+    toDelete.forEach(function(el) {
+      var label = getItemLabel(el);
+      var isBuiltin = el.getAttribute('data-builtin') === 'true';
+      el.parentNode.removeChild(el);
+      if (isBuiltin) markAsDeleted(label);
+      else removeUserItem(type, label, '');
+    });
+    enterSelectMode(type); // exit select mode
+    renumberAll(); updateAll();
+  });
+}
+
+// ===== STATS =====
+function updateAll() {
+  var m = document.querySelectorAll('.movie').length;
+  var s = document.querySelectorAll('.series').length;
+  var w = document.querySelectorAll('.web').length;
+  var as = document.querySelectorAll('.animeSeries').length;
+  var am = document.querySelectorAll('.animeMovie').length;
+  var total = m + s + w + as + am || 1;
+
+  document.getElementById('mp').textContent = Math.round(m / total * 100) + '%';
+  document.getElementById('sp').textContent = Math.round(s / total * 100) + '%';
+  document.getElementById('wp').textContent = Math.round(w / total * 100) + '%';
+  document.getElementById('ap').textContent = Math.round((as + am) / total * 100) + '%';
+  document.getElementById('mb').style.width = m / total * 100 + '%';
+  document.getElementById('sb').style.width = s / total * 100 + '%';
+  document.getElementById('wb').style.width = w / total * 100 + '%';
+  document.getElementById('ab').style.width = (as + am) / total * 100 + '%';
+
+  document.getElementById('totalMovies').textContent = m;
+  document.getElementById('totalSeries').textContent = s;
+  document.getElementById('totalWeb').textContent = w;
+  document.getElementById('totalAnime').textContent = as + am;
+  document.getElementById('grandTotal').textContent = m + s + w + as + am;
+
+  document.getElementById('tm').textContent = m;
+  document.getElementById('ts').textContent = s;
+  document.getElementById('tw').textContent = w;
+  document.getElementById('tas').textContent = as;
+  document.getElementById('tam').textContent = am;
+
+  updateDonutChart();
+}
+
+// ===== DONUT CHART =====
+var donutChart;
+function updateDonutChart() {
+  var ctx = document.getElementById('donutChart').getContext('2d');
+  var m = document.querySelectorAll('.movie').length;
+  var s = document.querySelectorAll('.series').length;
+  var w = document.querySelectorAll('.web').length;
+  var an = document.querySelectorAll('.animeSeries').length + document.querySelectorAll('.animeMovie').length;
+  var data = [
+    document.getElementById('chkMovies').checked ? m : 0,
+    document.getElementById('chkSeries').checked ? s : 0,
+    document.getElementById('chkWeb').checked ? w : 0,
+    document.getElementById('chkAnime').checked ? an : 0
+  ];
+  if (donutChart) donutChart.destroy();
+  donutChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Movies', 'Series', 'Web Series', 'Anime'],
+      datasets: [{
+        data: data,
+        backgroundColor: ['#9920e0', '#d02080', '#d04020', '#d06010'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      cutout: '72%',
+      plugins: {
+        legend: {
+          display: true, position: 'bottom',
+          labels: { color: 'rgba(220,160,255,0.8)', font: { size: 10, family: 'Inter' }, padding: 10 }
+        }
+      }
+    }
+  });
+}
+
+document.getElementById('chkMovies').addEventListener('change', updateDonutChart);
+document.getElementById('chkSeries').addEventListener('change', updateDonutChart);
+document.getElementById('chkWeb').addEventListener('change', updateDonutChart);
+document.getElementById('chkAnime').addEventListener('change', updateDonutChart);
+
+// ===== PDF DOWNLOAD =====
+function downloadPDF() {
+  var jsPDF = window.jspdf.jsPDF;
+  var doc = new jsPDF();
+  var movies = Array.from(document.querySelectorAll('.movie'));
+  var series = Array.from(document.querySelectorAll('.series'));
+  var webs = Array.from(document.querySelectorAll('.web'));
+  var animeSeries = Array.from(document.querySelectorAll('.animeSeries'));
+  var animeMovies = Array.from(document.querySelectorAll('.animeMovie'));
+  var pageHeight = doc.internal.pageSize.height || 297;
+  var y = 20, lineHeight = 7;
+  function checkPage() { if (y > pageHeight - 20) { doc.addPage(); y = 20; } }
+  doc.setFontSize(18); doc.setTextColor(80, 0, 160);
+  doc.text('My Collection', 105, y, { align: 'center' }); y += 12;
+  doc.setFontSize(11); doc.setTextColor(120, 40, 200);
+  doc.text('Total: ' + (movies.length + series.length + webs.length + animeSeries.length + animeMovies.length), 20, y); y += 10;
+
+  function addSection(title, items, color) {
+    if (!items.length) return;
+    checkPage();
+    doc.setFontSize(13); doc.setTextColor(color[0], color[1], color[2]);
+    doc.text(title + ' (' + items.length + ')', 20, y); y += 8;
+    doc.setFontSize(10); doc.setTextColor(50, 50, 50);
+    items.forEach(function(el, i) {
+      checkPage();
+      doc.text((i + 1) + '. ' + getItemLabel(el), 24, y); y += lineHeight;
+    });
+    y += 4;
+  }
+  addSection('Movies', movies, [100, 0, 200]);
+  addSection('Series', series, [180, 0, 100]);
+  addSection('Web Series', webs, [180, 60, 0]);
+  addSection('Anime Series', animeSeries, [160, 80, 0]);
+  addSection('Anime Movies', animeMovies, [160, 80, 0]);
+  doc.save('my-collection.pdf');
+}
+
+// ===== RESTORE USER ITEMS =====
+function restoreUserItems() {
+  var obj = getUserItems();
+  Object.keys(obj).forEach(function(type) {
+    obj[type].forEach(function(item) {
+      var page, cls, totalBarId, serialStyle;
+      if (type === 'movie') { page = document.getElementById('movies'); cls = 'movie'; totalBarId = 'tm'; serialStyle = 'background:rgba(180,60,255,0.12);color:#c060ff'; }
+      else if (type === 'series') { page = document.getElementById('series'); cls = 'series'; totalBarId = 'ts'; serialStyle = 'background:rgba(255,40,120,0.12);color:#ff60b0'; }
+      else if (type === 'web') { page = document.getElementById('web'); cls = 'web'; totalBarId = 'tw'; serialStyle = 'background:rgba(255,80,30,0.12);color:#ff8050'; }
+      else if (type === 'animeSeries') { page = document.getElementById('animeSeries'); cls = 'animeSeries'; totalBarId = 'tas'; serialStyle = 'background:rgba(255,120,20,0.12);color:#ffa030'; }
+      else { page = document.getElementById('animeMovies'); cls = 'animeMovie'; totalBarId = 'tam'; serialStyle = 'background:rgba(255,120,20,0.12);color:#ffa030'; }
+      var el = document.createElement('div');
+      el.className = 'item ' + cls;
+      el.setAttribute('data-builtin', 'false');
+      el.onclick = function() { toggleActive(el); };
+      var count = page.querySelectorAll('.' + cls).length + 1;
+      el.innerHTML = '<div class="serial" style="' + serialStyle + '">' + count + '</div>' + item.text;
+      var totalBar = page.querySelector('.total-bar');
+      page.insertBefore(el, totalBar);
+      attachLongPressDelete(el, type, item.text, item.category);
+    });
+  });
+}
+
+// ===== INIT =====
+removeDeletedBuiltins();
+restoreUserItems();
+initLongPressAll();
+renumberAll();
+updateAll();
+</script>
+</body>
+</html>
