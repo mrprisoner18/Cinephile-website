@@ -562,11 +562,27 @@ window.addEventListener('popstate', function(e) {
   }
 });
 
-// Init history
+// Init history — push a guard state so back on home doesn't exit
 (function(){
-  history.replaceState({pg:'home'}, '', '#home');
+  history.replaceState({pg:'guard'}, '', location.pathname);
+  history.pushState({pg:'home'}, '', '#home');
   showPage('home');
 })();
+
+// Prevent exiting app when pressing back on home
+window.addEventListener('popstate', function(e) {
+  if (NAV.length > 1) {
+    NAV.pop();
+    showPage(NAV[NAV.length-1]);
+  } else {
+    // Re-push home guard so user can't exit
+    history.pushState({pg:'home'}, '', '#home');
+    showPage('home');
+  }
+}, false);
+
+// Remove the duplicate listener below by overriding
+
 
 // ============================================================
 //  PERSISTENCE
