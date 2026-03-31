@@ -555,12 +555,6 @@ function goBack() {
   }
 }
 
-window.addEventListener('popstate', function(e) {
-  if (NAV.length > 1) {
-    NAV.pop();
-    showPage(NAV[NAV.length-1]);
-  }
-});
 
 // Init history — push a guard state so back on home doesn't exit
 (function(){
