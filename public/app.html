@@ -7,300 +7,139 @@
 <title>My Collection</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* ===== RESET ===== */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-
-/* ===== BODY / BACKGROUND ===== */
 body{
   font-family:'Inter',system-ui,-apple-system,sans-serif;
-  background:#08000f;
-  color:#f0e8ff;
-  min-height:100vh;
-  overflow-x:hidden;
-  -webkit-tap-highlight-color:transparent;
-  position:relative;
+  background:#08000f;color:#f0e8ff;min-height:100vh;
+  overflow-x:hidden;-webkit-tap-highlight-color:transparent;position:relative;
 }
 body::before{
   content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 90% 55% at 10% 5%,  rgba(110,30,200,0.35) 0%,transparent 65%),
-    radial-gradient(ellipse 70% 45% at 90% 90%,  rgba(200,20,100,0.28) 0%,transparent 60%),
-    radial-gradient(ellipse 55% 55% at 50% 40%,  rgba(80,0,160,0.15)  0%,transparent 70%);
+    radial-gradient(ellipse 90% 55% at 10% 5%,rgba(110,30,200,0.35) 0%,transparent 65%),
+    radial-gradient(ellipse 70% 45% at 90% 90%,rgba(200,20,100,0.28) 0%,transparent 60%),
+    radial-gradient(ellipse 55% 55% at 50% 40%,rgba(80,0,160,0.15) 0%,transparent 70%);
 }
-
-/* ===== PAGES ===== */
-.page{
-  display:none;padding:20px 16px 110px;
-  max-width:480px;margin:0 auto;
-  animation:fadeUp .28s ease;
-  position:relative;z-index:1;
-}
+.page{display:none;padding:20px 16px 110px;max-width:480px;margin:0 auto;animation:fadeUp .28s ease;position:relative;z-index:1}
 .page.active{display:block}
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(16px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-/* ===== TOP BAR ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .top-bar{display:flex;align-items:center;gap:12px;padding:14px 0 10px}
-.back-btn{
-  width:42px;height:42px;border-radius:14px;flex-shrink:0;
-  background:rgba(160,60,255,0.12);
-  border:1px solid rgba(160,60,255,0.25);
-  color:#c060ff;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .2s;
-}
+.back-btn{width:42px;height:42px;border-radius:14px;flex-shrink:0;background:rgba(160,60,255,0.12);border:1px solid rgba(160,60,255,0.25);color:#c060ff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
 .back-btn:active{background:rgba(160,60,255,0.25);color:#fff}
 .back-btn svg{width:20px;height:20px}
-
-/* ===== PAGE TITLES ===== */
-.pg-title{
-  font-size:26px;font-weight:900;letter-spacing:-0.6px;
-  background:linear-gradient(120deg,#fff 0%,#d080ff 40%,#ff50a0 80%,#ff8040 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+.pg-title{font-size:26px;font-weight:900;letter-spacing:-0.6px;background:linear-gradient(120deg,#fff 0%,#d080ff 40%,#ff50a0 80%,#ff8040 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .pg-title-movies{background:linear-gradient(120deg,#fff 0%,#c080ff 50%,#9020e0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .pg-title-web{background:linear-gradient(120deg,#fff 0%,#ff90c0 50%,#d02070 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.pg-title-anime{background:linear-gradient(120deg,#fff 0%,#ffc080 50%,#e05020 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pg-title-anime{background:linear-gradient(120deg,#fff 0%,#d6a0ff 50%,#ff6fb2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .pg-subtitle{font-size:12.5px;color:rgba(200,160,255,0.55);margin-top:3px;line-height:1.5}
-
-/* ===== HOME HEADER CARD ===== */
-.home-hero{
-  margin:8px 0 20px;padding:22px 20px 20px;border-radius:22px;
-  background:linear-gradient(135deg,rgba(80,10,140,0.55) 0%,rgba(150,20,100,0.4) 60%,rgba(200,40,60,0.25) 100%);
-  border:1px solid rgba(180,80,255,0.2);
-  position:relative;overflow:hidden;
-}
-.home-hero::after{
-  content:'';position:absolute;top:-40px;right:-40px;
-  width:160px;height:160px;border-radius:50%;
-  background:radial-gradient(circle,rgba(220,80,200,0.18) 0%,transparent 70%);
-}
-.home-hero-title{
-  font-size:20px;font-weight:900;
-  background:linear-gradient(90deg,#fff 0%,#f0b0ff 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  margin-bottom:5px;
-}
+.home-hero{margin:8px 0 20px;padding:22px 20px 20px;border-radius:22px;background:linear-gradient(135deg,rgba(80,10,140,0.55) 0%,rgba(150,20,100,0.4) 60%,rgba(200,40,60,0.25) 100%);border:1px solid rgba(180,80,255,0.2);position:relative;overflow:hidden}
+.home-hero::after{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(220,80,200,0.18) 0%,transparent 70%)}
+.home-hero-title{font-size:20px;font-weight:900;background:linear-gradient(90deg,#fff 0%,#f0b0ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px}
 .home-hero-sub{font-size:12px;color:rgba(230,180,255,0.65);line-height:1.5}
-.home-counts{
-  display:flex;gap:10px;margin-top:14px;
-}
-.home-count-pill{
-  flex:1;text-align:center;background:rgba(255,255,255,0.06);
-  border:1px solid rgba(200,100,255,0.12);border-radius:12px;padding:8px 4px;
-}
+.home-counts{display:flex;gap:10px;margin-top:14px}
+.home-count-pill{flex:1;text-align:center;background:rgba(255,255,255,0.06);border:1px solid rgba(200,100,255,0.12);border-radius:12px;padding:8px 4px}
 .home-count-pill .num{font-size:20px;font-weight:900;color:#fff;display:block}
 .home-count-pill .lbl{font-size:9.5px;color:rgba(200,150,255,0.6);text-transform:uppercase;letter-spacing:.5px;margin-top:1px;display:block}
-
-/* ===== FOLDER BUTTONS ===== */
-.folder{
-  width:100%;padding:18px 18px;margin:10px 0;
-  border-radius:20px;border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:space-between;
-  transition:transform .18s ease,box-shadow .18s ease;
-  position:relative;overflow:hidden;
-}
+.folder{width:100%;padding:18px;margin:10px 0;border-radius:20px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:transform .18s ease,box-shadow .18s ease;position:relative;overflow:hidden}
 .folder:active{transform:scale(0.975)}
 .folder-left{display:flex;align-items:center;gap:14px}
-.f-icon{
-  width:44px;height:44px;border-radius:14px;flex-shrink:0;
-  background:rgba(255,255,255,0.12);
-  display:flex;align-items:center;justify-content:center;
-}
+.f-icon{width:44px;height:44px;border-radius:14px;flex-shrink:0;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center}
 .f-icon svg{width:22px;height:22px}
 .f-label{font-size:17px;font-weight:800;letter-spacing:-.2px}
 .f-count{font-size:11.5px;font-weight:600;margin-top:2px;opacity:.75}
 .f-chevron svg{width:18px;height:18px;opacity:.55}
-
-/* Movies - deep violet to electric purple */
-.folder-movies{
-  background:linear-gradient(135deg,#1c0040 0%,#4a0090 45%,#7a10c8 100%);
-  border:1px solid rgba(160,60,255,0.3);
-  box-shadow:0 6px 24px rgba(100,0,200,0.35);
-  color:#e8c0ff;
-}
-/* Web Series - purple-magenta to crimson sunset */
-.folder-web{
-  background:linear-gradient(135deg,#2a0040 0%,#780058 45%,#c01870 100%);
-  border:1px solid rgba(220,60,150,0.3);
-  box-shadow:0 6px 24px rgba(160,0,100,0.35);
-  color:#ffb8e0;
-}
-/* Anime - deep magenta to warm sunset */
-.folder-anime{
-  background:linear-gradient(135deg,#280028 0%,#6a0030 45%,#b83018 100%);
-  border:1px solid rgba(220,80,60,0.3);
-  box-shadow:0 6px 24px rgba(160,30,0,0.35);
-  color:#ffd0a8;
-}
-/* Sub-folders (inside anime) */
-.folder-sub{
-  background:linear-gradient(135deg,rgba(160,60,255,0.08) 0%,rgba(200,80,200,0.12) 100%);
-  border:1px solid rgba(180,80,255,0.15);
-  box-shadow:none;color:#d8b0ff;
-}
-
-/* ===== GLASS STAT CARD ===== */
-.stat-card{
-  background:rgba(80,10,120,0.15);backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
-  border:1px solid rgba(180,80,255,0.12);
-  border-radius:20px;padding:18px;margin:16px 0;
-}
-.stat-card-title{
-  font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-  color:rgba(200,140,255,0.6);margin-bottom:14px;
-}
-
-/* Bar stats */
+.folder-movies{background:linear-gradient(135deg,#1c0040 0%,#4a0090 45%,#7a10c8 100%);border:1px solid rgba(160,60,255,0.3);box-shadow:0 6px 24px rgba(100,0,200,0.35);color:#e8c0ff}
+.folder-web{background:linear-gradient(135deg,#2a0040 0%,#780058 45%,#c01870 100%);border:1px solid rgba(220,60,150,0.3);box-shadow:0 6px 24px rgba(160,0,100,0.35);color:#ffb8e0}
+.folder-anime{background:linear-gradient(135deg,#220034 0%,#590075 45%,#b02088 100%);border:1px solid rgba(210,80,190,0.32);box-shadow:0 6px 24px rgba(150,20,150,0.36);color:#ffd2f0}
+.folder-sub{background:linear-gradient(135deg,rgba(160,60,255,0.08) 0%,rgba(200,80,200,0.12) 100%);border:1px solid rgba(180,80,255,0.15);box-shadow:none;color:#d8b0ff}
+.stat-card{background:rgba(80,10,120,0.15);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(180,80,255,0.12);border-radius:20px;padding:18px;margin:16px 0}
+.stat-card-title{font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(200,140,255,0.6);margin-bottom:14px}
 .bar-stat{margin:9px 0}
 .bar-label{display:flex;justify-content:space-between;font-size:11.5px;color:rgba(200,150,255,0.75);margin-bottom:4px;font-weight:600}
 .bar-track{height:6px;background:rgba(255,255,255,0.07);border-radius:99px;overflow:hidden}
 .bar-fill{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.4,0,.2,1)}
 .fill-m{background:linear-gradient(90deg,#7a10c8,#c060ff)}
 .fill-w{background:linear-gradient(90deg,#c01870,#ff50a0)}
-.fill-a{background:linear-gradient(90deg,#b83018,#ff8040)}
+.fill-a{background:linear-gradient(90deg,#8a2be2,#ff5ea6)}
 
-/* ===== PDF BUTTON ===== */
-.pdf-btn{
-  width:100%;padding:14px;margin-top:16px;border:none;border-radius:14px;
-  font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;
-  background:linear-gradient(135deg,#5a0090,#a02080,#d04020);
-  color:#fff;
-  box-shadow:0 4px 18px rgba(140,20,120,0.4);
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  transition:all .2s;
-}
+/* ===== DONUT SECTION ===== */
+.donut-section{margin-top:20px;padding:18px;border-radius:18px;background:rgba(16,6,32,0.7);border:1px solid rgba(180,80,255,0.14)}
+.donut-section-title{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:rgba(200,140,255,0.55);margin-bottom:16px}
+.donut-grid{display:grid;grid-template-columns:140px 1fr;gap:18px;align-items:center}
+@media(max-width:380px){.donut-grid{grid-template-columns:1fr;justify-items:center}}
+.donut-center{display:flex;flex-direction:column;align-items:center;gap:12px}
+.donut-ring{width:140px;height:140px;border-radius:50%;position:relative;transition:background .5s ease}
+.donut-hole{position:absolute;inset:24px;border-radius:50%;background:rgba(8,0,15,0.96);border:1px solid rgba(180,80,255,0.18);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-hole .big{font-size:28px;font-weight:900;color:#fff;line-height:1}
+.donut-hole .sub{font-size:9px;color:rgba(210,170,255,.65);letter-spacing:1.2px;text-transform:uppercase;margin-top:4px}
+.donut-legend{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(230,200,255,.85)}
+.legend-dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+.ldot-m{background:#8b5cf6}
+.ldot-w{background:#4c9dff}
+.ldot-a{background:#ff6fb2}
+.donut-bars{display:flex;flex-direction:column;gap:10px}
+.donut-bar-row{transition:opacity .3s ease}
+.donut-bar-row.off{opacity:.3}
+.dbr-head{display:flex;justify-content:space-between;font-size:12px;color:rgba(220,180,255,.85);font-weight:700;margin-bottom:4px}
+.dbr-track{height:7px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
+.dbr-fill{height:100%;border-radius:999px;transition:width .5s ease}
+.dbr-fill-m{background:linear-gradient(90deg,#7a4dff,#a88bff)}
+.dbr-fill-w{background:linear-gradient(90deg,#3b82f6,#66b5ff)}
+.dbr-fill-a{background:linear-gradient(90deg,#d946ef,#ff7ab8)}
+.donut-checks{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.donut-check{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:10px;border:1px solid rgba(180,80,255,0.18);background:rgba(140,40,220,0.11);font-size:12px;font-weight:700;color:rgba(230,190,255,.9);cursor:pointer;transition:opacity .2s}
+.donut-check.off{opacity:.35}
+.donut-check input{accent-color:#b665ff}
+
+.pdf-btn{width:100%;padding:14px;margin-top:16px;border:none;border-radius:14px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#5a0090,#a02080,#d04020);color:#fff;box-shadow:0 4px 18px rgba(140,20,120,0.4);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
 .pdf-btn:active{transform:scale(.98);opacity:.9}
-
-/* ===== SEARCH ROW ===== */
 .search-row{display:flex;align-items:center;gap:8px;margin:12px 0 6px}
 .search-wrap{flex:1;position:relative}
 .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:rgba(180,100,255,.5);pointer-events:none}
-.search-wrap input{
-  width:100%;padding:11px 14px 11px 36px;border-radius:13px;
-  border:1px solid rgba(180,80,255,0.18);font-size:14px;font-family:inherit;
-  background:rgba(80,10,130,0.18);color:#f0e0ff;outline:none;
-  transition:border-color .2s;
-}
+.search-wrap input{width:100%;padding:11px 14px 11px 36px;border-radius:13px;border:1px solid rgba(180,80,255,0.18);font-size:14px;font-family:inherit;background:rgba(80,10,130,0.18);color:#f0e0ff;outline:none;transition:border-color .2s}
 .search-wrap input::placeholder{color:rgba(180,100,255,.38)}
 .search-wrap input:focus{border-color:rgba(180,80,255,.45)}
-.add-circle{
-  width:44px;height:44px;border-radius:13px;flex-shrink:0;
-  background:rgba(140,30,220,0.2);border:1px solid rgba(160,60,255,0.28);
-  color:#c060ff;font-size:22px;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .2s;
-}
+.add-circle{width:44px;height:44px;border-radius:13px;flex-shrink:0;background:rgba(140,30,220,0.2);border:1px solid rgba(160,60,255,0.28);color:#c060ff;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
 .add-circle:active{background:rgba(140,30,220,.4)}
-
-/* ===== CONTROLS ROW (select/deselect) ===== */
 .controls-row{display:flex;align-items:center;gap:8px;margin:10px 0 4px;flex-wrap:wrap}
-.ctrl-btn{
-  padding:7px 14px;border-radius:10px;font-size:12.5px;font-weight:700;
-  font-family:inherit;cursor:pointer;border:1px solid rgba(180,80,255,0.2);
-  background:rgba(120,20,200,0.14);color:#c060ff;transition:all .2s;
-}
+.ctrl-btn{padding:7px 14px;border-radius:10px;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer;border:1px solid rgba(180,80,255,0.2);background:rgba(120,20,200,0.14);color:#c060ff;transition:all .2s}
 .ctrl-btn:active{background:rgba(120,20,200,.3)}
 .ctrl-btn.danger{background:rgba(220,30,60,.12);border-color:rgba(220,30,60,.25);color:#f87171}
 .ctrl-btn.danger:active{background:rgba(220,30,60,.28)}
 .select-all-wrap{display:flex;align-items:center;gap:6px;font-size:12.5px;color:rgba(200,150,255,.8);font-weight:600}
 .select-all-wrap input[type=checkbox]{width:14px;height:14px;accent-color:#c040ff}
-
-/* ===== SECTION HEADLINE ===== */
-.section-head{
-  font-size:13.5px;font-weight:800;color:#b050ff;
-  display:flex;align-items:center;gap:8px;
-  margin:20px 0 8px;letter-spacing:.2px;
-}
-.section-head-anime{color:#ff9030}
+.section-head{font-size:13.5px;font-weight:800;color:#b050ff;display:flex;align-items:center;gap:8px;margin:20px 0 8px;letter-spacing:.2px}
+.section-head-anime{color:#d975ff}
 .section-head-web{color:#e03080}
-.inline-add{
-  display:inline-flex;align-items:center;padding:3px 10px;
-  border-radius:8px;background:rgba(160,40,220,.12);
-  font-size:11.5px;color:#b050ff;font-weight:600;
-  border:1px solid rgba(160,40,220,.18);cursor:pointer;transition:all .2s;
-}
+.inline-add{display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;background:rgba(160,40,220,.12);font-size:11.5px;color:#b050ff;font-weight:600;border:1px solid rgba(160,40,220,.18);cursor:pointer;transition:all .2s}
 .inline-add:active{background:rgba(160,40,220,.28)}
-
-/* ===== LIST ITEMS ===== */
-.item{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 15px;margin:5px 0;border-radius:14px;
-  background:rgba(255,255,255,0.028);border:1px solid rgba(180,80,255,.07);
-  transition:all .2s;cursor:pointer;
-  font-size:13.5px;font-weight:500;color:rgba(240,220,255,.92);
-  position:relative;
-}
+.item{display:flex;align-items:center;gap:12px;padding:12px 15px;margin:5px 0;border-radius:14px;background:rgba(255,255,255,0.028);border:1px solid rgba(180,80,255,.07);transition:all .25s ease;cursor:pointer;font-size:13.5px;font-weight:500;color:rgba(240,220,255,.92);position:relative}
 .item:active{background:rgba(160,60,255,.1)}
-.item.on{
-  background:rgba(140,20,220,.1);border-color:rgba(160,60,255,.38);
-  animation:glowPulse 2s ease-in-out infinite alternate;
-}
-@keyframes glowPulse{
-  from{box-shadow:0 0 10px rgba(160,30,240,.14)}
-  to{box-shadow:0 0 22px rgba(220,60,200,.28)}
-}
-.serial{
-  width:28px;height:28px;border-radius:8px;flex-shrink:0;
-  background:rgba(160,50,255,.14);color:#b050ff;
-  display:flex;align-items:center;justify-content:center;
-  font-size:11.5px;font-weight:800;
-}
-/* Themed serials */
+.item.on{background:rgba(140,20,220,.16);border-color:rgba(188,88,255,.5);box-shadow:0 0 0 1px rgba(188,88,255,.2),0 8px 24px rgba(116,24,190,.22)}
+.serial{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:rgba(160,50,255,.14);color:#b050ff;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:800}
 .web-serial{background:rgba(220,30,100,.14);color:#e04090}
-.anime-serial{background:rgba(220,80,20,.14);color:#e07030}
+.anime-serial{background:rgba(180,50,180,.18);color:#ff79cc}
 .select-cb{width:16px;height:16px;accent-color:#c040ff;flex-shrink:0}
-
-/* ===== TOTAL BAR ===== */
-.total-bar{
-  margin:18px 0 0;padding:13px 18px;border-radius:14px;text-align:center;
-  font-size:14.5px;font-weight:700;
-  background:rgba(120,20,200,.1);border:1px solid rgba(160,60,255,.15);
-  color:rgba(210,150,255,.85);
-}
+.total-bar{margin:18px 0 0;padding:13px 18px;border-radius:14px;text-align:center;font-size:14.5px;font-weight:700;background:rgba(120,20,200,.1);border:1px solid rgba(160,60,255,.15);color:rgba(210,150,255,.85)}
 .total-bar span{color:#fff}
-
-/* ===== HINT ===== */
 .hint{font-size:11px;color:rgba(180,100,255,.35);margin-top:6px;line-height:1.5}
-
-/* ===== DELETE DIALOG ===== */
-.overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.72);
-  backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;
-  z-index:9999;animation:fadeIn .18s ease;
-}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;z-index:9999;animation:fadeIn .18s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.dialog{
-  background:#120020;border:1px solid rgba(180,60,255,.22);
-  border-radius:22px;padding:28px 22px;max-width:300px;width:88%;
-  text-align:center;animation:scaleUp .2s ease;
-  box-shadow:0 20px 60px rgba(100,0,200,.45);
-}
+.dialog{background:#120020;border:1px solid rgba(180,60,255,.22);border-radius:22px;padding:28px 22px;max-width:300px;width:88%;text-align:center;animation:scaleUp .2s ease;box-shadow:0 20px 60px rgba(100,0,200,.45)}
 @keyframes scaleUp{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
 .dialog h3{font-size:18px;font-weight:900;color:#fff;margin-bottom:8px}
 .dialog p{font-size:13px;color:rgba(200,140,255,.6);margin-bottom:20px;line-height:1.5}
 .dialog-btns{display:flex;gap:10px}
-.dialog-btns button{
-  flex:1;padding:12px;border-radius:12px;
-  font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:none;
-}
+.dialog-btns button{flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:none}
 #dlgCancel{background:rgba(255,255,255,.08);color:rgba(200,150,255,.9)}
 #dlgOk{background:rgba(230,40,60,.18);color:#f87171}
-
-/* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(160,60,255,.3);border-radius:4px}
-
-/* ===== SECTION PARENT LABEL ===== */
-.parent-label{
-  font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
-  color:rgba(160,80,255,.45);margin:26px 0 4px;
-}
+.parent-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(160,80,255,.45);margin:26px 0 4px}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
@@ -308,7 +147,6 @@ body::before{
 <!-- ==================== HOME ==================== -->
 <div class="page active" id="home">
   <div class="top-bar"><h1 class="pg-title">My Collection</h1></div>
-
   <div class="home-hero">
     <div class="home-hero-title">Your Universe of Stories</div>
     <div class="home-hero-sub">Movies · Web Series · Anime — all in one place.</div>
@@ -320,43 +158,70 @@ body::before{
     </div>
   </div>
 
-  <!-- 3 Main folders -->
   <div class="folder folder-movies" onclick="go('movies')">
     <div class="folder-left">
-      <div class="f-icon">
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="2" y1="17" x2="7" y2="17"/></svg>
-      </div>
+      <div class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="2" y1="17" x2="7" y2="17"/></svg></div>
       <div><div class="f-label">Movies</div><div class="f-count" id="folderMovieCount">0 items</div></div>
     </div>
     <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
   </div>
-
   <div class="folder folder-web" onclick="go('web')">
     <div class="folder-left">
-      <div class="f-icon">
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      </div>
+      <div class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
       <div><div class="f-label">Web Series</div><div class="f-count" id="folderWebCount">0 items</div></div>
     </div>
     <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
   </div>
-
   <div class="folder folder-anime" onclick="go('anime')">
     <div class="folder-left">
-      <div class="f-icon">
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-      </div>
+      <div class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
       <div><div class="f-label">Anime</div><div class="f-count" id="folderAnimeCount">0 items</div></div>
     </div>
     <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
   </div>
 
-  <!-- Stat Card -->
+  <!-- Stat Card with bars -->
   <div class="stat-card">
     <div class="stat-card-title">Collection Overview</div>
     <div class="bar-stat"><div class="bar-label"><span>Movies</span><span id="mpct">0%</span></div><div class="bar-track"><div class="bar-fill fill-m" id="mbar"></div></div></div>
     <div class="bar-stat"><div class="bar-label"><span>Web Series</span><span id="wpct">0%</span></div><div class="bar-track"><div class="bar-fill fill-w" id="wbar"></div></div></div>
     <div class="bar-stat"><div class="bar-label"><span>Anime</span><span id="apct">0%</span></div><div class="bar-track"><div class="bar-fill fill-a" id="abar"></div></div></div>
+  </div>
+
+  <!-- DONUT GRAPH SECTION -->
+  <div class="donut-section">
+    <div class="donut-section-title">Collection Status</div>
+    <div class="donut-grid">
+      <div class="donut-center">
+        <div class="donut-ring" id="donutRing">
+          <div class="donut-hole"><span class="big" id="donutTotal">0</span><span class="sub">Total</span></div>
+        </div>
+        <div class="donut-legend">
+          <span class="legend-item"><span class="legend-dot ldot-m"></span>Movies</span>
+          <span class="legend-item"><span class="legend-dot ldot-w"></span>Web</span>
+          <span class="legend-item"><span class="legend-dot ldot-a"></span>Anime</span>
+        </div>
+      </div>
+      <div class="donut-bars">
+        <div class="donut-bar-row" id="dbrMovie"><div class="dbr-head"><span>Movies</span><span id="dbrMPct">0%</span></div><div class="dbr-track"><div class="dbr-fill dbr-fill-m" id="dbrMBar"></div></div></div>
+        <div class="donut-bar-row" id="dbrWeb"><div class="dbr-head"><span>Web Series</span><span id="dbrWPct">0%</span></div><div class="dbr-track"><div class="dbr-fill dbr-fill-w" id="dbrWBar"></div></div></div>
+        <div class="donut-bar-row" id="dbrAnime"><div class="dbr-head"><span>Anime</span><span id="dbrAPct">0%</span></div><div class="dbr-track"><div class="dbr-fill dbr-fill-a" id="dbrABar"></div></div></div>
+      </div>
+    </div>
+    <div class="donut-checks">
+      <label class="donut-check" id="dchkM"><input type="checkbox" checked onchange="updateStats()"><span class="legend-dot ldot-m"></span>Movies</label>
+      <label class="donut-check" id="dchkW"><input type="checkbox" checked onchange="updateStats()"><span class="legend-dot ldot-w"></span>Web</label>
+      <label class="donut-check" id="dchkA"><input type="checkbox" checked onchange="updateStats()"><span class="legend-dot ldot-a"></span>Anime</label>
+    </div>
+    <div class="home-counts" style="margin-top:14px">
+      <div class="home-count-pill" id="dPillM"><span class="num" id="dCntM">0</span><span class="lbl">Movies</span></div>
+      <div class="home-count-pill" id="dPillW"><span class="num" id="dCntW">0</span><span class="lbl">Web</span></div>
+      <div class="home-count-pill" id="dPillA"><span class="num" id="dCntA">0</span><span class="lbl">Anime</span></div>
+      <div class="home-count-pill"><span class="num" id="dCntT">0</span><span class="lbl">Total</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px">
     <button class="pdf-btn" onclick="downloadPDF()">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Download PDF
@@ -368,9 +233,8 @@ body::before{
 <div class="page" id="movies">
   <div class="top-bar">
     <div class="back-btn" onclick="goBack()"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
-    <div><h1 class="pg-title pg-title-movies">Movies</h1><p class="pg-subtitle">Long-press to delete · tap to mark watched</p></div>
+    <div><h1 class="pg-title pg-title-movies">Movies</h1><p class="pg-subtitle">Tap to highlight · Long-press to delete</p></div>
   </div>
-
   <div class="controls-row" id="movieControls">
     <button class="ctrl-btn" id="movieSelectBtn" onclick="toggleSelect('movie')">Select</button>
     <div id="movieBulkActions" style="display:none;align-items:center;gap:8px">
@@ -390,88 +254,88 @@ body::before{
 
   <div class="parent-label">MCU</div>
   <div class="section-head">MCU Movies <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">1</div>Iron Man (2008)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">2</div>The Incredible Hulk (2008)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">3</div>Iron Man 2 (2010)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">4</div>Thor (2011)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">5</div>Captain America: The First Avenger (2011)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">6</div>Marvel's The Avengers (2012)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">7</div>Iron Man 3 (2013)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">8</div>Thor: The Dark World (2013)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">9</div>Captain America: The Winter Soldier (2014)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">10</div>Guardians of the Galaxy (2014)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">11</div>Avengers: Age of Ultron (2015)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">12</div>Ant-Man (2015)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">13</div>Captain America: Civil War (2016)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">14</div>Doctor Strange (2016)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">15</div>Guardians of the Galaxy Vol. 2 (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">16</div>Spider-Man: Homecoming (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">17</div>Thor: Ragnarok (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">18</div>Black Panther (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">19</div>Avengers: Infinity War (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">20</div>Ant-Man and the Wasp (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">21</div>Captain Marvel (2019)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">22</div>Avengers: Endgame (2019)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">23</div>Spider-Man: Far From Home (2019)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">24</div>Black Widow (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">25</div>Shang-Chi and the Legend of the Ten Rings (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">26</div>Eternals (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">27</div>Spider-Man: No Way Home (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">28</div>Doctor Strange in the Multiverse of Madness (2022)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">29</div>Thor: Love and Thunder (2022)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">30</div>Black Panther: Wakanda Forever (2022)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">31</div>Ant-Man and the Wasp: Quantumania (2023)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">32</div>Guardians of the Galaxy Vol. 3 (2023)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">33</div>The Marvels (2023)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">34</div>Deadpool &amp; Wolverine (2024)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">35</div>Captain America: Brave New World (2025)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">36</div>Thunderbolts (2025)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">37</div>The Fantastic Four: First Steps (2025)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">1</div>Iron Man (2008)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">2</div>The Incredible Hulk (2008)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">3</div>Iron Man 2 (2010)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">4</div>Thor (2011)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">5</div>Captain America: The First Avenger (2011)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">6</div>Marvel's The Avengers (2012)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">7</div>Iron Man 3 (2013)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">8</div>Thor: The Dark World (2013)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">9</div>Captain America: The Winter Soldier (2014)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">10</div>Guardians of the Galaxy (2014)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">11</div>Avengers: Age of Ultron (2015)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">12</div>Ant-Man (2015)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">13</div>Captain America: Civil War (2016)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">14</div>Doctor Strange (2016)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">15</div>Guardians of the Galaxy Vol. 2 (2017)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">16</div>Spider-Man: Homecoming (2017)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">17</div>Thor: Ragnarok (2017)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">18</div>Black Panther (2018)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">19</div>Avengers: Infinity War (2018)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">20</div>Ant-Man and the Wasp (2018)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">21</div>Captain Marvel (2019)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">22</div>Avengers: Endgame (2019)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">23</div>Spider-Man: Far From Home (2019)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">24</div>Black Widow (2021)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">25</div>Shang-Chi and the Legend of the Ten Rings (2021)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">26</div>Eternals (2021)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">27</div>Spider-Man: No Way Home (2021)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">28</div>Doctor Strange in the Multiverse of Madness (2022)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">29</div>Thor: Love and Thunder (2022)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">30</div>Black Panther: Wakanda Forever (2022)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">31</div>Ant-Man and the Wasp: Quantumania (2023)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">32</div>Guardians of the Galaxy Vol. 3 (2023)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">33</div>The Marvels (2023)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">34</div>Deadpool &amp; Wolverine (2024)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">35</div>Captain America: Brave New World (2025)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">36</div>Thunderbolts (2025)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">37</div>The Fantastic Four: First Steps (2025)</div>
 
   <div class="section-head">Venom Series <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">38</div>Venom (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">39</div>Venom: Let There Be Carnage (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">40</div>Venom: The Last Dance (2024)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">38</div>Venom (2018)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">39</div>Venom: Let There Be Carnage (2021)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">40</div>Venom: The Last Dance (2024)</div>
 
   <div class="section-head">Anaconda Series <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">41</div>Anaconda (1997)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">42</div>Anacondas: The Hunt for the Blood Orchid (2004)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">43</div>Anaconda 3: Offspring</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">44</div>Anacondas: Trail of Blood (2009)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">45</div>Lake Placid vs. Anaconda (2015)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">46</div>Anaconda: Cursed Jungle (2024/2025)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">47</div>Anaconda (2025)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">41</div>Anaconda (1997)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">42</div>Anacondas: The Hunt for the Blood Orchid (2004)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">43</div>Anaconda 3: Offspring</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">44</div>Anacondas: Trail of Blood (2009)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">45</div>Lake Placid vs. Anaconda (2015)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">46</div>Anaconda: Cursed Jungle (2024/2025)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">47</div>Anaconda (2025)</div>
 
   <div class="parent-label">Bruce Lee &amp; Jackie Chan</div>
   <div class="section-head">Bruce Lee Movies <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">48</div>Game of Death</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">49</div>Way of the Dragon</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">50</div>Enter the Dragon</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">51</div>Fist of Fury</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">48</div>Game of Death</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">49</div>Way of the Dragon</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">50</div>Enter the Dragon</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">51</div>Fist of Fury</div>
 
   <div class="section-head">Jackie Chan (2000–2025) <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">52</div>The Accidental Spy (2000)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">53</div>Rush Hour 2 (2001)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">54</div>The Tuxedo (2002)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">55</div>Shanghai Knights (2003)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">56</div>The Medallion (2003)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">57</div>Around the World in 80 Days (2004)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">58</div>The Myth (2005)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">59</div>Rush Hour 3 (2007)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">60</div>Kung Fu Panda (2008)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">61</div>The Forbidden Kingdom (2008)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">62</div>The Spy Next Door (2010)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">63</div>Kung Fu Panda 2 (2011)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">64</div>Chinese Zodiac (2012)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">65</div>Police Story: Lockdown (2013)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">66</div>Dragon Blade (2013)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">67</div>Kung Fu Panda 3 (2016)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">68</div>Skiptrace (2016)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">69</div>Bleeding Steel (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">70</div>The Foreigner (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">71</div>Vanguard (2020)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">72</div>Ride On (2023)</div>
-  <div class="item movie" data-builtin="true" onclick="markWatched(this)"><div class="serial">73</div>Karate Kid: Legends (2025)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">52</div>The Accidental Spy (2000)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">53</div>Rush Hour 2 (2001)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">54</div>The Tuxedo (2002)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">55</div>Shanghai Knights (2003)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">56</div>The Medallion (2003)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">57</div>Around the World in 80 Days (2004)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">58</div>The Myth (2005)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">59</div>Rush Hour 3 (2007)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">60</div>Kung Fu Panda (2008)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">61</div>The Forbidden Kingdom (2008)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">62</div>The Spy Next Door (2010)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">63</div>Kung Fu Panda 2 (2011)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">64</div>Chinese Zodiac (2012)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">65</div>Police Story: Lockdown (2013)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">66</div>Dragon Blade (2013)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">67</div>Kung Fu Panda 3 (2016)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">68</div>Skiptrace (2016)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">69</div>Bleeding Steel (2017)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">70</div>The Foreigner (2017)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">71</div>Vanguard (2020)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">72</div>Ride On (2023)</div>
+  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">73</div>Karate Kid: Legends (2025)</div>
 
   <div class="total-bar" id="movieTotalBar">Total Movies: <span id="movieTotal">0</span></div>
   <p class="hint">Long-press any item to delete permanently</p>
@@ -481,9 +345,8 @@ body::before{
 <div class="page" id="web">
   <div class="top-bar">
     <div class="back-btn" onclick="goBack()"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
-    <div><h1 class="pg-title pg-title-web">Web Series</h1><p class="pg-subtitle">Long-press to delete · tap to mark watched</p></div>
+    <div><h1 class="pg-title pg-title-web">Web Series</h1><p class="pg-subtitle">Tap to highlight · Long-press to delete</p></div>
   </div>
-
   <div class="controls-row">
     <button class="ctrl-btn" id="webSelectBtn" onclick="toggleSelect('web')" style="background:rgba(180,20,80,.14);border-color:rgba(220,40,100,.2);color:#e03080">Select</button>
     <div id="webBulkActions" style="display:none;align-items:center;gap:8px">
@@ -500,15 +363,13 @@ body::before{
       <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </div>
   </div>
-
   <div class="section-head section-head-web">All Web Series <span class="inline-add" onclick="addItem('web')" style="background:rgba(200,20,80,.12);color:#e03080;border-color:rgba(200,20,80,.2)">+ Add</span></div>
-  <div class="item web" data-builtin="true" onclick="markWatched(this)"><div class="serial web-serial">1</div>Stranger Things</div>
-  <div class="item web" data-builtin="true" onclick="markWatched(this)"><div class="serial web-serial">2</div>Loki</div>
-  <div class="item web" data-builtin="true" onclick="markWatched(this)"><div class="serial web-serial">3</div>Money Heist</div>
-  <div class="item web" data-builtin="true" onclick="markWatched(this)"><div class="serial web-serial">4</div>Wednesday</div>
-  <div class="item web" data-builtin="true" onclick="markWatched(this)"><div class="serial web-serial">5</div>Squid Game</div>
-  <div class="item web" data-builtin="true" onclick="markWatched(this)"><div class="serial web-serial">6</div>Harry Potter (Series)</div>
-
+  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">1</div>Stranger Things</div>
+  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">2</div>Loki</div>
+  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">3</div>Money Heist</div>
+  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">4</div>Wednesday</div>
+  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">5</div>Squid Game</div>
+  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">6</div>Harry Potter (Series)</div>
   <div class="total-bar" style="background:rgba(180,20,80,.1);border-color:rgba(220,40,100,.18);color:rgba(255,160,210,.8)">Total Web Series: <span id="webTotal">0</span></div>
   <p class="hint">Long-press any item to delete permanently</p>
 </div>
@@ -522,19 +383,15 @@ body::before{
   <div style="margin-top:16px">
     <div class="folder folder-sub" onclick="go('animeSeries')">
       <div class="folder-left">
-        <div class="f-icon" style="background:rgba(220,80,20,.2)">
-          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        </div>
-        <div><div class="f-label" style="color:#ffd0a0">Anime Series</div><div class="f-count" id="folderASeriesCount" style="color:rgba(255,180,100,.7)">0 items</div></div>
+        <div class="f-icon" style="background:rgba(186,83,255,.22)"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        <div><div class="f-label" style="color:#f2c8ff">Anime Series</div><div class="f-count" id="folderASeriesCount" style="color:rgba(228,168,255,.72)">0 items</div></div>
       </div>
       <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
     </div>
     <div class="folder folder-sub" onclick="go('animeMovies')">
       <div class="folder-left">
-        <div class="f-icon" style="background:rgba(200,50,10,.2)">
-          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
-        </div>
-        <div><div class="f-label" style="color:#ffd0a0">Anime Movies</div><div class="f-count" id="folderAMoviesCount" style="color:rgba(255,180,100,.7)">0 items</div></div>
+        <div class="f-icon" style="background:rgba(226,75,170,.22)"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
+        <div><div class="f-label" style="color:#f2c8ff">Anime Movies</div><div class="f-count" id="folderAMoviesCount" style="color:rgba(228,168,255,.72)">0 items</div></div>
       </div>
       <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
     </div>
@@ -545,11 +402,10 @@ body::before{
 <div class="page" id="animeSeries">
   <div class="top-bar">
     <div class="back-btn" onclick="goBack()"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
-    <div><h1 class="pg-title pg-title-anime">Anime Series</h1><p class="pg-subtitle">Long-press to delete · tap to mark watched</p></div>
+    <div><h1 class="pg-title pg-title-anime">Anime Series</h1><p class="pg-subtitle">Tap to highlight · Long-press to delete</p></div>
   </div>
-
   <div class="controls-row">
-    <button class="ctrl-btn" id="aserSelectBtn" onclick="toggleSelect('animeSeries')" style="background:rgba(180,70,10,.14);border-color:rgba(220,100,20,.2);color:#ff9030">Select</button>
+    <button class="ctrl-btn" id="aserSelectBtn" onclick="toggleSelect('animeSeries')" style="background:rgba(150,40,210,.16);border-color:rgba(194,76,255,.24);color:#d975ff">Select</button>
     <div id="aserBulkActions" style="display:none;align-items:center;gap:8px">
       <div class="select-all-wrap"><input type="checkbox" id="aserSelAll" onchange="selectAll('animeSeries')"><label for="aserSelAll">All</label></div>
       <button class="ctrl-btn danger" onclick="deleteSelected('animeSeries')">Delete</button>
@@ -558,24 +414,22 @@ body::before{
   <div class="search-row">
     <div class="search-wrap">
       <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="aserSearch" placeholder="Search anime series..." oninput="search('animeSeries')" style="border-color:rgba(220,100,20,.18);background:rgba(120,40,0,.18)">
+      <input type="text" id="aserSearch" placeholder="Search anime series..." oninput="search('animeSeries')" style="border-color:rgba(190,80,255,.2);background:rgba(94,20,145,.2)">
     </div>
-    <div class="add-circle" onclick="addItem('animeSeries')" style="background:rgba(180,70,10,.2);border-color:rgba(220,100,20,.28);color:#ff9030">
+    <div class="add-circle" onclick="addItem('animeSeries')" style="background:rgba(150,40,210,.22);border-color:rgba(194,76,255,.32);color:#d975ff">
       <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </div>
   </div>
-
-  <div class="section-head section-head-anime">All Anime Series <span class="inline-add" onclick="addItem('animeSeries')" style="background:rgba(200,90,10,.12);color:#ff9030;border-color:rgba(200,90,10,.2)">+ Add</span></div>
-  <div class="item animeSeries" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">1</div>Naruto</div>
-  <div class="item animeSeries" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">2</div>Naruto Shippuden</div>
-  <div class="item animeSeries" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">3</div>Boruto</div>
-  <div class="item animeSeries" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">4</div>Dragon Ball Z</div>
-  <div class="item animeSeries" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">5</div>Attack on Titan</div>
-  <div class="item animeSeries" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">6</div>One Piece</div>
-  <div class="item animeSeries" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">7</div>Demon Slayer</div>
-  <div class="item animeSeries" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">8</div>My Hero Academia</div>
-
-  <div class="total-bar" style="background:rgba(180,70,10,.1);border-color:rgba(220,100,20,.18);color:rgba(255,200,140,.8)">Total Anime Series: <span id="aserTotal">0</span></div>
+  <div class="section-head section-head-anime">All Anime Series <span class="inline-add" onclick="addItem('animeSeries')" style="background:rgba(178,66,245,.14);color:#d975ff;border-color:rgba(178,66,245,.24)">+ Add</span></div>
+  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">1</div>Naruto</div>
+  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">2</div>Naruto Shippuden</div>
+  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">3</div>Boruto</div>
+  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">4</div>Dragon Ball Z</div>
+  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">5</div>Attack on Titan</div>
+  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">6</div>One Piece</div>
+  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">7</div>Demon Slayer</div>
+  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">8</div>My Hero Academia</div>
+  <div class="total-bar" style="background:rgba(136,42,196,.14);border-color:rgba(186,76,255,.24);color:rgba(230,176,255,.82)">Total Anime Series: <span id="aserTotal">0</span></div>
   <p class="hint">Long-press any item to delete permanently</p>
 </div>
 
@@ -583,11 +437,10 @@ body::before{
 <div class="page" id="animeMovies">
   <div class="top-bar">
     <div class="back-btn" onclick="goBack()"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
-    <div><h1 class="pg-title pg-title-anime">Anime Movies</h1><p class="pg-subtitle">Long-press to delete · tap to mark watched</p></div>
+    <div><h1 class="pg-title pg-title-anime">Anime Movies</h1><p class="pg-subtitle">Tap to highlight · Long-press to delete</p></div>
   </div>
-
   <div class="controls-row">
-    <button class="ctrl-btn" id="amovSelectBtn" onclick="toggleSelect('animeMovie')" style="background:rgba(180,70,10,.14);border-color:rgba(220,100,20,.2);color:#ff9030">Select</button>
+    <button class="ctrl-btn" id="amovSelectBtn" onclick="toggleSelect('animeMovie')" style="background:rgba(150,40,210,.16);border-color:rgba(194,76,255,.24);color:#d975ff">Select</button>
     <div id="amovBulkActions" style="display:none;align-items:center;gap:8px">
       <div class="select-all-wrap"><input type="checkbox" id="amovSelAll" onchange="selectAll('animeMovie')"><label for="amovSelAll">All</label></div>
       <button class="ctrl-btn danger" onclick="deleteSelected('animeMovie')">Delete</button>
@@ -596,394 +449,424 @@ body::before{
   <div class="search-row">
     <div class="search-wrap">
       <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="amovSearch" placeholder="Search anime movies..." oninput="search('animeMovie')" style="border-color:rgba(220,100,20,.18);background:rgba(120,40,0,.18)">
+      <input type="text" id="amovSearch" placeholder="Search anime movies..." oninput="search('animeMovie')" style="border-color:rgba(190,80,255,.2);background:rgba(94,20,145,.2)">
     </div>
-    <div class="add-circle" onclick="addItem('animeMovie')" style="background:rgba(180,70,10,.2);border-color:rgba(220,100,20,.28);color:#ff9030">
+    <div class="add-circle" onclick="addItem('animeMovie')" style="background:rgba(150,40,210,.22);border-color:rgba(194,76,255,.32);color:#d975ff">
       <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </div>
   </div>
-
-  <div class="section-head section-head-anime">All Anime Movies <span class="inline-add" onclick="addItem('animeMovie')" style="background:rgba(200,90,10,.12);color:#ff9030;border-color:rgba(200,90,10,.2)">+ Add</span></div>
-  <div class="item animeMovie" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">1</div>Weathering With You</div>
-  <div class="item animeMovie" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">2</div>Your Name</div>
-  <div class="item animeMovie" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">3</div>Spirited Away</div>
-  <div class="item animeMovie" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">4</div>Princess Mononoke</div>
-  <div class="item animeMovie" data-builtin="true" onclick="markWatched(this)"><div class="serial anime-serial">5</div>Howl's Moving Castle</div>
-
-  <div class="total-bar" style="background:rgba(180,70,10,.1);border-color:rgba(220,100,20,.18);color:rgba(255,200,140,.8)">Total Anime Movies: <span id="amovTotal">0</span></div>
+  <div class="section-head section-head-anime">All Anime Movies <span class="inline-add" onclick="addItem('animeMovie')" style="background:rgba(178,66,245,.14);color:#d975ff;border-color:rgba(178,66,245,.24)">+ Add</span></div>
+  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">1</div>Weathering With You</div>
+  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">2</div>Your Name</div>
+  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">3</div>Spirited Away</div>
+  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">4</div>Princess Mononoke</div>
+  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">5</div>Howl's Moving Castle</div>
+  <div class="total-bar" style="background:rgba(136,42,196,.14);border-color:rgba(186,76,255,.24);color:rgba(230,176,255,.82)">Total Anime Movies: <span id="amovTotal">0</span></div>
   <p class="hint">Long-press any item to delete permanently</p>
 </div>
 
 <!-- ==================== SCRIPTS ==================== -->
 <script>
 // ============================================================
-//  NAVIGATION — hardware back button safe
+//  NAVIGATION — proper page-by-page back with history API
 // ============================================================
 var NAV = ['home'];
-
-// Bootstrap: replace current state, then push a guard state.
-// This means the user always needs one extra back-press to exit,
-// which is standard Android WebView/TWA behaviour.
-history.replaceState({pg:'home', depth:0}, '');
-history.pushState({pg:'home', depth:0}, '');   // guard
+var PAGES = ['home','movies','web','anime','animeSeries','animeMovies'];
 
 function showPage(id) {
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.getElementById(id).classList.add('active');
+  var pg = document.getElementById(id);
+  if (pg) pg.classList.add('active');
   window.scrollTo(0,0);
 }
 
 function go(id) {
+  if (PAGES.indexOf(id) === -1) return;
   if (NAV[NAV.length-1] === id) return;
   NAV.push(id);
-  history.pushState({pg:id, depth:NAV.length-1}, '');
+  history.pushState({pg:id}, '', '#'+id);
   showPage(id);
 }
 
 function goBack() {
-  if (NAV.length <= 1) return;
-  NAV.pop();
-  showPage(NAV[NAV.length-1]);
-  // Keep a forward guard state so the NEXT hardware press is captured
-  history.replaceState({pg:NAV[NAV.length-1], depth:NAV.length-1}, '');
-  history.pushState({pg:NAV[NAV.length-1], depth:NAV.length-1}, '');
+  if (NAV.length > 1) {
+    // Use history.back() which triggers popstate
+    history.back();
+  }
 }
 
 window.addEventListener('popstate', function(e) {
   if (NAV.length > 1) {
     NAV.pop();
     showPage(NAV[NAV.length-1]);
-    // Re-arm: push guard state so next back press is also captured
-    history.pushState({pg:NAV[NAV.length-1], depth:NAV.length-1}, '');
   }
-  // If NAV.length === 1 (home), let next back press fall through → exit app
 });
 
+// Init history
+(function(){
+  history.replaceState({pg:'home'}, '', '#home');
+  showPage('home');
+})();
+
 // ============================================================
-//  PERSISTENCE KEYS
+//  PERSISTENCE
 // ============================================================
-var K_DEL  = 'col_deleted';   // set of deleted builtin labels
-var K_ADD  = 'col_added';     // map type → [{text}]
-var K_WTCH = 'col_watched';   // set of watched labels
+var K_DEL = 'col_deleted_v2';
+var K_ADD = 'col_added_v2';
 
-function getSet(k)  { try{ return JSON.parse(localStorage.getItem(k)||'[]'); } catch(e){ return []; } }
-function setSet(k,a){ localStorage.setItem(k, JSON.stringify(a)); }
-function getMap(k)  { try{ return JSON.parse(localStorage.getItem(k)||'{}'); } catch(e){ return {}; } }
-function setMap(k,o){ localStorage.setItem(k, JSON.stringify(o)); }
+function getArr(k){ try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]} }
+function setArr(k,a){ localStorage.setItem(k,JSON.stringify(a)) }
+function getObj(k){ try{return JSON.parse(localStorage.getItem(k)||'{}')}catch(e){return{}} }
+function setObj(k,o){ localStorage.setItem(k,JSON.stringify(o)) }
 
-// ---- deleted ----
-function addDeleted(label){ var a=getSet(K_DEL); if(a.indexOf(label)===-1){a.push(label);setSet(K_DEL,a);} }
-function isDeleted(label) { return getSet(K_DEL).indexOf(label)!==-1; }
+function delKey(type,label){ return type+'::'+label.trim().toLowerCase() }
 
-// ---- user-added ----
-function persistAdd(type, text){ var m=getMap(K_ADD); if(!m[type])m[type]=[]; m[type].push({text:text}); setMap(K_ADD,m); }
-function persistRemoveAdded(type, text){ var m=getMap(K_ADD); if(!m[type])return; m[type]=m[type].filter(function(x){return x.text!==text;}); setMap(K_ADD,m); }
+function addDeleted(type,label){ var a=getArr(K_DEL),k=delKey(type,label); if(a.indexOf(k)===-1){a.push(k);setArr(K_DEL,a)} }
+function isDeleted(type,label){ return getArr(K_DEL).indexOf(delKey(type,label))!==-1 }
 
-// ---- watched ----
-function addWatched(label)    { var a=getSet(K_WTCH); if(a.indexOf(label)===-1){a.push(label);setSet(K_WTCH,a);} }
-function removeWatched(label) { var a=getSet(K_WTCH); a=a.filter(function(x){return x!==label;}); setSet(K_WTCH,a); }
-function isWatched(label)     { return getSet(K_WTCH).indexOf(label)!==-1; }
+function persistAdd(type,text){
+  var m=getObj(K_ADD); if(!m[type])m[type]=[];
+  m[type].push({text:text,ts:Date.now()});
+  setObj(K_ADD,m);
+}
+function persistRemoveAdded(type,text){
+  var m=getObj(K_ADD); if(!m[type])return;
+  var found=false;
+  m[type]=m[type].filter(function(x){
+    if(!found && (x.text||x)===text){found=true;return false}
+    return true;
+  });
+  setObj(K_ADD,m);
+}
 
 // ============================================================
 //  HELPERS
 // ============================================================
-function getLabel(el) {
+function getLabel(el){
   var s=el.querySelector('.serial');
   var t=el.textContent.trim();
-  if(s){ var n=s.textContent.trim(); if(t.indexOf(n)===0) t=t.slice(n.length).trim(); }
+  if(s){var n=s.textContent.trim();if(t.indexOf(n)===0)t=t.slice(n.length).trim()}
   return t;
 }
-
-function renumber(cls) {
+function getItemType(el){
+  if(el.classList.contains('movie'))return 'movie';
+  if(el.classList.contains('web'))return 'web';
+  if(el.classList.contains('animeSeries'))return 'animeSeries';
+  if(el.classList.contains('animeMovie'))return 'animeMovie';
+  return null;
+}
+function renumber(cls){
   document.querySelectorAll('.'+cls).forEach(function(el,i){
-    var s=el.querySelector('.serial'); if(s) s.textContent=i+1;
+    var s=el.querySelector('.serial');if(s)s.textContent=i+1;
   });
 }
-function renumberAll(){ ['movie','web','animeSeries','animeMovie'].forEach(renumber); }
+function renumberAll(){['movie','web','animeSeries','animeMovie'].forEach(renumber)}
 
 // ============================================================
-//  MARK WATCHED (tap)
+//  TAP = single highlight (only one at a time per category)
 // ============================================================
-function markWatched(el) {
-  // If in select mode, toggle checkbox
-  var cb = el.querySelector('.select-cb');
-  if (cb) { cb.checked = !cb.checked; return; }
-  var label = getLabel(el);
-  if (isWatched(label)) {
-    el.classList.remove('on');
-    el.style.opacity = '';
-    removeWatched(label);
-  } else {
-    el.classList.add('on');
-    el.style.opacity = '0.55';
-    addWatched(label);
-  }
+function tapItem(el){
+  var cb=el.querySelector('.select-cb');
+  if(cb){cb.checked=!cb.checked;return}
+  var type=getItemType(el);
+  if(!type)return;
+  var cls=typeConfig(type).cls;
+  // Remove highlight from all others in same category
+  document.querySelectorAll('.'+cls+'.on').forEach(function(node){
+    if(node!==el)node.classList.remove('on');
+  });
+  // Toggle this one
+  el.classList.toggle('on');
 }
 
 // ============================================================
 //  ADD ITEM
 // ============================================================
-function addItem(type) {
-  var name = prompt('Enter title:');
-  if (!name || !name.trim()) return;
-  name = name.trim();
-  var cfg = typeConfig(type);
-  var el = buildItem(type, name, false);
-  var page = document.getElementById(cfg.pageId);
-  var bar  = page.querySelector('.total-bar');
-  page.insertBefore(el, bar);
-  persistAdd(type, name);
-  attachLongPress(el, type, name, false);
+function addItem(type){
+  var msgs={
+    movie:'Write the name of your movie',
+    web:'Write the name of your web series',
+    animeSeries:'Write the name of your anime series',
+    animeMovie:'Write the name of your anime movie'
+  };
+  var name=prompt(msgs[type]||'Write the name');
+  if(!name||!name.trim())return;
+  name=name.trim();
+  var cfg=typeConfig(type);
+  var el=buildItem(type,name,false);
+  var page=document.getElementById(cfg.pageId);
+  var bar=page.querySelector('.total-bar');
+  page.insertBefore(el,bar);
+  persistAdd(type,name);
+  attachLongPress(el,type,name,false);
   renumberAll();
   updateStats();
 }
 
 // ============================================================
-//  TYPE CONFIG  (maps type → page/class/serial style)
+//  TYPE CONFIG
 // ============================================================
-function typeConfig(type) {
-  var map = {
-    movie:      { pageId:'movies',      cls:'movie',      serialCls:'serial' },
-    web:        { pageId:'web',         cls:'web',        serialCls:'serial web-serial' },
-    animeSeries:{ pageId:'animeSeries', cls:'animeSeries',serialCls:'serial anime-serial' },
-    animeMovie: { pageId:'animeMovies', cls:'animeMovie', serialCls:'serial anime-serial' }
+function typeConfig(type){
+  var map={
+    movie:{pageId:'movies',cls:'movie',serialCls:'serial'},
+    web:{pageId:'web',cls:'web',serialCls:'serial web-serial'},
+    animeSeries:{pageId:'animeSeries',cls:'animeSeries',serialCls:'serial anime-serial'},
+    animeMovie:{pageId:'animeMovies',cls:'animeMovie',serialCls:'serial anime-serial'}
   };
   return map[type]||map.movie;
 }
 
-function buildItem(type, text, builtin) {
-  var cfg = typeConfig(type);
-  var el  = document.createElement('div');
-  el.className = 'item ' + cfg.cls;
-  el.setAttribute('data-builtin', builtin ? 'true' : 'false');
-  el.onclick = function(){ markWatched(el); };
-  var count = document.querySelectorAll('.'+cfg.cls).length + 1;
-  el.innerHTML = '<div class="'+cfg.serialCls+'">' + count + '</div>' + text;
-  // Apply watched state
-  if (isWatched(text)) { el.classList.add('on'); el.style.opacity='0.55'; }
+function buildItem(type,text,builtin){
+  var cfg=typeConfig(type);
+  var el=document.createElement('div');
+  el.className='item '+cfg.cls;
+  el.setAttribute('data-builtin',builtin?'true':'false');
+  el.onclick=function(){tapItem(el)};
+  var count=document.querySelectorAll('.'+cfg.cls).length+1;
+  el.innerHTML='<div class="'+cfg.serialCls+'">'+count+'</div>'+text;
   return el;
 }
 
 // ============================================================
-//  DELETE DIALOG
+//  DELETE
 // ============================================================
-function confirmDelete(msg, onYes) {
-  var ov = document.createElement('div'); ov.className='overlay';
-  var d  = document.createElement('div'); d.className='dialog';
-  d.innerHTML = '<h3>Remove item?</h3><p>'+msg+'</p><div class="dialog-btns"><button id="dlgCancel">Cancel</button><button id="dlgOk">Delete</button></div>';
-  ov.appendChild(d); document.body.appendChild(ov);
-  d.querySelector('#dlgCancel').onclick = function(){ document.body.removeChild(ov); };
-  d.querySelector('#dlgOk').onclick     = function(){ document.body.removeChild(ov); onYes(); };
+function confirmDelete(msg,onYes){
+  var ov=document.createElement('div');ov.className='overlay';
+  var d=document.createElement('div');d.className='dialog';
+  d.innerHTML='<h3>Remove item?</h3><p>'+msg+'</p><div class="dialog-btns"><button id="dlgCancel">Cancel</button><button id="dlgOk">Delete</button></div>';
+  ov.appendChild(d);document.body.appendChild(ov);
+  d.querySelector('#dlgCancel').onclick=function(){document.body.removeChild(ov)};
+  d.querySelector('#dlgOk').onclick=function(){document.body.removeChild(ov);onYes()};
 }
 
-// ============================================================
-//  LONG PRESS DELETE
-// ============================================================
-function attachLongPress(el, type, text, builtin) {
-  var timer=null, sx=0, sy=0;
+function attachLongPress(el,type,text,builtin){
+  var timer=null,sx=0,sy=0;
   function start(e){
-    var t=e.touches?e.touches[0]:e; sx=t.clientX; sy=t.clientY;
+    var t=e.touches?e.touches[0]:e;sx=t.clientX;sy=t.clientY;
     timer=setTimeout(function(){
-      confirmDelete('"'+ getLabel(el) + '"', function(){
-        doDelete(el, type, getLabel(el), builtin);
+      confirmDelete('"'+getLabel(el)+'"',function(){
+        doDelete(el,type,getLabel(el),builtin);
       });
-    }, 420);
+    },420);
   }
   function cancel(e){
     if(!timer)return;
     var t=e.changedTouches?e.changedTouches[0]:e;
-    if(Math.abs(t.clientX-sx)>12||Math.abs(t.clientY-sy)>12){ clearTimeout(timer); timer=null; return; }
-    clearTimeout(timer); timer=null;
+    if(Math.abs(t.clientX-sx)>12||Math.abs(t.clientY-sy)>12){clearTimeout(timer);timer=null;return}
+    clearTimeout(timer);timer=null;
   }
   el.addEventListener('touchstart',start,{passive:true});
   el.addEventListener('mousedown',start);
-  ['touchend','touchmove','touchcancel','mouseup','mousemove','mouseleave'].forEach(function(ev){ el.addEventListener(ev,cancel); });
+  ['touchend','touchmove','touchcancel','mouseup','mousemove','mouseleave'].forEach(function(ev){el.addEventListener(ev,cancel)});
 }
 
-function doDelete(el, type, label, builtin) {
+function doDelete(el,type,label,builtin){
   el.parentNode.removeChild(el);
-  if (builtin || el.getAttribute('data-builtin')==='true') { addDeleted(label); }
-  else { persistRemoveAdded(type, label); }
-  renumberAll(); updateStats();
+  if(builtin||el.getAttribute('data-builtin')==='true'){addDeleted(type,label)}
+  else{persistRemoveAdded(type,label)}
+  renumberAll();updateStats();
 }
 
 // ============================================================
-//  SELECT MODE  — toggles between Select / Deselect
+//  SELECT MODE
 // ============================================================
-var selectModes = { movie:false, web:false, animeSeries:false, animeMovie:false };
-
-var selectCfg = {
-  movie:       { btnId:'movieSelectBtn',  bulkId:'movieBulkActions',   allId:'movieSelAll' },
-  web:         { btnId:'webSelectBtn',    bulkId:'webBulkActions',     allId:'webSelAll' },
-  animeSeries: { btnId:'aserSelectBtn',   bulkId:'aserBulkActions',    allId:'aserSelAll' },
-  animeMovie:  { btnId:'amovSelectBtn',   bulkId:'amovBulkActions',    allId:'amovSelAll' }
+var selectModes={movie:false,web:false,animeSeries:false,animeMovie:false};
+var selectCfg={
+  movie:{btnId:'movieSelectBtn',bulkId:'movieBulkActions',allId:'movieSelAll'},
+  web:{btnId:'webSelectBtn',bulkId:'webBulkActions',allId:'webSelAll'},
+  animeSeries:{btnId:'aserSelectBtn',bulkId:'aserBulkActions',allId:'aserSelAll'},
+  animeMovie:{btnId:'amovSelectBtn',bulkId:'amovBulkActions',allId:'amovSelAll'}
 };
 
-function toggleSelect(type) {
-  selectModes[type] = !selectModes[type];
-  var cfg  = selectCfg[type];
-  var btn  = document.getElementById(cfg.btnId);
-  var bulk = document.getElementById(cfg.bulkId);
-  var cls  = typeConfig(type).cls;
-
-  if (selectModes[type]) {
-    btn.textContent  = 'Deselect';
-    bulk.style.display = 'flex';
+function toggleSelect(type){
+  selectModes[type]=!selectModes[type];
+  var cfg=selectCfg[type];
+  var btn=document.getElementById(cfg.btnId);
+  var bulk=document.getElementById(cfg.bulkId);
+  var cls=typeConfig(type).cls;
+  if(selectModes[type]){
+    btn.textContent='Deselect';
+    bulk.style.display='flex';
     document.querySelectorAll('.'+cls).forEach(function(el){
-      if (!el.querySelector('.select-cb')) {
-        var cb = document.createElement('input');
-        cb.type = 'checkbox'; cb.className = 'select-cb';
-        el.insertBefore(cb, el.firstChild);
-        cb.addEventListener('click', function(e){ e.stopPropagation(); });
+      if(!el.querySelector('.select-cb')){
+        var cb=document.createElement('input');
+        cb.type='checkbox';cb.className='select-cb';
+        el.insertBefore(cb,el.firstChild);
+        cb.addEventListener('click',function(e){e.stopPropagation()});
       }
     });
   } else {
-    btn.textContent  = 'Select';
-    bulk.style.display = 'none';
-    document.getElementById(cfg.allId).checked = false;
-    document.querySelectorAll('.'+cls+' .select-cb').forEach(function(cb){
-      cb.parentNode.removeChild(cb);
-    });
+    btn.textContent='Select';
+    bulk.style.display='none';
+    document.getElementById(cfg.allId).checked=false;
+    document.querySelectorAll('.'+cls+' .select-cb').forEach(function(cb){cb.parentNode.removeChild(cb)});
   }
 }
 
-function selectAll(type) {
-  var cfg = selectCfg[type];
-  var checked = document.getElementById(cfg.allId).checked;
-  document.querySelectorAll('.'+typeConfig(type).cls+' .select-cb').forEach(function(cb){ cb.checked=checked; });
+function selectAll(type){
+  var cfg=selectCfg[type];
+  var checked=document.getElementById(cfg.allId).checked;
+  document.querySelectorAll('.'+typeConfig(type).cls+' .select-cb').forEach(function(cb){cb.checked=checked});
 }
 
-function deleteSelected(type) {
-  var cls = typeConfig(type).cls;
-  var toDelete = [];
+function deleteSelected(type){
+  var cls=typeConfig(type).cls;
+  var toDelete=[];
   document.querySelectorAll('.'+cls).forEach(function(el){
-    var cb = el.querySelector('.select-cb');
-    if (cb && cb.checked) toDelete.push(el);
+    var cb=el.querySelector('.select-cb');
+    if(cb&&cb.checked)toDelete.push(el);
   });
-  if (!toDelete.length) { alert('Select at least one item.'); return; }
-  confirmDelete('Delete ' + toDelete.length + ' selected item(s)?', function(){
-    toDelete.forEach(function(el){ doDelete(el, type, getLabel(el), el.getAttribute('data-builtin')==='true'); });
-    // Exit select mode after delete
-    if (selectModes[type]) toggleSelect(type);
+  if(!toDelete.length){alert('Select at least one item.');return}
+  confirmDelete('Delete '+toDelete.length+' selected item(s)?',function(){
+    toDelete.forEach(function(el){doDelete(el,type,getLabel(el),el.getAttribute('data-builtin')==='true')});
+    if(selectModes[type])toggleSelect(type);
   });
 }
 
 // ============================================================
 //  SEARCH
 // ============================================================
-function search(type) {
-  var inputId = { movie:'movieSearch', web:'webSearch', animeSeries:'aserSearch', animeMovie:'amovSearch' };
-  var val = document.getElementById(inputId[type]).value.toUpperCase();
-  var cls = typeConfig(type).cls;
+function search(type){
+  var inputId={movie:'movieSearch',web:'webSearch',animeSeries:'aserSearch',animeMovie:'amovSearch'};
+  var val=document.getElementById(inputId[type]).value.toUpperCase();
+  var cls=typeConfig(type).cls;
   document.querySelectorAll('.'+cls).forEach(function(el){
-    el.style.display = el.textContent.toUpperCase().indexOf(val) !== -1 ? 'flex' : 'none';
+    el.style.display=el.textContent.toUpperCase().indexOf(val)!==-1?'flex':'none';
   });
 }
 
 // ============================================================
-//  STATS
+//  STATS + DONUT
 // ============================================================
-function updateStats() {
-  var m  = document.querySelectorAll('.movie').length;
-  var w  = document.querySelectorAll('.web').length;
-  var as = document.querySelectorAll('.animeSeries').length;
-  var am = document.querySelectorAll('.animeMovie').length;
-  var a  = as + am;
-  var total = m + w + a || 1;
+function updateStats(){
+  var m=document.querySelectorAll('.movie').length;
+  var w=document.querySelectorAll('.web').length;
+  var as=document.querySelectorAll('.animeSeries').length;
+  var am=document.querySelectorAll('.animeMovie').length;
+  var a=as+am;
+  var totalAll=m+w+a;
+  var total=totalAll||1;
 
-  // Home counts
-  document.getElementById('hm').textContent = m;
-  document.getElementById('hw').textContent = w;
-  document.getElementById('ha').textContent = a;
-  document.getElementById('ht').textContent = m + w + a;
+  document.getElementById('hm').textContent=m;
+  document.getElementById('hw').textContent=w;
+  document.getElementById('ha').textContent=a;
+  document.getElementById('ht').textContent=totalAll;
 
-  // Folder sub-counts
-  document.getElementById('folderMovieCount').textContent  = m  + ' items';
-  document.getElementById('folderWebCount').textContent    = w  + ' items';
-  document.getElementById('folderAnimeCount').textContent  = a  + ' items';
-  document.getElementById('folderASeriesCount').textContent= as + ' items';
-  document.getElementById('folderAMoviesCount').textContent= am + ' items';
+  document.getElementById('folderMovieCount').textContent=m+' items';
+  document.getElementById('folderWebCount').textContent=w+' items';
+  document.getElementById('folderAnimeCount').textContent=a+' items';
+  document.getElementById('folderASeriesCount').textContent=as+' items';
+  document.getElementById('folderAMoviesCount').textContent=am+' items';
 
-  // Bar stats
-  document.getElementById('mpct').textContent = Math.round(m/total*100)+'%';
-  document.getElementById('wpct').textContent = Math.round(w/total*100)+'%';
-  document.getElementById('apct').textContent = Math.round(a/total*100)+'%';
-  document.getElementById('mbar').style.width  = m/total*100+'%';
-  document.getElementById('wbar').style.width  = w/total*100+'%';
-  document.getElementById('abar').style.width  = a/total*100+'%';
+  document.getElementById('mpct').textContent=Math.round(m/total*100)+'%';
+  document.getElementById('wpct').textContent=Math.round(w/total*100)+'%';
+  document.getElementById('apct').textContent=Math.round(a/total*100)+'%';
+  document.getElementById('mbar').style.width=m/total*100+'%';
+  document.getElementById('wbar').style.width=w/total*100+'%';
+  document.getElementById('abar').style.width=a/total*100+'%';
 
-  // Totals on list pages
-  document.getElementById('movieTotal').textContent = m;
-  document.getElementById('webTotal').textContent   = w;
-  document.getElementById('aserTotal').textContent  = as;
-  document.getElementById('amovTotal').textContent  = am;
+  document.getElementById('movieTotal').textContent=m;
+  document.getElementById('webTotal').textContent=w;
+  document.getElementById('aserTotal').textContent=as;
+  document.getElementById('amovTotal').textContent=am;
+
+  // Donut
+  var chkM=document.querySelector('#dchkM input').checked;
+  var chkW=document.querySelector('#dchkW input').checked;
+  var chkA=document.querySelector('#dchkA input').checked;
+  var vm=chkM?m:0, vw=chkW?w:0, va=chkA?a:0;
+  var vt=vm+vw+va;
+  var dt=vt||1;
+
+  var mp=Math.round(vm/dt*100), wp=Math.round(vw/dt*100), ap=Math.round(va/dt*100);
+  var a1=vm/dt*360, a2=vw/dt*360;
+
+  var ring=document.getElementById('donutRing');
+  ring.style.background=vt
+    ?'conic-gradient(#8b5cf6 0deg '+a1+'deg, #4c9dff '+a1+'deg '+(a1+a2)+'deg, #ff6fb2 '+(a1+a2)+'deg 360deg)'
+    :'conic-gradient(rgba(255,255,255,0.08) 0deg 360deg)';
+
+  document.getElementById('donutTotal').textContent=vt;
+  document.getElementById('dbrMPct').textContent=mp+'%';
+  document.getElementById('dbrWPct').textContent=wp+'%';
+  document.getElementById('dbrAPct').textContent=ap+'%';
+  document.getElementById('dbrMBar').style.width=mp+'%';
+  document.getElementById('dbrWBar').style.width=wp+'%';
+  document.getElementById('dbrABar').style.width=ap+'%';
+
+  document.getElementById('dbrMovie').className='donut-bar-row'+(chkM?'':' off');
+  document.getElementById('dbrWeb').className='donut-bar-row'+(chkW?'':' off');
+  document.getElementById('dbrAnime').className='donut-bar-row'+(chkA?'':' off');
+  document.getElementById('dchkM').className='donut-check'+(chkM?'':' off');
+  document.getElementById('dchkW').className='donut-check'+(chkW?'':' off');
+  document.getElementById('dchkA').className='donut-check'+(chkA?'':' off');
+
+  document.getElementById('dCntM').textContent=m;
+  document.getElementById('dCntW').textContent=w;
+  document.getElementById('dCntA').textContent=a;
+  document.getElementById('dCntT').textContent=totalAll;
 }
 
 // ============================================================
-//  PDF DOWNLOAD
+//  PDF
 // ============================================================
 function downloadPDF(){
-  var jsPDF=window.jspdf.jsPDF, doc=new jsPDF();
-  var ph=doc.internal.pageSize.height||297, y=20, lh=7;
-  function checkPage(){ if(y>ph-20){doc.addPage();y=20;} }
-  doc.setFontSize(20); doc.setTextColor(80,0,160);
-  doc.text('My Collection', 105, y, {align:'center'}); y+=14;
-  var m=document.querySelectorAll('.movie'); var w=document.querySelectorAll('.web');
-  var as=document.querySelectorAll('.animeSeries'); var am=document.querySelectorAll('.animeMovie');
-  doc.setFontSize(11); doc.setTextColor(120,40,200);
-  doc.text('Total: '+(m.length+w.length+as.length+am.length), 20, y); y+=10;
-  function sec(title, items, rgb){
-    if(!items.length)return; checkPage();
-    doc.setFontSize(13); doc.setTextColor(rgb[0],rgb[1],rgb[2]);
-    doc.text(title+' ('+items.length+')', 20, y); y+=8;
-    doc.setFontSize(10); doc.setTextColor(40,40,40);
-    Array.from(items).forEach(function(el,i){ checkPage(); doc.text((i+1)+'. '+getLabel(el),24,y); y+=lh; });
+  var jsPDF=window.jspdf.jsPDF,doc=new jsPDF();
+  var ph=doc.internal.pageSize.height||297,y=20,lh=7;
+  function checkPage(){if(y>ph-20){doc.addPage();y=20}}
+  doc.setFontSize(20);doc.setTextColor(80,0,160);
+  doc.text('My Collection',105,y,{align:'center'});y+=14;
+  var m=document.querySelectorAll('.movie'),w=document.querySelectorAll('.web');
+  var as=document.querySelectorAll('.animeSeries'),am=document.querySelectorAll('.animeMovie');
+  doc.setFontSize(11);doc.setTextColor(120,40,200);
+  doc.text('Total: '+(m.length+w.length+as.length+am.length),20,y);y+=10;
+  function sec(title,items,rgb){
+    if(!items.length)return;checkPage();
+    doc.setFontSize(13);doc.setTextColor(rgb[0],rgb[1],rgb[2]);
+    doc.text(title+' ('+items.length+')',20,y);y+=8;
+    doc.setFontSize(10);doc.setTextColor(40,40,40);
+    Array.from(items).forEach(function(el,i){checkPage();doc.text((i+1)+'. '+getLabel(el),24,y);y+=lh});
     y+=4;
   }
-  sec('Movies',       m,  [80,0,180]);
-  sec('Web Series',   w,  [160,0,90]);
-  sec('Anime Series', as, [160,70,0]);
-  sec('Anime Movies', am, [150,60,0]);
+  sec('Movies',m,[80,0,180]);
+  sec('Web Series',w,[160,0,90]);
+  sec('Anime Series',as,[160,70,0]);
+  sec('Anime Movies',am,[150,60,0]);
   doc.save('my-collection.pdf');
 }
 
 // ============================================================
-//  INIT — restore deleted builtins, restore user-added, restore watched
+//  INIT
 // ============================================================
 (function init(){
-  // 1. Remove deleted builtins
+  // Remove deleted builtins
   document.querySelectorAll('.item[data-builtin="true"]').forEach(function(el){
-    if (isDeleted(getLabel(el))) el.parentNode.removeChild(el);
+    var type=getItemType(el);
+    if(type&&isDeleted(type,getLabel(el)))el.parentNode.removeChild(el);
   });
-
-  // 2. Re-apply watched state to remaining builtins
-  document.querySelectorAll('.item[data-builtin="true"]').forEach(function(el){
-    var label = getLabel(el);
-    if (isWatched(label)) { el.classList.add('on'); el.style.opacity='0.55'; }
-  });
-
-  // 3. Restore user-added items
-  var m = getMap(K_ADD);
+  // Restore user-added
+  var m=getObj(K_ADD);
   Object.keys(m).forEach(function(type){
     m[type].forEach(function(item){
-      var cfg = typeConfig(type);
-      var page = document.getElementById(cfg.pageId);
-      if (!page) return;
-      var el = buildItem(type, item.text, false);
-      var bar = page.querySelector('.total-bar');
-      page.insertBefore(el, bar);
-      attachLongPress(el, type, item.text, false);
+      var text=typeof item==='string'?item:item.text;
+      if(!text||!String(text).trim())return;
+      text=String(text).trim();
+      var cfg=typeConfig(type);
+      var page=document.getElementById(cfg.pageId);
+      if(!page)return;
+      var el=buildItem(type,text,false);
+      var bar=page.querySelector('.total-bar');
+      page.insertBefore(el,bar);
+      attachLongPress(el,type,text,false);
     });
   });
-
-  // 4. Attach long-press to all builtins still in DOM
+  // Attach long-press to builtins
   ['movie','web','animeSeries','animeMovie'].forEach(function(type){
-    var cls = typeConfig(type).cls;
+    var cls=typeConfig(type).cls;
     document.querySelectorAll('.'+cls+'[data-builtin="true"]').forEach(function(el){
-      attachLongPress(el, type, getLabel(el), true);
+      attachLongPress(el,type,getLabel(el),true);
     });
   });
-
   renumberAll();
   updateStats();
 })();
