@@ -2,944 +2,1665 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<meta name="theme-color" content="#0a0018"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#1a0a3a"/>
 <title>My Collection</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+:root{
+  --g1:#7c3aed; --g2:#3b82f6; --g3:#ec4899;
+  --glass: rgba(255,255,255,0.06);
+  --glass-strong: rgba(255,255,255,0.11);
+  --border: rgba(255,255,255,0.14);
+  --border-bright: rgba(255,255,255,0.22);
+  --text: #f5edff;
+  --text-dim: rgba(245,237,255,0.62);
+  --text-faint: rgba(245,237,255,0.38);
+  --accent: #c4a3ff;
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.55), 0 8px 24px rgba(0,0,0,0.3);
+  --shadow-md: 0 8px 28px rgba(0,0,0,0.4);
+  --spring: cubic-bezier(0.22,1,0.36,1);
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
 body{
-  font-family:'Inter',system-ui,-apple-system,sans-serif;
-  background:#08000f;color:#f0e8ff;min-height:100vh;
-  overflow-x:hidden;-webkit-tap-highlight-color:transparent;position:relative;
+  font-family:'Poppins',system-ui,-apple-system,sans-serif;
+  background:#0a0418;
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  font-weight:400;
+  letter-spacing:-0.01em;
 }
-body::before{
-  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 90% 55% at 10% 5%,rgba(110,30,200,0.35) 0%,transparent 65%),
-    radial-gradient(ellipse 70% 45% at 90% 90%,rgba(200,20,100,0.28) 0%,transparent 60%),
-    radial-gradient(ellipse 55% 55% at 50% 40%,rgba(80,0,160,0.15) 0%,transparent 70%);
-}
-.page{display:none;padding:20px 16px 110px;max-width:480px;margin:0 auto;animation:fadeUp .28s ease;position:relative;z-index:1}
-.page.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.top-bar{display:flex;align-items:center;gap:12px;padding:14px 0 10px}
-.back-btn{width:42px;height:42px;border-radius:14px;flex-shrink:0;background:rgba(160,60,255,0.12);border:1px solid rgba(160,60,255,0.25);color:#c060ff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
-.back-btn:active{background:rgba(160,60,255,0.25);color:#fff}
-.back-btn svg{width:20px;height:20px}
-.pg-title{font-size:26px;font-weight:900;letter-spacing:-0.6px;background:linear-gradient(120deg,#fff 0%,#d080ff 40%,#ff50a0 80%,#ff8040 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.pg-title-movies{background:linear-gradient(120deg,#fff 0%,#c080ff 50%,#9020e0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.pg-title-web{background:linear-gradient(120deg,#fff 0%,#ff90c0 50%,#d02070 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.pg-title-anime{background:linear-gradient(120deg,#fff 0%,#d6a0ff 50%,#ff6fb2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.pg-subtitle{font-size:12.5px;color:rgba(200,160,255,0.55);margin-top:3px;line-height:1.5}
-.home-hero{margin:8px 0 20px;padding:22px 20px 20px;border-radius:22px;background:linear-gradient(135deg,rgba(80,10,140,0.55) 0%,rgba(150,20,100,0.4) 60%,rgba(200,40,60,0.25) 100%);border:1px solid rgba(180,80,255,0.2);position:relative;overflow:hidden}
-.home-hero::after{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(220,80,200,0.18) 0%,transparent 70%)}
-.home-hero-title{font-size:20px;font-weight:900;background:linear-gradient(90deg,#fff 0%,#f0b0ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px}
-.home-hero-sub{font-size:12px;color:rgba(230,180,255,0.65);line-height:1.5}
-.home-counts{display:flex;gap:10px;margin-top:14px}
-.home-count-pill{flex:1;text-align:center;background:rgba(255,255,255,0.06);border:1px solid rgba(200,100,255,0.12);border-radius:12px;padding:8px 4px}
-.home-count-pill .num{font-size:20px;font-weight:900;color:#fff;display:block}
-.home-count-pill .lbl{font-size:9.5px;color:rgba(200,150,255,0.6);text-transform:uppercase;letter-spacing:.5px;margin-top:1px;display:block}
-.folder{width:100%;padding:18px;margin:10px 0;border-radius:20px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:transform .18s ease,box-shadow .18s ease;position:relative;overflow:hidden}
-.folder:active{transform:scale(0.975)}
-.folder-left{display:flex;align-items:center;gap:14px}
-.f-icon{width:44px;height:44px;border-radius:14px;flex-shrink:0;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center}
-.f-icon svg{width:22px;height:22px}
-.f-label{font-size:17px;font-weight:800;letter-spacing:-.2px}
-.f-count{font-size:11.5px;font-weight:600;margin-top:2px;opacity:.75}
-.f-chevron svg{width:18px;height:18px;opacity:.55}
-.folder-movies{background:linear-gradient(135deg,#1c0040 0%,#4a0090 45%,#7a10c8 100%);border:1px solid rgba(160,60,255,0.3);box-shadow:0 6px 24px rgba(100,0,200,0.35);color:#e8c0ff}
-.folder-web{background:linear-gradient(135deg,#2a0040 0%,#780058 45%,#c01870 100%);border:1px solid rgba(220,60,150,0.3);box-shadow:0 6px 24px rgba(160,0,100,0.35);color:#ffb8e0}
-.folder-anime{background:linear-gradient(135deg,#220034 0%,#590075 45%,#b02088 100%);border:1px solid rgba(210,80,190,0.32);box-shadow:0 6px 24px rgba(150,20,150,0.36);color:#ffd2f0}
-.folder-sub{background:linear-gradient(135deg,rgba(160,60,255,0.08) 0%,rgba(200,80,200,0.12) 100%);border:1px solid rgba(180,80,255,0.15);box-shadow:none;color:#d8b0ff}
-.stat-card{background:rgba(80,10,120,0.15);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(180,80,255,0.12);border-radius:20px;padding:18px;margin:16px 0}
-.stat-card-title{font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(200,140,255,0.6);margin-bottom:14px}
-.bar-stat{margin:9px 0}
-.bar-label{display:flex;justify-content:space-between;font-size:11.5px;color:rgba(200,150,255,0.75);margin-bottom:4px;font-weight:600}
-.bar-track{height:6px;background:rgba(255,255,255,0.07);border-radius:99px;overflow:hidden}
-.bar-fill{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.4,0,.2,1)}
-.fill-m{background:linear-gradient(90deg,#7a10c8,#c060ff)}
-.fill-w{background:linear-gradient(90deg,#c01870,#ff50a0)}
-.fill-a{background:linear-gradient(90deg,#8a2be2,#ff5ea6)}
+/* === ANIMATED GRADIENT BACKGROUND === */
+.bg-wrap{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.bg-blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:0.55;will-change:transform}
+.bg-blob.b1{width:520px;height:520px;background:#7c3aed;top:-120px;left:-100px;animation:float1 22s ease-in-out infinite}
+.bg-blob.b2{width:480px;height:480px;background:#3b82f6;top:30%;right:-160px;animation:float2 26s ease-in-out infinite}
+.bg-blob.b3{width:540px;height:540px;background:#ec4899;bottom:-180px;left:20%;animation:float3 30s ease-in-out infinite}
+.bg-blob.b4{width:380px;height:380px;background:#8b5cf6;top:55%;left:-80px;animation:float1 28s ease-in-out infinite reverse}
+@keyframes float1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.08)}}
+@keyframes float2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,60px) scale(0.95)}}
+@keyframes float3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-50px) scale(1.1)}}
+.bg-grain{position:absolute;inset:0;opacity:0.04;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
 
-/* ===== DONUT SECTION ===== */
-.donut-section{margin-top:20px;padding:18px;border-radius:18px;background:rgba(16,6,32,0.7);border:1px solid rgba(180,80,255,0.14)}
-.donut-section-title{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:rgba(200,140,255,0.55);margin-bottom:16px}
+/* === PAGE === */
+.page{display:none;padding:18px 16px 120px;max-width:560px;margin:0 auto;animation:pageIn .42s var(--spring);position:relative;z-index:1}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(14px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* === GLASS PRIMITIVE === */
+.glass{
+  background:var(--glass);
+  backdrop-filter:blur(28px) saturate(180%);
+  -webkit-backdrop-filter:blur(28px) saturate(180%);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.1);
+  border-radius:var(--radius-md);
+  position:relative;
+}
+.glass-strong{
+  background:var(--glass-strong);
+  backdrop-filter:blur(34px) saturate(190%);
+  -webkit-backdrop-filter:blur(34px) saturate(190%);
+  border:1px solid var(--border-bright);
+  box-shadow:var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.14);
+  border-radius:var(--radius-lg);
+  position:relative;
+  overflow:hidden;
+}
+.glass-strong::before, .glass::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,0.12) 0%, transparent 35%, transparent 65%, rgba(255,255,255,0.04) 100%);
+  opacity:0.9;
+}
+
+/* === TOP BAR === */
+.top-bar{display:flex;align-items:center;gap:12px;padding:8px 4px 16px;min-height:54px}
+.icon-btn{
+  width:44px;height:44px;border-radius:14px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  background:var(--glass);backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--border);
+  color:var(--accent);
+  transition:all .25s var(--spring);
+  box-shadow:var(--shadow-md);
+}
+.icon-btn:active{transform:scale(0.93);background:var(--glass-strong)}
+.icon-btn svg{width:20px;height:20px}
+.top-bar-title{flex:1;min-width:0}
+.pg-title{font-size:28px;font-weight:800;letter-spacing:-0.02em;line-height:1.1;background:linear-gradient(135deg,#fff 0%,#e0c8ff 60%,#ff9ed1 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pg-sub{font-size:12px;color:var(--text-dim);margin-top:3px;font-weight:400}
+
+/* === HOME HERO === */
+.hero{padding:24px 22px;border-radius:var(--radius-lg);margin-bottom:18px}
+.hero-title{font-size:22px;font-weight:800;letter-spacing:-0.02em;background:linear-gradient(135deg,#fff 0%,#f4d8ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.hero-sub{font-size:12.5px;color:var(--text-dim);line-height:1.5;font-weight:400}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px}
+.stat-pill{text-align:center;padding:11px 4px;border-radius:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)}
+.stat-num{font-size:20px;font-weight:800;color:#fff;display:block;line-height:1}
+.stat-lbl{font-size:9.5px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-top:5px;font-weight:600;display:block}
+
+/* === FOLDERS === */
+.folder{
+  width:100%;padding:18px 20px;margin:11px 0;border-radius:var(--radius-lg);
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer;
+  transition:all .28s var(--spring);
+  position:relative;overflow:hidden;
+  background:var(--glass-strong);
+  backdrop-filter:blur(34px) saturate(190%);
+  -webkit-backdrop-filter:blur(34px) saturate(190%);
+  border:1px solid var(--border-bright);
+  box-shadow:var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.14);
+  color:var(--text);
+}
+.folder::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,var(--tint1,rgba(124,58,237,0.18)) 0%,var(--tint2,rgba(236,72,153,0.12)) 100%);pointer-events:none}
+.folder::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,0.18) 0%, transparent 50%);pointer-events:none}
+.folder>*{position:relative;z-index:1}
+.folder:active{transform:scale(0.985)}
+.folder-left{display:flex;align-items:center;gap:14px;min-width:0}
+.f-icon{width:46px;height:46px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.16);border:1px solid rgba(255,255,255,0.18);backdrop-filter:blur(10px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.2)}
+.f-icon svg{width:22px;height:22px;color:#fff}
+.f-text{min-width:0}
+.f-label{font-size:17px;font-weight:700;letter-spacing:-0.01em;color:#fff}
+.f-count{font-size:11.5px;color:rgba(255,255,255,0.7);margin-top:2px;font-weight:500}
+.f-chevron{opacity:0.7;flex-shrink:0}
+.f-chevron svg{width:18px;height:18px}
+.folder-movies{--tint1:rgba(139,92,246,0.32);--tint2:rgba(124,58,237,0.18)}
+.folder-web{--tint1:rgba(59,130,246,0.28);--tint2:rgba(124,58,237,0.16)}
+.folder-anime{--tint1:rgba(236,72,153,0.28);--tint2:rgba(168,85,247,0.18)}
+.folder-sub{--tint1:rgba(196,163,255,0.12);--tint2:rgba(255,158,209,0.1)}
+
+/* === STAT CARD + DONUT === */
+.stat-card{padding:20px;margin:18px 0}
+.stat-card-title{font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px}
+.bar-stat{margin:11px 0}
+.bar-label{display:flex;justify-content:space-between;font-size:12px;color:rgba(245,237,255,0.78);margin-bottom:5px;font-weight:600}
+.bar-track{height:7px;background:rgba(255,255,255,0.07);border-radius:99px;overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
+.bar-fill{height:100%;border-radius:99px;transition:width .8s var(--spring)}
+.fill-m{background:linear-gradient(90deg,#8b5cf6,#c4a3ff)}
+.fill-w{background:linear-gradient(90deg,#3b82f6,#7dd3fc)}
+.fill-a{background:linear-gradient(90deg,#ec4899,#f9a8d4)}
+
+.donut-section{margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.07)}
 .donut-grid{display:grid;grid-template-columns:140px 1fr;gap:18px;align-items:center}
 @media(max-width:380px){.donut-grid{grid-template-columns:1fr;justify-items:center}}
-.donut-center{display:flex;flex-direction:column;align-items:center;gap:12px}
-.donut-ring{width:140px;height:140px;border-radius:50%;position:relative;transition:background .5s ease}
-.donut-hole{position:absolute;inset:24px;border-radius:50%;background:rgba(8,0,15,0.96);border:1px solid rgba(180,80,255,0.18);display:flex;flex-direction:column;align-items:center;justify-content:center}
-.donut-hole .big{font-size:28px;font-weight:900;color:#fff;line-height:1}
-.donut-hole .sub{font-size:9px;color:rgba(210,170,255,.65);letter-spacing:1.2px;text-transform:uppercase;margin-top:4px}
-.donut-legend{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(230,200,255,.85)}
-.legend-dot{width:10px;height:10px;border-radius:3px;display:inline-block}
-.ldot-m{background:#8b5cf6}
-.ldot-w{background:#4c9dff}
-.ldot-a{background:#ff6fb2}
+.donut-ring{width:140px;height:140px;border-radius:50%;position:relative;transition:background .5s var(--spring);box-shadow:0 0 30px rgba(139,92,246,0.3), inset 0 0 20px rgba(0,0,0,0.4)}
+.donut-hole{position:absolute;inset:24px;border-radius:50%;background:rgba(10,4,24,0.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-hole .big{font-size:30px;font-weight:800;color:#fff;line-height:1;letter-spacing:-0.02em}
+.donut-hole .sub{font-size:9.5px;color:var(--text-dim);letter-spacing:0.14em;text-transform:uppercase;margin-top:5px;font-weight:600}
 .donut-bars{display:flex;flex-direction:column;gap:10px}
-.donut-bar-row{transition:opacity .3s ease}
-.donut-bar-row.off{opacity:.3}
-.dbr-head{display:flex;justify-content:space-between;font-size:12px;color:rgba(220,180,255,.85);font-weight:700;margin-bottom:4px}
-.dbr-track{height:7px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
-.dbr-fill{height:100%;border-radius:999px;transition:width .5s ease}
-.dbr-fill-m{background:linear-gradient(90deg,#7a4dff,#a88bff)}
-.dbr-fill-w{background:linear-gradient(90deg,#3b82f6,#66b5ff)}
-.dbr-fill-a{background:linear-gradient(90deg,#d946ef,#ff7ab8)}
-.donut-checks{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
-.donut-check{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:10px;border:1px solid rgba(180,80,255,0.18);background:rgba(140,40,220,0.11);font-size:12px;font-weight:700;color:rgba(230,190,255,.9);cursor:pointer;transition:opacity .2s}
-.donut-check.off{opacity:.35}
-.donut-check input{accent-color:#b665ff}
+.dbr-row{transition:opacity .3s ease}
+.dbr-row.off{opacity:.3}
+.dbr-head{display:flex;justify-content:space-between;font-size:12px;color:rgba(245,237,255,0.85);font-weight:600;margin-bottom:4px}
+.dbr-track{height:7px;border-radius:999px;background:rgba(255,255,255,0.07);overflow:hidden}
+.dbr-fill{height:100%;border-radius:999px;transition:width .5s var(--spring)}
+.dchecks{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.dchk{display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:11px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);font-size:11.5px;font-weight:600;color:rgba(245,237,255,0.85);cursor:pointer;transition:all .2s}
+.dchk.off{opacity:.4}
+.dchk input{accent-color:#c4a3ff;width:13px;height:13px}
+.ldot{width:9px;height:9px;border-radius:3px;display:inline-block}
+.ldot-m{background:linear-gradient(135deg,#8b5cf6,#c4a3ff)}
+.ldot-w{background:linear-gradient(135deg,#3b82f6,#7dd3fc)}
+.ldot-a{background:linear-gradient(135deg,#ec4899,#f9a8d4)}
 
-.pdf-btn{width:100%;padding:14px;margin-top:16px;border:none;border-radius:14px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;background:linear-gradient(135deg,#5a0090,#a02080,#d04020);color:#fff;box-shadow:0 4px 18px rgba(140,20,120,0.4);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
-.pdf-btn:active{transform:scale(.98);opacity:.9}
-.search-row{display:flex;align-items:center;gap:8px;margin:12px 0 6px}
+/* === BUTTONS === */
+.btn{
+  width:100%;padding:14px;margin-top:14px;border:none;border-radius:var(--radius-sm);
+  font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .25s var(--spring);
+  letter-spacing:-0.01em;
+}
+.btn-primary{
+  background:linear-gradient(135deg,#7c3aed,#a855f7 50%,#ec4899);
+  color:#fff;box-shadow:0 10px 30px rgba(124,58,237,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
+  border:1px solid rgba(255,255,255,0.18);
+}
+.btn-primary:active{transform:scale(0.98);opacity:.95}
+.btn-glass{
+  background:rgba(255,255,255,0.06);backdrop-filter:blur(18px);border:1px solid var(--border);color:var(--text);
+}
+.btn-glass:active{background:rgba(255,255,255,0.12)}
+
+/* === CONTROLS ROW === */
+.ctrl-row{display:flex;align-items:center;gap:8px;margin:14px 0 10px;flex-wrap:wrap}
+.ctrl-btn{
+  padding:8px 14px;border-radius:12px;font-size:12.5px;font-weight:600;
+  font-family:inherit;cursor:pointer;
+  background:rgba(255,255,255,0.05);backdrop-filter:blur(18px);
+  border:1px solid var(--border);color:var(--accent);
+  display:flex;align-items:center;gap:6px;
+  transition:all .2s var(--spring);
+}
+.ctrl-btn:active{background:rgba(255,255,255,0.12);transform:scale(0.96)}
+.ctrl-btn.active{background:linear-gradient(135deg,rgba(124,58,237,0.5),rgba(236,72,153,0.4));border-color:rgba(255,255,255,0.3);color:#fff;box-shadow:0 4px 16px rgba(124,58,237,0.4)}
+.ctrl-btn.danger{color:#fca5a5;border-color:rgba(252,165,165,0.25);background:rgba(220,38,38,0.12)}
+.ctrl-btn svg{width:14px;height:14px}
+
+/* === SEARCH === */
+.search-row{display:flex;gap:8px;margin-bottom:14px}
 .search-wrap{flex:1;position:relative}
-.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:rgba(180,100,255,.5);pointer-events:none}
-.search-wrap input{width:100%;padding:11px 14px 11px 36px;border-radius:13px;border:1px solid rgba(180,80,255,0.18);font-size:14px;font-family:inherit;background:rgba(80,10,130,0.18);color:#f0e0ff;outline:none;transition:border-color .2s}
-.search-wrap input::placeholder{color:rgba(180,100,255,.38)}
-.search-wrap input:focus{border-color:rgba(180,80,255,.45)}
-.add-circle{width:44px;height:44px;border-radius:13px;flex-shrink:0;background:rgba(140,30,220,0.2);border:1px solid rgba(160,60,255,0.28);color:#c060ff;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
-.add-circle:active{background:rgba(140,30,220,.4)}
-.controls-row{display:flex;align-items:center;gap:8px;margin:10px 0 4px;flex-wrap:wrap}
-.ctrl-btn{padding:7px 14px;border-radius:10px;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer;border:1px solid rgba(180,80,255,0.2);background:rgba(120,20,200,0.14);color:#c060ff;transition:all .2s}
-.ctrl-btn:active{background:rgba(120,20,200,.3)}
-.ctrl-btn.danger{background:rgba(220,30,60,.12);border-color:rgba(220,30,60,.25);color:#f87171}
-.ctrl-btn.danger:active{background:rgba(220,30,60,.28)}
-.select-all-wrap{display:flex;align-items:center;gap:6px;font-size:12.5px;color:rgba(200,150,255,.8);font-weight:600}
-.select-all-wrap input[type=checkbox]{width:14px;height:14px;accent-color:#c040ff}
-.section-head{font-size:13.5px;font-weight:800;color:#b050ff;display:flex;align-items:center;gap:8px;margin:20px 0 8px;letter-spacing:.2px}
-.section-head-anime{color:#d975ff}
-.section-head-web{color:#e03080}
-.inline-add{display:inline-flex;align-items:center;padding:3px 10px;border-radius:8px;background:rgba(160,40,220,.12);font-size:11.5px;color:#b050ff;font-weight:600;border:1px solid rgba(160,40,220,.18);cursor:pointer;transition:all .2s}
-.inline-add:active{background:rgba(160,40,220,.28)}
-.item{display:flex;align-items:center;gap:12px;padding:12px 15px;margin:5px 0;border-radius:14px;background:rgba(255,255,255,0.028);border:1px solid rgba(180,80,255,.07);transition:all .25s ease;cursor:pointer;font-size:13.5px;font-weight:500;color:rgba(240,220,255,.92);position:relative}
-.item:active{background:rgba(160,60,255,.1)}
-.item.on{background:rgba(140,20,220,.16);border-color:rgba(188,88,255,.5);box-shadow:0 0 0 1px rgba(188,88,255,.2),0 8px 24px rgba(116,24,190,.22)}
-.serial{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:rgba(160,50,255,.14);color:#b050ff;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:800}
-.web-serial{background:rgba(220,30,100,.14);color:#e04090}
-.anime-serial{background:rgba(180,50,180,.18);color:#ff79cc}
-.select-cb{width:16px;height:16px;accent-color:#c040ff;flex-shrink:0}
-.total-bar{margin:18px 0 0;padding:13px 18px;border-radius:14px;text-align:center;font-size:14.5px;font-weight:700;background:rgba(120,20,200,.1);border:1px solid rgba(160,60,255,.15);color:rgba(210,150,255,.85)}
-.total-bar span{color:#fff}
-.hint{font-size:11px;color:rgba(180,100,255,.35);margin-top:6px;line-height:1.5}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;z-index:9999;animation:fadeIn .18s ease}
+.search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text-faint);pointer-events:none}
+.search-wrap input{
+  width:100%;padding:13px 14px 13px 40px;
+  border-radius:var(--radius-sm);
+  border:1px solid var(--border);
+  background:var(--glass);backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  color:var(--text);font-family:inherit;font-size:14px;font-weight:500;
+  outline:none;transition:all .25s var(--spring);
+}
+.search-wrap input::placeholder{color:var(--text-faint);font-weight:400}
+.search-wrap input:focus{border-color:rgba(196,163,255,0.45);background:var(--glass-strong);box-shadow:0 0 0 4px rgba(196,163,255,0.12)}
+.add-fab{
+  width:46px;height:46px;border-radius:var(--radius-sm);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  background:linear-gradient(135deg,#7c3aed,#ec4899);
+  border:1px solid rgba(255,255,255,0.22);color:#fff;
+  box-shadow:0 8px 22px rgba(124,58,237,0.4), inset 0 1px 0 rgba(255,255,255,0.25);
+  transition:all .22s var(--spring);
+}
+.add-fab:active{transform:scale(0.92)}
+.add-fab svg{width:20px;height:20px}
+
+/* === CATEGORY CARD === */
+.cat-card{margin:14px 0;border-radius:var(--radius-md);overflow:hidden;background:rgba(255,255,255,0.04);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--border);box-shadow:var(--shadow-md);transition:all .3s var(--spring)}
+.cat-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;transition:background .2s}
+.cat-head:active{background:rgba(255,255,255,0.05)}
+.cat-folder-icon{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,rgba(124,58,237,0.35),rgba(236,72,153,0.25));border:1px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 1px 0 rgba(255,255,255,0.2)}
+.cat-folder-icon svg{width:16px;height:16px;color:#fff}
+.cat-title{flex:1;font-size:14.5px;font-weight:700;color:var(--text);letter-spacing:-0.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cat-count{font-size:11.5px;font-weight:600;color:var(--text-dim);padding:3px 9px;border-radius:99px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08)}
+.cat-add{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(196,163,255,0.12);border:1px solid rgba(196,163,255,0.2);color:var(--accent);cursor:pointer;flex-shrink:0;transition:all .2s}
+.cat-add:active{background:rgba(196,163,255,0.25);transform:scale(0.92)}
+.cat-add svg{width:14px;height:14px}
+.cat-chevron{transition:transform .3s var(--spring);color:var(--text-dim);display:flex;align-items:center;flex-shrink:0}
+.cat-chevron svg{width:16px;height:16px}
+.cat-card.collapsed .cat-chevron{transform:rotate(-90deg)}
+.cat-handle{display:none;width:30px;height:30px;border-radius:10px;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);color:var(--text-faint);cursor:grab;touch-action:none;flex-shrink:0}
+.cat-handle svg{width:14px;height:14px}
+.cat-body{padding:0 10px 12px;display:flex;flex-direction:column;gap:4px;transition:all .35s var(--spring);overflow:hidden}
+.cat-card.collapsed .cat-body{display:none}
+.cat-empty{padding:14px;text-align:center;font-size:12px;color:var(--text-faint);font-style:italic}
+
+/* === ITEM === */
+.item{
+  display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:14px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  transition:all .25s var(--spring);
+  cursor:pointer;position:relative;
+  font-size:13.5px;font-weight:500;color:rgba(245,237,255,0.92);
+  letter-spacing:-0.005em;
+}
+.item:active{background:rgba(255,255,255,0.07);transform:scale(0.995)}
+.item.on{background:linear-gradient(135deg,rgba(124,58,237,0.22),rgba(236,72,153,0.18));border-color:rgba(196,163,255,0.5);box-shadow:0 0 0 1px rgba(196,163,255,0.25), 0 8px 24px rgba(124,58,237,0.32), inset 0 1px 0 rgba(255,255,255,0.12)}
+.item-serial{width:28px;height:28px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(196,163,255,0.14);color:var(--accent);font-size:11.5px;font-weight:700;border:1px solid rgba(196,163,255,0.16)}
+.item-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item-name mark{background:rgba(196,163,255,0.32);color:#fff;padding:0 3px;border-radius:4px}
+.item-star{width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--text-faint);cursor:pointer;flex-shrink:0;transition:all .2s;border-radius:8px}
+.item-star:active{transform:scale(0.85)}
+.item-star.fav{color:#fbbf24}
+.item-star svg{width:14px;height:14px}
+.item-watched{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.3);color:#86efac;opacity:0;transform:scale(0.5);transition:all .25s var(--spring)}
+.item.watched .item-watched{opacity:1;transform:scale(1)}
+.item.watched .item-name{text-decoration:line-through;text-decoration-color:rgba(245,237,255,0.35);color:var(--text-dim)}
+.item-watched svg{width:11px;height:11px}
+.item-handle{display:none;width:28px;height:28px;border-radius:9px;align-items:center;justify-content:center;color:var(--text-faint);cursor:grab;touch-action:none;flex-shrink:0;background:rgba(255,255,255,0.04)}
+.item-handle svg{width:14px;height:14px}
+.item-check{display:none;width:18px;height:18px;border-radius:6px;border:2px solid rgba(196,163,255,0.4);background:rgba(255,255,255,0.05);flex-shrink:0;align-items:center;justify-content:center;color:#fff}
+.item-check.checked{background:linear-gradient(135deg,#7c3aed,#ec4899);border-color:transparent}
+.item-check svg{width:11px;height:11px;display:none}
+.item-check.checked svg{display:block}
+
+/* Reorder/Select mode toggles */
+body.reorder-mode .item-handle{display:flex}
+body.reorder-mode .cat-handle{display:flex}
+body.reorder-mode .item-star{display:none}
+body.reorder-mode .item{cursor:default}
+body.reorder-mode .item.on{background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.06);box-shadow:none}
+body.select-mode .item-check{display:flex}
+body.select-mode .item-star{display:none}
+body.select-mode .item-watched{display:none}
+
+.item.dragging{opacity:0.4}
+.cat-card.dragging{opacity:0.4}
+.drop-indicator{height:3px;border-radius:99px;background:linear-gradient(90deg,#7c3aed,#ec4899);margin:2px 0;box-shadow:0 0 12px rgba(196,163,255,0.6);animation:pulseGlow 1.2s ease-in-out infinite}
+@keyframes pulseGlow{0%,100%{opacity:0.8}50%{opacity:1}}
+
+/* === TOTAL BAR === */
+.total-bar{margin:18px 0 0;padding:14px 18px;border-radius:var(--radius-sm);text-align:center;font-size:14px;font-weight:600;background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);color:var(--text-dim)}
+.total-bar span{color:#fff;font-weight:800;font-size:16px}
+.hint{font-size:11px;color:var(--text-faint);margin-top:8px;text-align:center;font-weight:400}
+
+/* === BOTTOM SHEET === */
+.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);z-index:9000;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .25s ease;opacity:0;pointer-events:none;transition:opacity .25s ease}
+.sheet-overlay.show{opacity:1;pointer-events:auto}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.dialog{background:#120020;border:1px solid rgba(180,60,255,.22);border-radius:22px;padding:28px 22px;max-width:300px;width:88%;text-align:center;animation:scaleUp .2s ease;box-shadow:0 20px 60px rgba(100,0,200,.45)}
-@keyframes scaleUp{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
-.dialog h3{font-size:18px;font-weight:900;color:#fff;margin-bottom:8px}
-.dialog p{font-size:13px;color:rgba(200,140,255,.6);margin-bottom:20px;line-height:1.5}
-.dialog-btns{display:flex;gap:10px}
-.dialog-btns button{flex:1;padding:12px;border-radius:12px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:none}
-#dlgCancel{background:rgba(255,255,255,.08);color:rgba(200,150,255,.9)}
-#dlgOk{background:rgba(230,40,60,.18);color:#f87171}
-::-webkit-scrollbar{width:4px}
+.sheet{
+  width:100%;max-width:560px;
+  background:rgba(28,18,58,0.78);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.14);border-bottom:none;
+  border-radius:32px 32px 0 0;
+  padding:8px 18px calc(24px + env(safe-area-inset-bottom)) 18px;
+  box-shadow:0 -20px 60px rgba(0,0,0,0.6);
+  transform:translateY(100%);transition:transform .42s var(--spring);
+  max-height:80vh;overflow-y:auto;
+  position:relative;
+}
+.sheet-overlay.show .sheet{transform:translateY(0)}
+.sheet-handle{width:40px;height:5px;border-radius:99px;background:rgba(255,255,255,0.25);margin:0 auto 16px}
+.sheet-title{font-size:17px;font-weight:700;color:#fff;text-align:center;margin-bottom:6px;letter-spacing:-0.01em}
+.sheet-sub{font-size:12.5px;color:var(--text-dim);text-align:center;margin-bottom:18px;line-height:1.5}
+.sheet-action{
+  display:flex;align-items:center;gap:14px;padding:14px 16px;
+  border-radius:16px;cursor:pointer;margin-bottom:6px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  transition:all .2s var(--spring);
+  font-size:14.5px;font-weight:600;color:var(--text);
+}
+.sheet-action:active{background:rgba(255,255,255,0.1);transform:scale(0.98)}
+.sheet-action.danger{color:#fca5a5}
+.sheet-action-icon{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:rgba(196,163,255,0.14);color:var(--accent);flex-shrink:0}
+.sheet-action.danger .sheet-action-icon{background:rgba(220,38,38,0.16);color:#fca5a5}
+.sheet-action-icon svg{width:18px;height:18px}
+.sheet-action-text{flex:1;min-width:0}
+.sheet-action-title{font-size:14.5px;font-weight:600;line-height:1.2}
+.sheet-action-sub{font-size:11.5px;color:var(--text-dim);margin-top:2px;font-weight:400}
+.sheet-input{
+  width:100%;padding:14px 16px;border-radius:14px;
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);
+  color:#fff;font-family:inherit;font-size:14.5px;outline:none;
+  margin-bottom:12px;font-weight:500;
+}
+.sheet-input:focus{border-color:rgba(196,163,255,0.5);background:rgba(255,255,255,0.08)}
+.sheet-btns{display:flex;gap:10px;margin-top:6px}
+.sheet-btns .btn{margin-top:0;flex:1}
+.sheet-cat-list{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto;margin:0 -4px;padding:0 4px}
+.sheet-rating{display:flex;justify-content:center;gap:10px;margin:10px 0 18px}
+.sheet-star{width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-faint);transition:all .2s}
+.sheet-star.on{color:#fbbf24;transform:scale(1.1)}
+.sheet-star svg{width:28px;height:28px}
+
+/* === SPLASH === */
+.splash{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#1a0a3a 0%,#0f0428 50%,#2a0a3a 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:splashOut .6s var(--spring) 1.1s forwards}
+.splash.gone{display:none}
+.splash-logo{width:108px;height:108px;border-radius:28px;background:linear-gradient(135deg,#7c3aed 0%,#a855f7 35%,#ec4899 75%,#f59e0b 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 30px 80px rgba(124,58,237,0.55),inset 0 2px 0 rgba(255,255,255,0.3),inset 0 -2px 0 rgba(0,0,0,0.15);position:relative;animation:logoIn .8s var(--spring), logoFloat 3s ease-in-out 0.8s infinite;overflow:hidden}
+.splash-logo::after{content:'';position:absolute;top:-50%;left:-30%;width:80%;height:200%;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,0.4) 50%,transparent 70%);animation:shine 2.2s ease-in-out infinite}
+@keyframes shine{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+.splash-logo svg{width:56px;height:56px;color:#fff;position:relative;z-index:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3))}
+@keyframes logoIn{from{transform:scale(0.4) rotate(-12deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.splash-name{font-size:24px;font-weight:800;letter-spacing:-0.02em;color:#fff;margin-top:20px;animation:splashTextIn .8s .2s var(--spring) both}
+.splash-tag{font-size:12px;color:rgba(255,255,255,0.55);margin-top:6px;letter-spacing:0.1em;text-transform:uppercase;animation:splashTextIn .8s .3s var(--spring) both;font-weight:500}
+@keyframes splashTextIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes splashOut{to{opacity:0;transform:scale(1.05);pointer-events:none}}
+
+/* === TOAST === */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(120%);padding:12px 22px;border-radius:99px;background:rgba(28,18,58,0.92);backdrop-filter:blur(30px);border:1px solid var(--border-bright);color:#fff;font-size:13.5px;font-weight:600;z-index:99998;box-shadow:var(--shadow-lg);transition:transform .42s var(--spring);max-width:90%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(160,60,255,.3);border-radius:4px}
-.parent-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(160,80,255,.45);margin:26px 0 4px}
+::-webkit-scrollbar-thumb{background:rgba(196,163,255,0.25);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(196,163,255,0.4)}
+
+/* === FAVORITES SECTION === */
+.cat-card.fav-cat .cat-folder-icon{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 0 16px rgba(251,191,36,0.4)}
+.cat-card.fav-cat{border-color:rgba(251,191,36,0.3)}
+
+/* hide brand icon area on small */
+.brand-icon{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(124,58,237,0.4),inset 0 1px 0 rgba(255,255,255,0.25)}
+.brand-icon svg{width:16px;height:16px;color:#fff}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
-<!-- ==================== HOME ==================== -->
+<!-- SPLASH -->
+<div class="splash" id="splash">
+  <div class="splash-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="2" y1="17" x2="7" y2="17"/></svg>
+  </div>
+  <div class="splash-name">My Collection</div>
+  <div class="splash-tag">Liquid Glass</div>
+</div>
+
+<div class="bg-wrap">
+  <div class="bg-blob b1"></div>
+  <div class="bg-blob b2"></div>
+  <div class="bg-blob b3"></div>
+  <div class="bg-blob b4"></div>
+  <div class="bg-grain"></div>
+</div>
+
+<!-- HOME -->
 <div class="page active" id="home">
-  <div class="top-bar"><h1 class="pg-title">My Collection</h1></div>
-  <div class="home-hero">
-    <div class="home-hero-title">Your Universe of Stories</div>
-    <div class="home-hero-sub">Movies · Web Series · Anime — all in one place.</div>
-    <div class="home-counts">
-      <div class="home-count-pill"><span class="num" id="hm">0</span><span class="lbl">Movies</span></div>
-      <div class="home-count-pill"><span class="num" id="hw">0</span><span class="lbl">Web Series</span></div>
-      <div class="home-count-pill"><span class="num" id="ha">0</span><span class="lbl">Anime</span></div>
-      <div class="home-count-pill"><span class="num" id="ht">0</span><span class="lbl">Total</span></div>
+  <div class="top-bar">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+    </div>
+    <div class="top-bar-title"><div class="pg-title">My Collection</div></div>
+    <div class="icon-btn" onclick="openSettings()" aria-label="Settings">
+      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+  </div>
+
+  <div class="hero glass-strong">
+    <div class="hero-title">Your Universe of Stories</div>
+    <div class="hero-sub">Movies · Web Series · Anime — all in one place.</div>
+    <div class="stats-row">
+      <div class="stat-pill"><span class="stat-num" id="hm">0</span><span class="stat-lbl">Movies</span></div>
+      <div class="stat-pill"><span class="stat-num" id="hw">0</span><span class="stat-lbl">Web</span></div>
+      <div class="stat-pill"><span class="stat-num" id="ha">0</span><span class="stat-lbl">Anime</span></div>
+      <div class="stat-pill"><span class="stat-num" id="ht">0</span><span class="stat-lbl">Total</span></div>
     </div>
   </div>
 
   <div class="folder folder-movies" onclick="go('movies')">
     <div class="folder-left">
       <div class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="2" y1="17" x2="7" y2="17"/></svg></div>
-      <div><div class="f-label">Movies</div><div class="f-count" id="folderMovieCount">0 items</div></div>
+      <div class="f-text"><div class="f-label">Movies</div><div class="f-count" id="folderMovieCount">0 items</div></div>
     </div>
     <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
   </div>
   <div class="folder folder-web" onclick="go('web')">
     <div class="folder-left">
       <div class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-      <div><div class="f-label">Web Series</div><div class="f-count" id="folderWebCount">0 items</div></div>
+      <div class="f-text"><div class="f-label">Web Series</div><div class="f-count" id="folderWebCount">0 items</div></div>
     </div>
     <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
   </div>
   <div class="folder folder-anime" onclick="go('anime')">
     <div class="folder-left">
       <div class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
-      <div><div class="f-label">Anime</div><div class="f-count" id="folderAnimeCount">0 items</div></div>
+      <div class="f-text"><div class="f-label">Anime</div><div class="f-count" id="folderAnimeCount">0 items</div></div>
     </div>
     <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
   </div>
 
-  <!-- Stat Card with bars -->
-  <div class="stat-card">
+  <div class="stat-card glass-strong">
     <div class="stat-card-title">Collection Overview</div>
     <div class="bar-stat"><div class="bar-label"><span>Movies</span><span id="mpct">0%</span></div><div class="bar-track"><div class="bar-fill fill-m" id="mbar"></div></div></div>
     <div class="bar-stat"><div class="bar-label"><span>Web Series</span><span id="wpct">0%</span></div><div class="bar-track"><div class="bar-fill fill-w" id="wbar"></div></div></div>
     <div class="bar-stat"><div class="bar-label"><span>Anime</span><span id="apct">0%</span></div><div class="bar-track"><div class="bar-fill fill-a" id="abar"></div></div></div>
-  </div>
 
-  <!-- DONUT GRAPH SECTION -->
-  <div class="donut-section">
-    <div class="donut-section-title">Collection Status</div>
-    <div class="donut-grid">
-      <div class="donut-center">
-        <div class="donut-ring" id="donutRing">
-          <div class="donut-hole"><span class="big" id="donutTotal">0</span><span class="sub">Total</span></div>
-        </div>
-        <div class="donut-legend">
-          <span class="legend-item"><span class="legend-dot ldot-m"></span>Movies</span>
-          <span class="legend-item"><span class="legend-dot ldot-w"></span>Web</span>
-          <span class="legend-item"><span class="legend-dot ldot-a"></span>Anime</span>
+    <div class="stats-row" style="margin-top:18px">
+      <div class="stat-pill"><span class="stat-num" id="watchedPct">0%</span><span class="stat-lbl">Watched</span></div>
+      <div class="stat-pill"><span class="stat-num" id="avgRating">—</span><span class="stat-lbl">Avg ★</span></div>
+      <div class="stat-pill"><span class="stat-num" id="favCount">0</span><span class="stat-lbl">Favs</span></div>
+      <div class="stat-pill"><span class="stat-num" id="weekAdded">0</span><span class="stat-lbl">Week</span></div>
+    </div>
+
+    <div class="donut-section">
+      <div class="donut-grid">
+        <div class="donut-ring" id="donutRing"><div class="donut-hole"><span class="big" id="donutTotal">0</span><span class="sub">Total</span></div></div>
+        <div class="donut-bars">
+          <div class="dbr-row" id="dbrMovie"><div class="dbr-head"><span>Movies</span><span id="dbrMPct">0%</span></div><div class="dbr-track"><div class="dbr-fill fill-m" id="dbrMBar"></div></div></div>
+          <div class="dbr-row" id="dbrWeb"><div class="dbr-head"><span>Web Series</span><span id="dbrWPct">0%</span></div><div class="dbr-track"><div class="dbr-fill fill-w" id="dbrWBar"></div></div></div>
+          <div class="dbr-row" id="dbrAnime"><div class="dbr-head"><span>Anime</span><span id="dbrAPct">0%</span></div><div class="dbr-track"><div class="dbr-fill fill-a" id="dbrABar"></div></div></div>
         </div>
       </div>
-      <div class="donut-bars">
-        <div class="donut-bar-row" id="dbrMovie"><div class="dbr-head"><span>Movies</span><span id="dbrMPct">0%</span></div><div class="dbr-track"><div class="dbr-fill dbr-fill-m" id="dbrMBar"></div></div></div>
-        <div class="donut-bar-row" id="dbrWeb"><div class="dbr-head"><span>Web Series</span><span id="dbrWPct">0%</span></div><div class="dbr-track"><div class="dbr-fill dbr-fill-w" id="dbrWBar"></div></div></div>
-        <div class="donut-bar-row" id="dbrAnime"><div class="dbr-head"><span>Anime</span><span id="dbrAPct">0%</span></div><div class="dbr-track"><div class="dbr-fill dbr-fill-a" id="dbrABar"></div></div></div>
+      <div class="dchecks">
+        <label class="dchk" id="dchkM"><input type="checkbox" checked onchange="updateStats()"><span class="ldot ldot-m"></span>Movies</label>
+        <label class="dchk" id="dchkW"><input type="checkbox" checked onchange="updateStats()"><span class="ldot ldot-w"></span>Web</label>
+        <label class="dchk" id="dchkA"><input type="checkbox" checked onchange="updateStats()"><span class="ldot ldot-a"></span>Anime</label>
       </div>
     </div>
-    <div class="donut-checks">
-      <label class="donut-check" id="dchkM"><input type="checkbox" checked onchange="updateStats()"><span class="legend-dot ldot-m"></span>Movies</label>
-      <label class="donut-check" id="dchkW"><input type="checkbox" checked onchange="updateStats()"><span class="legend-dot ldot-w"></span>Web</label>
-      <label class="donut-check" id="dchkA"><input type="checkbox" checked onchange="updateStats()"><span class="legend-dot ldot-a"></span>Anime</label>
-    </div>
-    <div class="home-counts" style="margin-top:14px">
-      <div class="home-count-pill" id="dPillM"><span class="num" id="dCntM">0</span><span class="lbl">Movies</span></div>
-      <div class="home-count-pill" id="dPillW"><span class="num" id="dCntW">0</span><span class="lbl">Web</span></div>
-      <div class="home-count-pill" id="dPillA"><span class="num" id="dCntA">0</span><span class="lbl">Anime</span></div>
-      <div class="home-count-pill"><span class="num" id="dCntT">0</span><span class="lbl">Total</span></div>
-    </div>
-  </div>
 
-  <div style="margin-top:16px">
-    <button class="pdf-btn" onclick="downloadPDF()">
+    <button class="btn btn-primary" onclick="downloadPDF()">
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Download PDF
     </button>
   </div>
 </div>
 
-<!-- ==================== MOVIES ==================== -->
-<div class="page" id="movies">
-  <div class="top-bar">
-    <div class="back-btn" onclick="goBack()"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
-    <div><h1 class="pg-title pg-title-movies">Movies</h1><p class="pg-subtitle">Tap to highlight · Long-press to delete</p></div>
-  </div>
-  <div class="controls-row" id="movieControls">
-    <button class="ctrl-btn" id="movieSelectBtn" onclick="toggleSelect('movie')">Select</button>
-    <div id="movieBulkActions" style="display:none;align-items:center;gap:8px">
-      <div class="select-all-wrap"><input type="checkbox" id="movieSelAll" onchange="selectAll('movie')"><label for="movieSelAll">All</label></div>
-      <button class="ctrl-btn danger" onclick="deleteSelected('movie')">Delete</button>
-    </div>
-  </div>
-  <div class="search-row">
-    <div class="search-wrap">
-      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="movieSearch" placeholder="Search movies..." oninput="search('movie')">
-    </div>
-    <div class="add-circle" onclick="addItem('movie')">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </div>
-  </div>
-
-  <div class="parent-label">Marvel</div>
-  <div class="section-head">MCU Movies <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">1</div>Iron Man (2008)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">2</div>The Incredible Hulk (2008)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">3</div>Iron Man 2 (2010)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">4</div>Thor (2011)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">5</div>Captain America: The First Avenger (2011)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">6</div>The Avengers (2012)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">7</div>Iron Man 3 (2013)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">8</div>Thor: The Dark World (2013)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">9</div>Captain America: The Winter Soldier (2014)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">10</div>Guardians of the Galaxy (2014)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">11</div>Avengers: Age of Ultron (2015)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">12</div>Ant-Man (2015)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">13</div>Captain America: Civil War (2016)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">14</div>Doctor Strange (2016)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">15</div>Guardians of the Galaxy Vol. 2 (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">16</div>Spider-Man: Homecoming (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">17</div>Thor: Ragnarok (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">18</div>Black Panther (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">19</div>Avengers: Infinity War (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">20</div>Ant-Man and the Wasp (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">21</div>Captain Marvel (2019)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">22</div>Avengers: Endgame (2019)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">23</div>Spider-Man: Far from Home (2019)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">24</div>Black Widow (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">25</div>Shang-Chi and the Legend of the Ten Rings (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">26</div>Eternals (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">27</div>Spider-Man: No Way Home (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">28</div>Doctor Strange in the Multiverse of Madness (2022)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">29</div>Thor: Love and Thunder (2022)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">30</div>Black Panther: Wakanda Forever (2022)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">31</div>Ant-Man and the Wasp: Quantumania (2023)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">32</div>Guardians of the Galaxy Vol. 3 (2023)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">33</div>The Marvels (2023)</div>
-
-  <div class="section-head">Deadpool &amp; Wolverine Movies <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">34</div>Deadpool (2016)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">35</div>Deadpool 2 (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">36</div>Logan (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">37</div>X-Men Origins: Wolverine (2009)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">38</div>X-Men: Days of Future Past (2014)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">39</div>Deadpool &amp; Wolverine (2024)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">40</div>Captain America: Brave New World (2025)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">41</div>Thunderbolts (2025)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">42</div>The Fantastic Four: First Steps (2025)</div>
-
-  <div class="section-head">Venom Series <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">43</div>Venom (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">44</div>Venom: Let There Be Carnage (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">45</div>Venom: The Last Dance (2024)</div>
-
-  <div class="parent-label">DC</div>
-  <div class="section-head">Batman Series <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">46</div>Batman Begins (2005)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">47</div>The Dark Knight (2008)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">48</div>The Dark Knight Rises (2012)</div>
-
-  <div class="section-head">Joker Series <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">49</div>Joker (2019)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">50</div>Joker: Folie à Deux (2024)</div>
-
-  <div class="parent-label">Horror</div>
-  <div class="section-head">Conjuring Universe <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">51</div>The Conjuring (2013)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">52</div>Annabelle (2014)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">53</div>The Conjuring 2 (2016)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">54</div>Annabelle: Creation (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">55</div>The Nun (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">56</div>The Curse of La Llorona (2019)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">57</div>Annabelle Comes Home (2019)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">58</div>The Conjuring: The Devil Made Me Do It (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">59</div>The Nun II (2023)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">60</div>The Conjuring: Last Rites (2025)</div>
-
-  <div class="section-head">Final Destination Series <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">61</div>Final Destination (2000)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">62</div>Final Destination 2 (2001)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">63</div>Final Destination 3 (2005)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">64</div>The Final Destination (2009)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">65</div>Final Destination 5</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">66</div>Final Destination: Bloodlines</div>
-
-  <div class="section-head">Anaconda Series <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">67</div>Anaconda (1997)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">68</div>Anacondas: The Hunt for the Blood Orchid (2004)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">69</div>Anaconda 3: Offspring</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">70</div>Anacondas: Trail of Blood (2009)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">71</div>Lake Placid vs. Anaconda (2015)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">72</div>Anaconda: Cursed Jungle (2024/2025)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">73</div>Anaconda (2025)</div>
-
-  <div class="parent-label">Bruce Lee &amp; Jackie Chan</div>
-  <div class="section-head">Bruce Lee Movies <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">74</div>Game of Death</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">75</div>Way of the Dragon</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">76</div>Enter the Dragon</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">77</div>Fist of Fury</div>
-
-  <div class="section-head">Jackie Chan Movies (2000–2025) <span class="inline-add" onclick="addItem('movie')">+ Add</span></div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">78</div>The Accidental Spy (2000)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">79</div>Rush Hour 2 (2001)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">80</div>The Tuxedo (2002)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">81</div>Traces of a Dragon: Jackie Chan &amp; His Lost Family (2002)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">82</div>Shanghai Knights (2003)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">83</div>The Medallion (2003)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">84</div>Blade of Kings (2003)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">85</div>Around the World in 80 Days (2004)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">86</div>5 (2004)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">87</div>The Myth (2005)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">88</div>Rush Hour 3 (2007)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">89</div>Kung Fu Panda (2008)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">90</div>Jackie Chan in Shinjuku Incident (2008)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">91</div>The Forbidden Kingdom (2008)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">92</div>The Karate Kid: Bring Back (2009)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">93</div>The Spy Next Door (2010)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">94</div>Kung Fu Panda 2 (2011)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">95</div>Shaolin Go (2011)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">96</div>Chinese Zodiac (2012)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">97</div>Police Story: Lockdown (2013)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">98</div>Dragon Blade (2013)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">99</div>Monkey King (2015)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">100</div>Railroad Tigers (2015)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">101</div>Kung Fu Panda 3 (2016)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">102</div>Manhattan Night (2016)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">103</div>Skiptrace (2016)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">104</div>Bleeding Steel (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">105</div>Namiya (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">106</div>The Foreigner (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">107</div>The Nut Job 2: Nutty by Nature (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">108</div>Reset (Ni Shi Ying Jiu) (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">109</div>Earth: One Amazing Day (2017)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">110</div>Golden Job (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">111</div>The Game Changers (Fathom) (2018)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">112</div>The Climbers (2019)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">113</div>Vanguard (2020)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">114</div>Wish Dragon (2021)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">115</div>Teenage Mutant Ninja Turtles: Mutant Mayhem (2023)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">116</div>Ride On (2023)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">117</div>Panda Plan (2024)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">118</div>Karate Kid: Legends (2025)</div>
-  <div class="item movie" data-builtin="true" onclick="tapItem(this)"><div class="serial">119</div>The Shadow's Edge (2025)</div>
-
-  <div class="total-bar" id="movieTotalBar">Total Movies: <span id="movieTotal">0</span></div>
-  <p class="hint">Long-press any item to delete permanently</p>
-</div>
-
-<!-- ==================== WEB SERIES ==================== -->
-<div class="page" id="web">
-  <div class="top-bar">
-    <div class="back-btn" onclick="goBack()"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
-    <div><h1 class="pg-title pg-title-web">Web Series</h1><p class="pg-subtitle">Tap to highlight · Long-press to delete</p></div>
-  </div>
-  <div class="controls-row">
-    <button class="ctrl-btn" id="webSelectBtn" onclick="toggleSelect('web')" style="background:rgba(180,20,80,.14);border-color:rgba(220,40,100,.2);color:#e03080">Select</button>
-    <div id="webBulkActions" style="display:none;align-items:center;gap:8px">
-      <div class="select-all-wrap"><input type="checkbox" id="webSelAll" onchange="selectAll('web')"><label for="webSelAll">All</label></div>
-      <button class="ctrl-btn danger" onclick="deleteSelected('web')">Delete</button>
-    </div>
-  </div>
-  <div class="search-row">
-    <div class="search-wrap">
-      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="webSearch" placeholder="Search web series..." oninput="search('web')" style="border-color:rgba(220,40,100,.18);background:rgba(120,0,60,.18)">
-    </div>
-    <div class="add-circle" onclick="addItem('web')" style="background:rgba(180,20,80,.2);border-color:rgba(220,40,100,.28);color:#e03080">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </div>
-  </div>
-  <div class="section-head section-head-web">All Web Series <span class="inline-add" onclick="addItem('web')" style="background:rgba(200,20,80,.12);color:#e03080;border-color:rgba(200,20,80,.2)">+ Add</span></div>
-  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">1</div>Stranger Things</div>
-  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">2</div>Loki</div>
-  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">3</div>Money Heist</div>
-  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">4</div>Wednesday</div>
-  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">5</div>Squid Game</div>
-  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">6</div>Harry Potter (Series)</div>
-  <div class="item web" data-builtin="true" onclick="tapItem(this)"><div class="serial web-serial">7</div>Game of Thrones</div>
-  <div class="total-bar" style="background:rgba(180,20,80,.1);border-color:rgba(220,40,100,.18);color:rgba(255,160,210,.8)">Total Web Series: <span id="webTotal">0</span></div>
-  <p class="hint">Long-press any item to delete permanently</p>
-</div>
-
-<!-- ==================== ANIME HUB ==================== -->
+<!-- LIST PAGE TEMPLATE used for movies/web/animeSeries/animeMovie -->
+<div class="page" id="movies"></div>
+<div class="page" id="web"></div>
 <div class="page" id="anime">
   <div class="top-bar">
-    <div class="back-btn" onclick="goBack()"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
-    <div><h1 class="pg-title pg-title-anime">Anime</h1><p class="pg-subtitle">Choose a category below</p></div>
+    <div class="icon-btn" onclick="goBack()" aria-label="Back"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
+    <div class="top-bar-title"><div class="pg-title">Anime</div><div class="pg-sub">Choose a category</div></div>
   </div>
-  <div style="margin-top:16px">
-    <div class="folder folder-sub" onclick="go('animeSeries')">
-      <div class="folder-left">
-        <div class="f-icon" style="background:rgba(186,83,255,.22)"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
-        <div><div class="f-label" style="color:#f2c8ff">Anime Series</div><div class="f-count" id="folderASeriesCount" style="color:rgba(228,168,255,.72)">0 items</div></div>
-      </div>
-      <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+  <div class="folder folder-sub" onclick="go('animeSeries')" style="margin-top:14px">
+    <div class="folder-left">
+      <div class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <div class="f-text"><div class="f-label">Anime Series</div><div class="f-count" id="folderASeriesCount">0 items</div></div>
     </div>
-    <div class="folder folder-sub" onclick="go('animeMovies')">
-      <div class="folder-left">
-        <div class="f-icon" style="background:rgba(226,75,170,.22)"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
-        <div><div class="f-label" style="color:#f2c8ff">Anime Movies</div><div class="f-count" id="folderAMoviesCount" style="color:rgba(228,168,255,.72)">0 items</div></div>
-      </div>
-      <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+    <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+  <div class="folder folder-sub" onclick="go('animeMovies')">
+    <div class="folder-left">
+      <div class="f-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
+      <div class="f-text"><div class="f-label">Anime Movies</div><div class="f-count" id="folderAMoviesCount">0 items</div></div>
     </div>
+    <div class="f-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+  </div>
+</div>
+<div class="page" id="animeSeries"></div>
+<div class="page" id="animeMovies"></div>
+
+<!-- SHEETS -->
+<div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet(event)">
+  <div class="sheet" id="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div id="sheetBody"></div>
   </div>
 </div>
 
-<!-- ==================== ANIME SERIES ==================== -->
-<div class="page" id="animeSeries">
-  <div class="top-bar">
-    <div class="back-btn" onclick="goBack()"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
-    <div><h1 class="pg-title pg-title-anime">Anime Series</h1><p class="pg-subtitle">Tap to highlight · Long-press to delete</p></div>
-  </div>
-  <div class="controls-row">
-    <button class="ctrl-btn" id="aserSelectBtn" onclick="toggleSelect('animeSeries')" style="background:rgba(150,40,210,.16);border-color:rgba(194,76,255,.24);color:#d975ff">Select</button>
-    <div id="aserBulkActions" style="display:none;align-items:center;gap:8px">
-      <div class="select-all-wrap"><input type="checkbox" id="aserSelAll" onchange="selectAll('animeSeries')"><label for="aserSelAll">All</label></div>
-      <button class="ctrl-btn danger" onclick="deleteSelected('animeSeries')">Delete</button>
-    </div>
-  </div>
-  <div class="search-row">
-    <div class="search-wrap">
-      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="aserSearch" placeholder="Search anime series..." oninput="search('animeSeries')" style="border-color:rgba(190,80,255,.2);background:rgba(94,20,145,.2)">
-    </div>
-    <div class="add-circle" onclick="addItem('animeSeries')" style="background:rgba(150,40,210,.22);border-color:rgba(194,76,255,.32);color:#d975ff">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </div>
-  </div>
-  <div class="section-head section-head-anime">All Anime Series <span class="inline-add" onclick="addItem('animeSeries')" style="background:rgba(178,66,245,.14);color:#d975ff;border-color:rgba(178,66,245,.24)">+ Add</span></div>
-  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">1</div>Demon Slayer</div>
-  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">2</div>Death Note</div>
-  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">3</div>Solo Leveling</div>
-  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">4</div>Jujutsu Kaisen</div>
-  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">5</div>Chainsaw Man</div>
-  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">6</div>The Fragrant Flower Blooms with Dignity</div>
-  <div class="item animeSeries" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">7</div>The Angel Next Door Spoils Me Rotten</div>
-  <div class="total-bar" style="background:rgba(136,42,196,.14);border-color:rgba(186,76,255,.24);color:rgba(230,176,255,.82)">Total Anime Series: <span id="aserTotal">0</span></div>
-  <p class="hint">Long-press any item to delete permanently</p>
-</div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
-<!-- ==================== ANIME MOVIES ==================== -->
-<div class="page" id="animeMovies">
-  <div class="top-bar">
-    <div class="back-btn" onclick="goBack()"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
-    <div><h1 class="pg-title pg-title-anime">Anime Movies</h1><p class="pg-subtitle">Tap to highlight · Long-press to delete</p></div>
-  </div>
-  <div class="controls-row">
-    <button class="ctrl-btn" id="amovSelectBtn" onclick="toggleSelect('animeMovie')" style="background:rgba(150,40,210,.16);border-color:rgba(194,76,255,.24);color:#d975ff">Select</button>
-    <div id="amovBulkActions" style="display:none;align-items:center;gap:8px">
-      <div class="select-all-wrap"><input type="checkbox" id="amovSelAll" onchange="selectAll('animeMovie')"><label for="amovSelAll">All</label></div>
-      <button class="ctrl-btn danger" onclick="deleteSelected('animeMovie')">Delete</button>
-    </div>
-  </div>
-  <div class="search-row">
-    <div class="search-wrap">
-      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="amovSearch" placeholder="Search anime movies..." oninput="search('animeMovie')" style="border-color:rgba(190,80,255,.2);background:rgba(94,20,145,.2)">
-    </div>
-    <div class="add-circle" onclick="addItem('animeMovie')" style="background:rgba(150,40,210,.22);border-color:rgba(194,76,255,.32);color:#d975ff">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </div>
-  </div>
-  <div class="section-head section-head-anime">All Anime Movies <span class="inline-add" onclick="addItem('animeMovie')" style="background:rgba(178,66,245,.14);color:#d975ff;border-color:rgba(178,66,245,.24)">+ Add</span></div>
-  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">1</div>Weathering With You</div>
-  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">2</div>Your Name</div>
-  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">3</div>A Silent Voice</div>
-  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">4</div>I Want To Eat Your Pancreas</div>
-  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">5</div>The Garden of the Words</div>
-  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">6</div>The Tunnel to Summer the Exit of Goodbyes</div>
-  <div class="item animeMovie" data-builtin="true" onclick="tapItem(this)"><div class="serial anime-serial">7</div>Suzume</div>
-  <div class="total-bar" style="background:rgba(136,42,196,.14);border-color:rgba(186,76,255,.24);color:rgba(230,176,255,.82)">Total Anime Movies: <span id="amovTotal">0</span></div>
-  <p class="hint">Long-press any item to delete permanently</p>
-</div>
+<input type="file" id="importFile" accept="application/json" style="display:none" onchange="handleImport(event)">
 
-<!-- ==================== SCRIPTS ==================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 // ============================================================
-//  NAVIGATION — proper page-by-page back with history API
+//  BUILT-IN SEED DATA
 // ============================================================
-var NAV = ['home'];
-var PAGES = ['home','movies','web','anime','animeSeries','animeMovies'];
+const SEED = {
+  movie: [
+    {cat:'MCU', items:[
+      'Iron Man (2008)','The Incredible Hulk (2008)','Iron Man 2 (2010)','Thor (2011)','Captain America: The First Avenger (2011)',
+      "The Avengers (2012)",'Iron Man 3 (2013)','Thor: The Dark World (2013)','Captain America: The Winter Soldier (2014)','Guardians of the Galaxy (2014)',
+      'Avengers: Age of Ultron (2015)','Ant-Man (2015)','Captain America: Civil War (2016)','Doctor Strange (2016)','Guardians of the Galaxy Vol. 2 (2017)',
+      'Spider-Man: Homecoming (2017)','Thor: Ragnarok (2017)','Black Panther (2018)','Avengers: Infinity War (2018)','Ant-Man and the Wasp (2018)',
+      'Captain Marvel (2019)','Avengers: Endgame (2019)','Spider-Man: Far from Home (2019)','Black Widow (2021)','Shang-Chi and the Legend of the Ten Rings (2021)',
+      'Eternals (2021)','Spider-Man: No Way Home (2021)','Doctor Strange in the Multiverse of Madness (2022)','Thor: Love and Thunder (2022)','Black Panther: Wakanda Forever (2022)',
+      'Ant-Man and the Wasp: Quantumania (2023)','Guardians of the Galaxy Vol. 3 (2023)','The Marvels (2023)'
+    ]},
+    {cat:'Deadpool & Wolverine', items:[
+      'Deadpool (2016)','Deadpool 2 (2018)','Logan (2017)','X-Men Origins: Wolverine (2009)','X-Men: Days of Future Past (2014)',
+      'Deadpool & Wolverine (2024)','Captain America: Brave New World (2025)','Thunderbolts (2025)','The Fantastic Four: First Steps (2025)'
+    ]},
+    {cat:'Venom Series', items:['Venom (2018)','Venom: Let There Be Carnage (2021)','Venom: The Last Dance (2024)']},
+    {cat:'Batman Series', items:['Batman Begins (2005)','The Dark Knight (2008)','The Dark Knight Rises (2012)']},
+    {cat:'Joker Series', items:['Joker (2019)','Joker: Folie à Deux (2024)']},
+    {cat:'Conjuring Universe', items:[
+      'The Conjuring (2013)','Annabelle (2014)','The Conjuring 2 (2016)','Annabelle: Creation (2017)','The Nun (2018)',
+      'The Curse of La Llorona (2019)','Annabelle Comes Home (2019)','The Conjuring: The Devil Made Me Do It (2021)','The Nun II (2023)','The Conjuring: Last Rites (2025)'
+    ]},
+    {cat:'Final Destination Series', items:[
+      'Final Destination (2000)','Final Destination 2 (2001)','Final Destination 3 (2005)','The Final Destination (2009)','Final Destination 5','Final Destination: Bloodlines'
+    ]},
+    {cat:'Anaconda Series', items:[
+      'Anaconda (1997)','Anacondas: The Hunt for the Blood Orchid (2004)','Anaconda 3: Offspring','Anacondas: Trail of Blood (2009)','Lake Placid vs. Anaconda (2015)','Anaconda: Cursed Jungle (2024/2025)','Anaconda (2025)'
+    ]},
+    {cat:'Bruce Lee Movies', items:['Game of Death','Way of the Dragon','Enter the Dragon','Fist of Fury']},
+    {cat:'Jackie Chan Movies', items:[
+      'The Accidental Spy (2000)','Rush Hour 2 (2001)','The Tuxedo (2002)','Traces of a Dragon: Jackie Chan & His Lost Family (2002)','Shanghai Knights (2003)',
+      'The Medallion (2003)','Blade of Kings (2003)','Around the World in 80 Days (2004)','5 (2004)','The Myth (2005)',
+      'Rush Hour 3 (2007)','Kung Fu Panda (2008)','Jackie Chan in Shinjuku Incident (2008)','The Forbidden Kingdom (2008)','The Karate Kid: Bring Back (2009)',
+      'The Spy Next Door (2010)','Kung Fu Panda 2 (2011)','Shaolin Go (2011)','Chinese Zodiac (2012)','Police Story: Lockdown (2013)',
+      'Dragon Blade (2013)','Monkey King (2015)','Railroad Tigers (2015)','Kung Fu Panda 3 (2016)','Manhattan Night (2016)',
+      'Skiptrace (2016)','Bleeding Steel (2017)','Namiya (2017)','The Foreigner (2017)','The Nut Job 2: Nutty by Nature (2017)',
+      'Reset (Ni Shi Ying Jiu) (2017)','Earth: One Amazing Day (2017)','Golden Job (2018)','The Game Changers (Fathom) (2018)','The Climbers (2019)',
+      'Vanguard (2020)','Wish Dragon (2021)','Teenage Mutant Ninja Turtles: Mutant Mayhem (2023)','Ride On (2023)','Panda Plan (2024)',
+      'Karate Kid: Legends (2025)',"The Shadow's Edge (2025)"
+    ]},
+    {cat:'Other Movies', items:['Project Hail Mary','Shutter Island','Inception','Interstellar','The Cabin in the Woods','Fight Club (1999)','Micheal (2026)','Obsession']}
+  ],
+  web: [
+    {cat:'Popular', items:['Stranger Things','Loki','Money Heist','Wednesday','Squid Game','Harry Potter (Series)','Game of Thrones']},
+    {cat:'Other', items:['If wishes could kill','Moon knight (Marvel)','Loki (Marvel)','All of us are dead','Alice in borderland']}
+  ],
+  animeSeries: [
+    {cat:'All Anime Series', items:['Demon Slayer','Death Note','Solo Leveling','Jujutsu Kaisen','Chainsaw Man','The Fragrant Flower Blooms with Dignity','The Angel Next Door Spoils Me Rotten']},
+    {cat:'Slice of Life', items:['My Dress-Up Darling','Alya Sometimes Hides Her Feelings in Russian','Classroom of the Elite']}
+  ],
+  animeMovie: [
+    {cat:'All Anime Movies', items:['Weathering With You','Your Name','A Silent Voice','I Want To Eat Your Pancreas','The Garden of the Words','The Tunnel to Summer the Exit of Goodbyes','Suzume']}
+  ]
+};
 
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  var pg = document.getElementById(id);
-  if (pg) pg.classList.add('active');
-  window.scrollTo(0,0);
+const TYPES = ['movie','web','animeSeries','animeMovie'];
+const TYPE_META = {
+  movie: {pageId:'movies', title:'Movies', sub:'Tap to highlight · Long-press for options', searchPh:'Search movies...', addLabel:'movie'},
+  web: {pageId:'web', title:'Web Series', sub:'Tap to highlight · Long-press for options', searchPh:'Search web series...', addLabel:'web series'},
+  animeSeries: {pageId:'animeSeries', title:'Anime Series', sub:'Tap to highlight · Long-press for options', searchPh:'Search anime series...', addLabel:'anime series'},
+  animeMovie: {pageId:'animeMovies', title:'Anime Movies', sub:'Tap to highlight · Long-press for options', searchPh:'Search anime movies...', addLabel:'anime movie'}
+};
+
+// ============================================================
+//  STORAGE v3
+// ============================================================
+const K_CATS = 'col_categories_v3';
+const K_ITEMS = 'col_items_v3';
+const K_DEL_V2 = 'col_deleted_v2';
+const K_ADD_V2 = 'col_added_v2';
+const K_MIGRATED = 'col_migrated_v3';
+
+let DATA = {cats:{}, items:{}};
+
+function uid(){return 'i_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function loadData(){
+  try{
+    DATA.cats = JSON.parse(localStorage.getItem(K_CATS)||'null') || {};
+    DATA.items = JSON.parse(localStorage.getItem(K_ITEMS)||'null') || {};
+  }catch(e){ DATA={cats:{},items:{}}; }
+  TYPES.forEach(t=>{ if(!DATA.cats[t]) DATA.cats[t]=[]; if(!DATA.items[t]) DATA.items[t]=[]; });
+}
+function saveData(){
+  localStorage.setItem(K_CATS, JSON.stringify(DATA.cats));
+  localStorage.setItem(K_ITEMS, JSON.stringify(DATA.items));
 }
 
-function go(id) {
-  if (PAGES.indexOf(id) === -1) return;
-  if (NAV[NAV.length-1] === id) return;
+function seedIfNeeded(){
+  loadData();
+  if(localStorage.getItem(K_MIGRATED)==='1') return;
+  // Read v2 deleted + added for migration
+  let v2Deleted = [];
+  let v2Added = {};
+  try{ v2Deleted = JSON.parse(localStorage.getItem(K_DEL_V2)||'[]'); }catch(e){}
+  try{ v2Added = JSON.parse(localStorage.getItem(K_ADD_V2)||'{}'); }catch(e){}
+  const isDeletedV2 = (type, name)=>v2Deleted.includes(type+'::'+name.trim().toLowerCase());
+
+  TYPES.forEach(type=>{
+    const seedGroups = SEED[type] || [];
+    DATA.cats[type] = [];
+    DATA.items[type] = [];
+    seedGroups.forEach((g, ci)=>{
+      const catId = 'c_'+type+'_'+ci+'_'+Math.random().toString(36).slice(2,6);
+      DATA.cats[type].push({id:catId, name:g.cat, order:ci, collapsed:false, builtin:true});
+      g.items.forEach((name, ii)=>{
+        if(isDeletedV2(type, name)) return;
+        DATA.items[type].push({
+          id:uid(), name, categoryId:catId, order:ii,
+          watched:false, rating:0, favorite:false, builtin:true,
+          createdAt: Date.now()
+        });
+      });
+    });
+    // Migrate v2 added items to first category (or new 'Custom' category)
+    const v2list = v2Added[type] || [];
+    if(v2list.length){
+      let customCat = DATA.cats[type].find(c=>c.name==='Custom');
+      if(!customCat){
+        customCat = {id:'c_'+type+'_custom_'+Math.random().toString(36).slice(2,6), name:'Custom', order:DATA.cats[type].length, collapsed:false, builtin:false};
+        DATA.cats[type].push(customCat);
+      }
+      v2list.forEach((it, idx)=>{
+        const txt = typeof it==='string' ? it : (it && it.text);
+        if(!txt) return;
+        DATA.items[type].push({
+          id:uid(), name:String(txt).trim(), categoryId:customCat.id, order:idx,
+          watched:false, rating:0, favorite:false, builtin:false,
+          createdAt: Date.now()
+        });
+      });
+    }
+  });
+
+  saveData();
+  localStorage.setItem(K_MIGRATED, '1');
+}
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+const PAGES = ['home','movies','web','anime','animeSeries','animeMovies'];
+let NAV = ['home'];
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el = document.getElementById(id);
+  if(el) el.classList.add('active');
+  window.scrollTo(0,0);
+  exitReorderMode(); exitSelectMode();
+}
+function go(id){
+  if(!PAGES.includes(id)) return;
+  if(NAV[NAV.length-1]===id) return;
   NAV.push(id);
   history.pushState({pg:id}, '', '#'+id);
+  if(TYPES.includes(typeOfPage(id))) renderListPage(typeOfPage(id));
   showPage(id);
 }
-
-function goBack() {
-  if (NAV.length > 1) {
-    // Use history.back() which triggers popstate
-    history.back();
-  }
+function goBack(){ if(NAV.length>1) history.back(); }
+function typeOfPage(id){
+  if(id==='movies') return 'movie';
+  if(id==='web') return 'web';
+  if(id==='animeSeries') return 'animeSeries';
+  if(id==='animeMovies') return 'animeMovie';
+  return null;
 }
 
-
-// Init history — push a guard state so back on home doesn't exit
-(function(){
+(function initHistory(){
+  // Guard state so back on home doesn't exit
   history.replaceState({pg:'guard'}, '', location.pathname);
   history.pushState({pg:'home'}, '', '#home');
+  NAV=['home'];
   showPage('home');
 })();
 
-// Prevent exiting app when pressing back on home
-window.addEventListener('popstate', function(e) {
-  if (NAV.length > 1) {
-    NAV.pop();
-    showPage(NAV[NAV.length-1]);
-  } else {
-    // Re-push home guard so user can't exit
-    history.pushState({pg:'home'}, '', '#home');
-    showPage('home');
+window.addEventListener('popstate', function(e){
+  // If a sheet is open, close it instead
+  if(document.getElementById('sheetOverlay').classList.contains('show')){
+    closeSheet(null);
+    history.pushState({pg:NAV[NAV.length-1]}, '', '#'+NAV[NAV.length-1]);
+    return;
   }
-}, false);
-
-// Remove the duplicate listener below by overriding
-
+  if(NAV.length>1){
+    NAV.pop();
+    const target = NAV[NAV.length-1];
+    if(TYPES.includes(typeOfPage(target))) renderListPage(typeOfPage(target));
+    showPage(target);
+  }else{
+    // At home: re-push guard so user must press back again to actually exit
+    history.pushState({pg:'home'}, '', '#home');
+  }
+});
 
 // ============================================================
-//  PERSISTENCE
+//  RENDER LIST PAGE
 // ============================================================
-var K_DEL = 'col_deleted_v2';
-var K_ADD = 'col_added_v2';
+const PAGE_STATE = { search:'', selectMode:false, reorderMode:false };
 
-function getArr(k){ try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]} }
-function setArr(k,a){ localStorage.setItem(k,JSON.stringify(a)) }
-function getObj(k){ try{return JSON.parse(localStorage.getItem(k)||'{}')}catch(e){return{}} }
-function setObj(k,o){ localStorage.setItem(k,JSON.stringify(o)) }
-
-function delKey(type,label){ return type+'::'+label.trim().toLowerCase() }
-
-function addDeleted(type,label){ var a=getArr(K_DEL),k=delKey(type,label); if(a.indexOf(k)===-1){a.push(k);setArr(K_DEL,a)} }
-function isDeleted(type,label){ return getArr(K_DEL).indexOf(delKey(type,label))!==-1 }
-
-function persistAdd(type,text){
-  var m=getObj(K_ADD); if(!m[type])m[type]=[];
-  m[type].push({text:text,ts:Date.now()});
-  setObj(K_ADD,m);
+function renderListPage(type){
+  const meta = TYPE_META[type];
+  const page = document.getElementById(meta.pageId);
+  const favorites = DATA.items[type].filter(i=>i.favorite);
+  page.innerHTML = `
+    <div class="top-bar">
+      <div class="icon-btn" onclick="goBack()" aria-label="Back"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
+      <div class="top-bar-title"><div class="pg-title">${meta.title}</div><div class="pg-sub">${meta.sub}</div></div>
+    </div>
+    <div class="ctrl-row">
+      <button class="ctrl-btn" id="selBtn-${type}" onclick="toggleSelect('${type}')">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Select
+      </button>
+      <button class="ctrl-btn" id="reBtn-${type}" onclick="toggleReorder('${type}')">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        Reorder
+      </button>
+      <div id="bulk-${type}" style="display:none;align-items:center;gap:8px">
+        <button class="ctrl-btn" onclick="selectAllItems('${type}')">All</button>
+        <button class="ctrl-btn danger" onclick="deleteSelected('${type}')">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+          Delete
+        </button>
+      </div>
+    </div>
+    <div class="search-row">
+      <div class="search-wrap">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search-${type}" placeholder="${meta.searchPh}" oninput="onSearch('${type}',this.value)" value="${escapeHtml(PAGE_STATE.search||'')}">
+      </div>
+      <div class="add-fab" onclick="openAddSheet('${type}')" aria-label="Add">
+        <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+    </div>
+    <div id="catContainer-${type}"></div>
+    <div class="total-bar">Total: <span id="totalLabel-${type}">0</span></div>
+    <p class="hint">Long-press any item for Edit · Move · Favorite · Delete</p>
+  `;
+  renderCategories(type);
 }
-function persistRemoveAdded(type,text){
-  var m=getObj(K_ADD); if(!m[type])return;
-  var found=false;
-  m[type]=m[type].filter(function(x){
-    if(!found && (x.text||x)===text){found=true;return false}
-    return true;
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c])}
+
+function highlightText(text, q){
+  if(!q) return escapeHtml(text);
+  const lower = text.toLowerCase(), needle = q.toLowerCase();
+  const idx = lower.indexOf(needle);
+  if(idx<0) return escapeHtml(text);
+  return escapeHtml(text.slice(0,idx)) + '<mark>' + escapeHtml(text.slice(idx, idx+q.length)) + '</mark>' + escapeHtml(text.slice(idx+q.length));
+}
+
+function renderCategories(type){
+  const container = document.getElementById('catContainer-'+type);
+  if(!container) return;
+  const q = (PAGE_STATE.search||'').trim().toLowerCase();
+  const cats = [...DATA.cats[type]].sort((a,b)=>a.order-b.order);
+  const itemsByCat = {};
+  DATA.items[type].forEach(it=>{ (itemsByCat[it.categoryId]=itemsByCat[it.categoryId]||[]).push(it); });
+  Object.keys(itemsByCat).forEach(cid=>itemsByCat[cid].sort((a,b)=>a.order-b.order));
+
+  let html = '';
+  let total = 0;
+
+  // Favorites virtual section
+  const favs = DATA.items[type].filter(i=>i.favorite);
+  if(favs.length){
+    const visibleFavs = q ? favs.filter(i=>i.name.toLowerCase().includes(q)) : favs;
+    if(visibleFavs.length){
+      html += renderCatHtml(type, {id:'__favs', name:'Favorites', collapsed:false, virtual:true}, visibleFavs, q, true);
+    }
+  }
+
+  cats.forEach(cat=>{
+    const items = itemsByCat[cat.id] || [];
+    const visibleItems = q ? items.filter(i=>i.name.toLowerCase().includes(q) || cat.name.toLowerCase().includes(q)) : items;
+    total += items.length;
+    if(q && visibleItems.length===0 && !cat.name.toLowerCase().includes(q)) return;
+    html += renderCatHtml(type, cat, visibleItems, q);
   });
-  setObj(K_ADD,m);
+
+  if(!cats.length){
+    html = '<div class="cat-empty" style="margin-top:20px">No categories yet. Tap + to add one.</div>';
+  }
+
+  container.innerHTML = html;
+  document.getElementById('totalLabel-'+type).textContent = DATA.items[type].length;
+  wireListInteractions(type);
 }
 
-// ============================================================
-//  HELPERS
-// ============================================================
-function getLabel(el){
-  var s=el.querySelector('.serial');
-  var t=el.textContent.trim();
-  if(s){var n=s.textContent.trim();if(t.indexOf(n)===0)t=t.slice(n.length).trim()}
-  return t;
+function renderCatHtml(type, cat, items, q, isFav){
+  const collapsedCls = cat.collapsed ? 'collapsed' : '';
+  const favClass = isFav ? 'fav-cat' : '';
+  const folderIcon = isFav
+    ? `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+    : `<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>`;
+  const addBtn = isFav ? '' : `<div class="cat-add" data-cat-add="${cat.id}" data-cat-name="${escapeHtml(cat.name)}" aria-label="Add to ${escapeHtml(cat.name)}"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>`;
+  const handle = isFav ? '' : `<div class="cat-handle" data-cat-handle="${cat.id}"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>`;
+  let itemsHtml = '';
+  if(items.length===0){
+    itemsHtml = '<div class="cat-empty">Empty</div>';
+  } else {
+    items.forEach((it,i)=>{
+      itemsHtml += renderItemHtml(type, it, i+1, q);
+    });
+  }
+  return `<div class="cat-card ${collapsedCls} ${favClass}" data-cat-id="${cat.id}" data-virtual="${isFav?'1':'0'}">
+    <div class="cat-head" data-cat-toggle="${cat.id}">
+      <div class="cat-folder-icon">${folderIcon}</div>
+      <div class="cat-title">${highlightText(cat.name, q)}</div>
+      <div class="cat-count">${items.length}</div>
+      ${addBtn}
+      ${handle}
+      <div class="cat-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    </div>
+    <div class="cat-body" data-cat-body="${cat.id}">${itemsHtml}</div>
+  </div>`;
 }
-function getItemType(el){
-  if(el.classList.contains('movie'))return 'movie';
-  if(el.classList.contains('web'))return 'web';
-  if(el.classList.contains('animeSeries'))return 'animeSeries';
-  if(el.classList.contains('animeMovie'))return 'animeMovie';
-  return null;
+
+function renderItemHtml(type, item, serial, q){
+  const watchedCls = item.watched ? 'watched' : '';
+  const favCls = item.favorite ? 'fav' : '';
+  return `<div class="item ${watchedCls}" data-item-id="${item.id}" data-type="${type}">
+    <div class="item-check" data-item-check><svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="item-serial">${serial}</div>
+    <div class="item-name">${highlightText(item.name, q)}</div>
+    <div class="item-watched"><svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="item-star ${favCls}" data-item-star><svg fill="${item.favorite?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+    <div class="item-handle" data-item-handle><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+  </div>`;
 }
-function renumber(cls){
-  document.querySelectorAll('.'+cls).forEach(function(el,i){
-    var s=el.querySelector('.serial');if(s)s.textContent=i+1;
+
+function wireListInteractions(type){
+  const container = document.getElementById('catContainer-'+type);
+  if(!container) return;
+  // Category collapse toggles
+  container.querySelectorAll('[data-cat-toggle]').forEach(head=>{
+    head.addEventListener('click', e=>{
+      // Avoid toggling when clicking add or handle
+      if(e.target.closest('[data-cat-add]') || e.target.closest('[data-cat-handle]')) return;
+      const catId = head.getAttribute('data-cat-toggle');
+      if(catId === '__favs') return;
+      const cat = DATA.cats[type].find(c=>c.id===catId);
+      if(!cat) return;
+      cat.collapsed = !cat.collapsed;
+      saveData();
+      head.closest('.cat-card').classList.toggle('collapsed', cat.collapsed);
+    });
   });
-}
-function renumberAll(){['movie','web','animeSeries','animeMovie'].forEach(renumber)}
-
-// ============================================================
-//  TAP = single highlight (only one at a time per category)
-// ============================================================
-function tapItem(el){
-  var cb=el.querySelector('.select-cb');
-  if(cb){cb.checked=!cb.checked;return}
-  var type=getItemType(el);
-  if(!type)return;
-  var cls=typeConfig(type).cls;
-  // Remove highlight from all others in same category
-  document.querySelectorAll('.'+cls+'.on').forEach(function(node){
-    if(node!==el)node.classList.remove('on');
+  // Per-category add
+  container.querySelectorAll('[data-cat-add]').forEach(b=>{
+    b.addEventListener('click', e=>{
+      e.stopPropagation();
+      const catId = b.getAttribute('data-cat-add');
+      const catName = b.getAttribute('data-cat-name');
+      promptAddToCategory(type, catId, catName);
+    });
   });
-  // Toggle this one
-  el.classList.toggle('on');
+  // Items
+  container.querySelectorAll('.item').forEach(el=>{
+    const itemId = el.getAttribute('data-item-id');
+    wireItem(el, type, itemId);
+  });
+  // Drag handles wiring (only when reorder mode active)
+  if(PAGE_STATE.reorderMode){
+    initReorderHandles(type);
+  }
+}
+
+function getItem(type, id){ return DATA.items[type].find(i=>i.id===id); }
+
+function wireItem(el, type, itemId){
+  // Tap = highlight (exclusive) OR toggle check in select mode
+  el.addEventListener('click', e=>{
+    if(e.target.closest('[data-item-star]')) return;
+    if(e.target.closest('[data-item-handle]')) return;
+    if(PAGE_STATE.reorderMode) return;
+    if(PAGE_STATE.selectMode){
+      const cb = el.querySelector('[data-item-check]');
+      cb.classList.toggle('checked');
+      return;
+    }
+    // Exclusive highlight within type
+    const cls = document.querySelectorAll('.page.active .item.on');
+    cls.forEach(n=>{ if(n!==el) n.classList.remove('on'); });
+    el.classList.toggle('on');
+  });
+  // Star
+  const star = el.querySelector('[data-item-star]');
+  if(star){
+    star.addEventListener('click', e=>{
+      e.stopPropagation();
+      const it = getItem(type, itemId);
+      if(!it) return;
+      it.favorite = !it.favorite;
+      saveData();
+      renderCategories(type);
+      updateStats();
+      toast(it.favorite ? '⭐ Added to favorites' : 'Removed from favorites');
+    });
+  }
+  // Long-press for action sheet
+  attachLongPress(el, ()=>openActionSheet(type, itemId));
 }
 
 // ============================================================
-//  ADD ITEM
+//  LONG-PRESS
 // ============================================================
-function addItem(type){
-  var msgs={
-    movie:'Write the name of your movie',
-    web:'Write the name of your web series',
-    animeSeries:'Write the name of your anime series',
-    animeMovie:'Write the name of your anime movie'
-  };
-  var name=prompt(msgs[type]||'Write the name');
-  if(!name||!name.trim())return;
-  name=name.trim();
-  var cfg=typeConfig(type);
-  var el=buildItem(type,name,false);
-  var page=document.getElementById(cfg.pageId);
-  var bar=page.querySelector('.total-bar');
-  page.insertBefore(el,bar);
-  persistAdd(type,name);
-  attachLongPress(el,type,name,false);
-  renumberAll();
-  updateStats();
-}
-
-// ============================================================
-//  TYPE CONFIG
-// ============================================================
-function typeConfig(type){
-  var map={
-    movie:{pageId:'movies',cls:'movie',serialCls:'serial'},
-    web:{pageId:'web',cls:'web',serialCls:'serial web-serial'},
-    animeSeries:{pageId:'animeSeries',cls:'animeSeries',serialCls:'serial anime-serial'},
-    animeMovie:{pageId:'animeMovies',cls:'animeMovie',serialCls:'serial anime-serial'}
-  };
-  return map[type]||map.movie;
-}
-
-function buildItem(type,text,builtin){
-  var cfg=typeConfig(type);
-  var el=document.createElement('div');
-  el.className='item '+cfg.cls;
-  el.setAttribute('data-builtin',builtin?'true':'false');
-  el.onclick=function(){tapItem(el)};
-  var count=document.querySelectorAll('.'+cfg.cls).length+1;
-  el.innerHTML='<div class="'+cfg.serialCls+'">'+count+'</div>'+text;
-  return el;
-}
-
-// ============================================================
-//  DELETE
-// ============================================================
-function confirmDelete(msg,onYes){
-  var ov=document.createElement('div');ov.className='overlay';
-  var d=document.createElement('div');d.className='dialog';
-  d.innerHTML='<h3>Remove item?</h3><p>'+msg+'</p><div class="dialog-btns"><button id="dlgCancel">Cancel</button><button id="dlgOk">Delete</button></div>';
-  ov.appendChild(d);document.body.appendChild(ov);
-  d.querySelector('#dlgCancel').onclick=function(){document.body.removeChild(ov)};
-  d.querySelector('#dlgOk').onclick=function(){document.body.removeChild(ov);onYes()};
-}
-
-function attachLongPress(el,type,text,builtin){
-  var timer=null,sx=0,sy=0;
+function attachLongPress(el, cb){
+  let timer=null, sx=0, sy=0, fired=false;
   function start(e){
-    var t=e.touches?e.touches[0]:e;sx=t.clientX;sy=t.clientY;
-    timer=setTimeout(function(){
-      confirmDelete('"'+getLabel(el)+'"',function(){
-        doDelete(el,type,getLabel(el),builtin);
-      });
-    },420);
+    if(PAGE_STATE.reorderMode || PAGE_STATE.selectMode) return;
+    const t = e.touches ? e.touches[0] : e;
+    sx=t.clientX; sy=t.clientY; fired=false;
+    timer=setTimeout(()=>{
+      fired=true;
+      if(navigator.vibrate) navigator.vibrate(28);
+      cb();
+    }, 450);
   }
   function cancel(e){
-    if(!timer)return;
-    var t=e.changedTouches?e.changedTouches[0]:e;
-    if(Math.abs(t.clientX-sx)>12||Math.abs(t.clientY-sy)>12){clearTimeout(timer);timer=null;return}
-    clearTimeout(timer);timer=null;
+    if(!timer) return;
+    if(e && e.changedTouches){
+      const t = e.changedTouches[0];
+      if(Math.abs(t.clientX-sx)>12 || Math.abs(t.clientY-sy)>12){ clearTimeout(timer); timer=null; return; }
+    }
+    clearTimeout(timer); timer=null;
   }
-  el.addEventListener('touchstart',start,{passive:true});
-  el.addEventListener('mousedown',start);
-  ['touchend','touchmove','touchcancel','mouseup','mousemove','mouseleave'].forEach(function(ev){el.addEventListener(ev,cancel)});
-}
-
-function doDelete(el,type,label,builtin){
-  el.parentNode.removeChild(el);
-  if(builtin||el.getAttribute('data-builtin')==='true'){addDeleted(type,label)}
-  else{persistRemoveAdded(type,label)}
-  renumberAll();updateStats();
-}
-
-// ============================================================
-//  SELECT MODE
-// ============================================================
-var selectModes={movie:false,web:false,animeSeries:false,animeMovie:false};
-var selectCfg={
-  movie:{btnId:'movieSelectBtn',bulkId:'movieBulkActions',allId:'movieSelAll'},
-  web:{btnId:'webSelectBtn',bulkId:'webBulkActions',allId:'webSelAll'},
-  animeSeries:{btnId:'aserSelectBtn',bulkId:'aserBulkActions',allId:'aserSelAll'},
-  animeMovie:{btnId:'amovSelectBtn',bulkId:'amovBulkActions',allId:'amovSelAll'}
-};
-
-function toggleSelect(type){
-  selectModes[type]=!selectModes[type];
-  var cfg=selectCfg[type];
-  var btn=document.getElementById(cfg.btnId);
-  var bulk=document.getElementById(cfg.bulkId);
-  var cls=typeConfig(type).cls;
-  if(selectModes[type]){
-    btn.textContent='Deselect';
-    bulk.style.display='flex';
-    document.querySelectorAll('.'+cls).forEach(function(el){
-      if(!el.querySelector('.select-cb')){
-        var cb=document.createElement('input');
-        cb.type='checkbox';cb.className='select-cb';
-        el.insertBefore(cb,el.firstChild);
-        cb.addEventListener('click',function(e){e.stopPropagation()});
-      }
-    });
-  } else {
-    btn.textContent='Select';
-    bulk.style.display='none';
-    document.getElementById(cfg.allId).checked=false;
-    document.querySelectorAll('.'+cls+' .select-cb').forEach(function(cb){cb.parentNode.removeChild(cb)});
-  }
-}
-
-function selectAll(type){
-  var cfg=selectCfg[type];
-  var checked=document.getElementById(cfg.allId).checked;
-  document.querySelectorAll('.'+typeConfig(type).cls+' .select-cb').forEach(function(cb){cb.checked=checked});
-}
-
-function deleteSelected(type){
-  var cls=typeConfig(type).cls;
-  var toDelete=[];
-  document.querySelectorAll('.'+cls).forEach(function(el){
-    var cb=el.querySelector('.select-cb');
-    if(cb&&cb.checked)toDelete.push(el);
-  });
-  if(!toDelete.length){alert('Select at least one item.');return}
-  confirmDelete('Delete '+toDelete.length+' selected item(s)?',function(){
-    toDelete.forEach(function(el){doDelete(el,type,getLabel(el),el.getAttribute('data-builtin')==='true')});
-    if(selectModes[type])toggleSelect(type);
-  });
+  el.addEventListener('touchstart', start, {passive:true});
+  el.addEventListener('mousedown', start);
+  ['touchend','touchcancel','mouseup','mouseleave'].forEach(ev=>el.addEventListener(ev, cancel));
+  el.addEventListener('touchmove', e=>{
+    if(!timer) return;
+    const t = e.touches[0];
+    if(Math.abs(t.clientX-sx)>12 || Math.abs(t.clientY-sy)>12){ clearTimeout(timer); timer=null; }
+  }, {passive:true});
+  el.addEventListener('click', e=>{ if(fired){ e.stopPropagation(); e.preventDefault(); } }, true);
 }
 
 // ============================================================
 //  SEARCH
 // ============================================================
-function search(type){
-  var inputId={movie:'movieSearch',web:'webSearch',animeSeries:'aserSearch',animeMovie:'amovSearch'};
-  var val=document.getElementById(inputId[type]).value.toUpperCase();
-  var cls=typeConfig(type).cls;
-  document.querySelectorAll('.'+cls).forEach(function(el){
-    el.style.display=el.textContent.toUpperCase().indexOf(val)!==-1?'flex':'none';
+function onSearch(type, value){
+  PAGE_STATE.search = value;
+  renderCategories(type);
+}
+
+// ============================================================
+//  SELECT MODE
+// ============================================================
+function toggleSelect(type){
+  if(PAGE_STATE.reorderMode) exitReorderMode();
+  PAGE_STATE.selectMode = !PAGE_STATE.selectMode;
+  document.body.classList.toggle('select-mode', PAGE_STATE.selectMode);
+  const btn = document.getElementById('selBtn-'+type);
+  const bulk = document.getElementById('bulk-'+type);
+  if(btn){ btn.classList.toggle('active', PAGE_STATE.selectMode); btn.childNodes[btn.childNodes.length-1].nodeValue = PAGE_STATE.selectMode ? ' Done' : ' Select'; }
+  if(bulk) bulk.style.display = PAGE_STATE.selectMode ? 'flex' : 'none';
+}
+function exitSelectMode(){
+  PAGE_STATE.selectMode = false;
+  document.body.classList.remove('select-mode');
+  document.querySelectorAll('[data-item-check].checked').forEach(n=>n.classList.remove('checked'));
+}
+function selectAllItems(type){
+  document.querySelectorAll('#catContainer-'+type+' [data-item-check]').forEach(c=>c.classList.add('checked'));
+}
+function deleteSelected(type){
+  const checked = [...document.querySelectorAll('#catContainer-'+type+' .item')].filter(el=>el.querySelector('[data-item-check]').classList.contains('checked'));
+  if(!checked.length){ toast('Select at least one item'); return; }
+  confirmDialog('Delete '+checked.length+' item(s)?', 'This cannot be undone.', ()=>{
+    checked.forEach(el=>{
+      const id = el.getAttribute('data-item-id');
+      DATA.items[type] = DATA.items[type].filter(i=>i.id!==id);
+    });
+    saveData();
+    exitSelectMode();
+    toggleSelect(type); // exit and reset button
+    PAGE_STATE.selectMode=false;
+    document.body.classList.remove('select-mode');
+    const btn=document.getElementById('selBtn-'+type); if(btn){ btn.classList.remove('active'); btn.childNodes[btn.childNodes.length-1].nodeValue=' Select'; }
+    const bulk=document.getElementById('bulk-'+type); if(bulk) bulk.style.display='none';
+    renderCategories(type);
+    updateStats();
+    toast('Deleted');
   });
+}
+
+// ============================================================
+//  REORDER MODE
+// ============================================================
+function toggleReorder(type){
+  if(PAGE_STATE.selectMode) exitSelectMode();
+  PAGE_STATE.reorderMode = !PAGE_STATE.reorderMode;
+  document.body.classList.toggle('reorder-mode', PAGE_STATE.reorderMode);
+  const btn = document.getElementById('reBtn-'+type);
+  if(btn){ btn.classList.toggle('active', PAGE_STATE.reorderMode); btn.childNodes[btn.childNodes.length-1].nodeValue = PAGE_STATE.reorderMode ? ' Done' : ' Reorder'; }
+  // Expand all categories during reorder for visibility
+  if(PAGE_STATE.reorderMode){
+    DATA.cats[type].forEach(c=>c.collapsed=false);
+    saveData();
+    renderCategories(type);
+  } else {
+    document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
+  }
+  if(PAGE_STATE.reorderMode) initReorderHandles(type);
+}
+function exitReorderMode(){
+  if(!PAGE_STATE.reorderMode) return;
+  PAGE_STATE.reorderMode=false;
+  document.body.classList.remove('reorder-mode');
+  document.querySelectorAll('.ctrl-btn.active').forEach(b=>{
+    if(b.id.startsWith('reBtn-')){ b.classList.remove('active'); b.childNodes[b.childNodes.length-1].nodeValue=' Reorder'; }
+  });
+  document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
+}
+
+// Pointer-based drag for items + categories
+function initReorderHandles(type){
+  const container = document.getElementById('catContainer-'+type);
+  if(!container) return;
+
+  // Item drag
+  container.querySelectorAll('[data-item-handle]').forEach(handle=>{
+    handle.onpointerdown = e=>{ e.preventDefault(); startItemDrag(e, handle.closest('.item'), type); };
+  });
+  // Cat drag
+  container.querySelectorAll('[data-cat-handle]').forEach(handle=>{
+    handle.onpointerdown = e=>{ e.preventDefault(); startCatDrag(e, handle.closest('.cat-card'), type); };
+  });
+}
+
+function startItemDrag(startEv, itemEl, type){
+  if(!itemEl) return;
+  const itemId = itemEl.getAttribute('data-item-id');
+  itemEl.setPointerCapture && itemEl.setPointerCapture(startEv.pointerId);
+  itemEl.classList.add('dragging');
+  const indicator = document.createElement('div'); indicator.className='drop-indicator';
+  let currentDrop = null;
+
+  function move(e){
+    const x = e.clientX, y = e.clientY;
+    // find item or cat-body under pointer
+    document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
+    const els = document.elementsFromPoint(x,y);
+    let dropTarget = null;
+    for(const el of els){
+      if(el.classList && el.classList.contains('item') && el!==itemEl){ dropTarget = el; break; }
+      if(el.classList && el.classList.contains('cat-body')){ dropTarget = el; break; }
+    }
+    if(!dropTarget) return;
+    if(dropTarget.classList.contains('item')){
+      const rect = dropTarget.getBoundingClientRect();
+      const after = (y - rect.top) > rect.height/2;
+      currentDrop = {kind:'item', target:dropTarget, after};
+      if(after) dropTarget.after(indicator); else dropTarget.before(indicator);
+    } else if(dropTarget.classList.contains('cat-body')){
+      currentDrop = {kind:'catEmpty', target:dropTarget};
+      dropTarget.appendChild(indicator);
+    }
+  }
+  function up(){
+    document.removeEventListener('pointermove', move);
+    document.removeEventListener('pointerup', up);
+    document.removeEventListener('pointercancel', up);
+    itemEl.classList.remove('dragging');
+    indicator.remove();
+    if(!currentDrop){ return; }
+    const item = getItem(type, itemId);
+    if(!item) return;
+    let newCatId = item.categoryId;
+    let newOrder = 0;
+    if(currentDrop.kind==='item'){
+      const targetId = currentDrop.target.getAttribute('data-item-id');
+      const targetItem = getItem(type, targetId);
+      if(!targetItem) return;
+      newCatId = targetItem.categoryId;
+      // Compute order
+      const siblings = DATA.items[type].filter(i=>i.categoryId===newCatId && i.id!==item.id).sort((a,b)=>a.order-b.order);
+      const tIdx = siblings.indexOf(targetItem);
+      const insertIdx = currentDrop.after ? tIdx+1 : tIdx;
+      siblings.splice(insertIdx, 0, item);
+      siblings.forEach((s,i)=>s.order=i);
+    } else if(currentDrop.kind==='catEmpty'){
+      const catBody = currentDrop.target;
+      const cardId = catBody.closest('.cat-card').getAttribute('data-cat-id');
+      if(cardId==='__favs') return;
+      newCatId = cardId;
+      const siblings = DATA.items[type].filter(i=>i.categoryId===newCatId && i.id!==item.id).sort((a,b)=>a.order-b.order);
+      siblings.push(item);
+      siblings.forEach((s,i)=>s.order=i);
+    }
+    item.categoryId = newCatId;
+    saveData();
+    renderCategories(type);
+  }
+  document.addEventListener('pointermove', move);
+  document.addEventListener('pointerup', up);
+  document.addEventListener('pointercancel', up);
+}
+
+function startCatDrag(startEv, catEl, type){
+  if(!catEl) return;
+  const catId = catEl.getAttribute('data-cat-id');
+  if(catId==='__favs') return;
+  catEl.classList.add('dragging');
+  const indicator = document.createElement('div'); indicator.className='drop-indicator';
+  let currentDrop = null;
+
+  function move(e){
+    const x = e.clientX, y = e.clientY;
+    document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
+    const els = document.elementsFromPoint(x,y);
+    for(const el of els){
+      const card = el.closest && el.closest('.cat-card');
+      if(card && card!==catEl && card.getAttribute('data-virtual')!=='1'){
+        const rect = card.getBoundingClientRect();
+        const after = (y - rect.top) > rect.height/2;
+        currentDrop = {target:card, after};
+        if(after) card.after(indicator); else card.before(indicator);
+        return;
+      }
+    }
+  }
+  function up(){
+    document.removeEventListener('pointermove', move);
+    document.removeEventListener('pointerup', up);
+    document.removeEventListener('pointercancel', up);
+    catEl.classList.remove('dragging');
+    indicator.remove();
+    if(!currentDrop) return;
+    const movedCat = DATA.cats[type].find(c=>c.id===catId);
+    const targetCat = DATA.cats[type].find(c=>c.id===currentDrop.target.getAttribute('data-cat-id'));
+    if(!movedCat || !targetCat) return;
+    const ordered = [...DATA.cats[type]].sort((a,b)=>a.order-b.order).filter(c=>c.id!==catId);
+    const tIdx = ordered.indexOf(targetCat);
+    const insertIdx = currentDrop.after ? tIdx+1 : tIdx;
+    ordered.splice(insertIdx, 0, movedCat);
+    ordered.forEach((c,i)=>c.order=i);
+    saveData();
+    renderCategories(type);
+  }
+  document.addEventListener('pointermove', move);
+  document.addEventListener('pointerup', up);
+  document.addEventListener('pointercancel', up);
+}
+
+// ============================================================
+//  SHEETS (bottom-sheet UI for menus and dialogs)
+// ============================================================
+let SHEET_OPEN = false;
+function openSheet(html){
+  const ov = document.getElementById('sheetOverlay');
+  document.getElementById('sheetBody').innerHTML = html;
+  ov.classList.add('show');
+  SHEET_OPEN = true;
+}
+function closeSheet(e){
+  if(e && e.target && e.target.id!=='sheetOverlay' && !(e.type==='click' && e.target.closest && e.target.closest('[data-sheet-close]'))) return;
+  forceCloseSheet();
+}
+function forceCloseSheet(){
+  document.getElementById('sheetOverlay').classList.remove('show');
+  SHEET_OPEN = false;
+}
+
+function openActionSheet(type, itemId){
+  const item = getItem(type, itemId);
+  if(!item) return;
+  openSheet(`
+    <div class="sheet-title">${escapeHtml(item.name)}</div>
+    <div class="sheet-sub">Choose an action</div>
+    <div class="sheet-action" data-act="edit">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Edit Name</div><div class="sheet-action-sub">Rename this item</div></div>
+    </div>
+    <div class="sheet-action" data-act="move">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Move to…</div><div class="sheet-action-sub">Change category</div></div>
+    </div>
+    <div class="sheet-action" data-act="fav">
+      <div class="sheet-action-icon"><svg fill="${item.favorite?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">${item.favorite?'Remove Favorite':'Add to Favorites'}</div><div class="sheet-action-sub">Show in ⭐ Favorites</div></div>
+    </div>
+    <div class="sheet-action" data-act="watched">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">${item.watched?'Mark Unwatched':'Mark Watched'}</div><div class="sheet-action-sub">Track viewing progress</div></div>
+    </div>
+    <div class="sheet-action" data-act="rate">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Rate</div><div class="sheet-action-sub">Current: ${item.rating ? '★'.repeat(item.rating) : '—'}</div></div>
+    </div>
+    <div class="sheet-action danger" data-act="delete">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Delete</div><div class="sheet-action-sub">Remove permanently</div></div>
+    </div>
+  `);
+  document.querySelectorAll('#sheetBody [data-act]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const act = el.getAttribute('data-act');
+      if(act==='edit'){ openEditSheet(type, itemId); }
+      else if(act==='move'){ openMoveSheet(type, itemId); }
+      else if(act==='fav'){ item.favorite=!item.favorite; saveData(); renderCategories(type); updateStats(); forceCloseSheet(); toast(item.favorite?'⭐ Added to favorites':'Removed from favorites'); }
+      else if(act==='watched'){ item.watched=!item.watched; saveData(); renderCategories(type); updateStats(); forceCloseSheet(); toast(item.watched?'✓ Marked watched':'Unmarked'); }
+      else if(act==='rate'){ openRateSheet(type, itemId); }
+      else if(act==='delete'){ openDeleteSheet(type, itemId); }
+    });
+  });
+}
+
+function openEditSheet(type, itemId){
+  const item = getItem(type, itemId);
+  if(!item) return;
+  openSheet(`
+    <div class="sheet-title">Edit Name</div>
+    <div class="sheet-sub">Update the title for this item</div>
+    <input class="sheet-input" id="editInput" value="${escapeHtml(item.name)}" autocomplete="off">
+    <div class="sheet-btns">
+      <button class="btn btn-glass" data-sheet-close>Cancel</button>
+      <button class="btn btn-primary" id="editSave">Save</button>
+    </div>
+  `);
+  setTimeout(()=>document.getElementById('editInput').focus(),120);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  document.getElementById('editSave').onclick = ()=>{
+    const v = document.getElementById('editInput').value.trim();
+    if(!v) return;
+    item.name = v; saveData();
+    forceCloseSheet();
+    renderCategories(type);
+    toast('Updated');
+  };
+}
+
+function openMoveSheet(type, itemId){
+  const item = getItem(type, itemId);
+  if(!item) return;
+  const cats = [...DATA.cats[type]].sort((a,b)=>a.order-b.order);
+  let listHtml = '';
+  cats.forEach(c=>{
+    const cur = c.id===item.categoryId ? '✓ ' : '';
+    listHtml += `<div class="sheet-action" data-move-to="${c.id}">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">${cur}${escapeHtml(c.name)}</div></div>
+    </div>`;
+  });
+  openSheet(`
+    <div class="sheet-title">Move to Category</div>
+    <div class="sheet-sub">${escapeHtml(item.name)}</div>
+    <div class="sheet-cat-list">${listHtml}</div>
+    <div class="sheet-btns" style="margin-top:14px">
+      <button class="btn btn-glass" data-sheet-close>Cancel</button>
+    </div>
+  `);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  document.querySelectorAll('[data-move-to]').forEach(el=>{
+    el.onclick = ()=>{
+      const cid = el.getAttribute('data-move-to');
+      if(cid===item.categoryId){ forceCloseSheet(); return; }
+      const siblings = DATA.items[type].filter(i=>i.categoryId===cid).sort((a,b)=>a.order-b.order);
+      item.categoryId = cid;
+      item.order = siblings.length ? Math.max(...siblings.map(s=>s.order))+1 : 0;
+      saveData();
+      forceCloseSheet();
+      renderCategories(type);
+      toast('Moved');
+    };
+  });
+}
+
+function openRateSheet(type, itemId){
+  const item = getItem(type, itemId);
+  if(!item) return;
+  let stars = '';
+  for(let i=1;i<=5;i++){
+    stars += `<div class="sheet-star ${i<=item.rating?'on':''}" data-rate="${i}"><svg fill="${i<=item.rating?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>`;
+  }
+  openSheet(`
+    <div class="sheet-title">Rate this</div>
+    <div class="sheet-sub">${escapeHtml(item.name)}</div>
+    <div class="sheet-rating">${stars}</div>
+    <div class="sheet-btns">
+      <button class="btn btn-glass" data-sheet-close>Cancel</button>
+      <button class="btn btn-glass" id="clearRate">Clear</button>
+    </div>
+  `);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  document.getElementById('clearRate').onclick = ()=>{ item.rating=0; saveData(); forceCloseSheet(); renderCategories(type); updateStats(); toast('Rating cleared'); };
+  document.querySelectorAll('[data-rate]').forEach(el=>{
+    el.onclick = ()=>{
+      item.rating = parseInt(el.getAttribute('data-rate'),10);
+      saveData(); forceCloseSheet(); renderCategories(type); updateStats(); toast('★ '+item.rating+' stars');
+    };
+  });
+}
+
+function openDeleteSheet(type, itemId){
+  const item = getItem(type, itemId);
+  if(!item) return;
+  openSheet(`
+    <div class="sheet-title">Delete?</div>
+    <div class="sheet-sub">"${escapeHtml(item.name)}" will be removed permanently.</div>
+    <div class="sheet-btns">
+      <button class="btn btn-glass" data-sheet-close>Cancel</button>
+      <button class="btn btn-primary" id="confDel" style="background:linear-gradient(135deg,#dc2626,#ec4899)">Delete</button>
+    </div>
+  `);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  document.getElementById('confDel').onclick = ()=>{
+    DATA.items[type] = DATA.items[type].filter(i=>i.id!==item.id);
+    saveData(); forceCloseSheet(); renderCategories(type); updateStats(); toast('Deleted');
+  };
+}
+
+function confirmDialog(title, msg, onYes){
+  openSheet(`
+    <div class="sheet-title">${escapeHtml(title)}</div>
+    <div class="sheet-sub">${escapeHtml(msg)}</div>
+    <div class="sheet-btns">
+      <button class="btn btn-glass" data-sheet-close>Cancel</button>
+      <button class="btn btn-primary" id="confYes" style="background:linear-gradient(135deg,#dc2626,#ec4899)">Confirm</button>
+    </div>
+  `);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  document.getElementById('confYes').onclick = ()=>{ forceCloseSheet(); onYes(); };
+}
+
+// ============================================================
+//  ADD FLOW
+// ============================================================
+function openAddSheet(type){
+  const meta = TYPE_META[type];
+  openSheet(`
+    <div class="sheet-title">Add a ${meta.addLabel}</div>
+    <div class="sheet-sub">Pick a destination</div>
+    <div class="sheet-action" data-add-mode="existing">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Add to Existing Category</div><div class="sheet-action-sub">Choose from your categories</div></div>
+    </div>
+    <div class="sheet-action" data-add-mode="new">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Create New Category</div><div class="sheet-action-sub">Start a fresh group</div></div>
+    </div>
+    <div class="sheet-btns" style="margin-top:14px">
+      <button class="btn btn-glass" data-sheet-close>Cancel</button>
+    </div>
+  `);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  document.querySelector('[data-add-mode="existing"]').onclick = ()=>openPickCategorySheet(type);
+  document.querySelector('[data-add-mode="new"]').onclick = ()=>openCreateCategorySheet(type);
+}
+
+function openPickCategorySheet(type){
+  const cats = [...DATA.cats[type]].sort((a,b)=>a.order-b.order);
+  if(!cats.length){ openCreateCategorySheet(type); return; }
+  let listHtml='';
+  cats.forEach(c=>{
+    listHtml += `<div class="sheet-action" data-pick-cat="${c.id}" data-pick-name="${escapeHtml(c.name)}">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">${escapeHtml(c.name)}</div></div>
+    </div>`;
+  });
+  openSheet(`
+    <div class="sheet-title">Pick a Category</div>
+    <div class="sheet-sub">Where should this go?</div>
+    <div class="sheet-cat-list">${listHtml}</div>
+    <div class="sheet-btns" style="margin-top:14px">
+      <button class="btn btn-glass" data-sheet-close>Cancel</button>
+      <button class="btn btn-primary" id="newCatBtn">+ New Category</button>
+    </div>
+  `);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  document.getElementById('newCatBtn').onclick = ()=>openCreateCategorySheet(type);
+  document.querySelectorAll('[data-pick-cat]').forEach(el=>{
+    el.onclick = ()=>promptAddToCategory(type, el.getAttribute('data-pick-cat'), el.getAttribute('data-pick-name'));
+  });
+}
+
+function openCreateCategorySheet(type){
+  openSheet(`
+    <div class="sheet-title">New Category</div>
+    <div class="sheet-sub">Name your new category</div>
+    <input class="sheet-input" id="newCatInput" placeholder="e.g. Fast & Furious" autocomplete="off">
+    <div class="sheet-btns">
+      <button class="btn btn-glass" data-sheet-close>Cancel</button>
+      <button class="btn btn-primary" id="createCatNext">Next</button>
+    </div>
+  `);
+  setTimeout(()=>document.getElementById('newCatInput').focus(),120);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  document.getElementById('createCatNext').onclick = ()=>{
+    const name = document.getElementById('newCatInput').value.trim();
+    if(!name) return;
+    const newCat = {id:'c_'+type+'_'+Math.random().toString(36).slice(2,8), name, order:DATA.cats[type].length, collapsed:false, builtin:false};
+    DATA.cats[type].push(newCat);
+    saveData();
+    promptAddToCategory(type, newCat.id, newCat.name);
+  };
+}
+
+function promptAddToCategory(type, catId, catName){
+  const meta = TYPE_META[type];
+  openSheet(`
+    <div class="sheet-title">Add to ${escapeHtml(catName)}</div>
+    <div class="sheet-sub">Write the name of your ${meta.addLabel}</div>
+    <input class="sheet-input" id="addItemInput" placeholder="e.g. The Dark Knight" autocomplete="off">
+    <div class="sheet-btns">
+      <button class="btn btn-glass" data-sheet-close>Cancel</button>
+      <button class="btn btn-primary" id="addItemSave">Add</button>
+    </div>
+  `);
+  setTimeout(()=>document.getElementById('addItemInput').focus(),120);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  const submit = ()=>{
+    const name = document.getElementById('addItemInput').value.trim();
+    if(!name) return;
+    const siblings = DATA.items[type].filter(i=>i.categoryId===catId).sort((a,b)=>a.order-b.order);
+    DATA.items[type].push({
+      id:uid(), name, categoryId:catId, order: siblings.length ? Math.max(...siblings.map(s=>s.order))+1 : 0,
+      watched:false, rating:0, favorite:false, builtin:false, createdAt:Date.now()
+    });
+    saveData();
+    forceCloseSheet();
+    renderCategories(type);
+    updateStats();
+    toast('Added to '+catName);
+  };
+  document.getElementById('addItemSave').onclick = submit;
+  document.getElementById('addItemInput').addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+}
+
+// ============================================================
+//  SETTINGS / BACKUP
+// ============================================================
+function openSettings(){
+  openSheet(`
+    <div class="sheet-title">Settings</div>
+    <div class="sheet-sub">Backup, restore, and reset</div>
+    <div class="sheet-action" data-set="export">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Export to JSON</div><div class="sheet-action-sub">Download a backup file</div></div>
+    </div>
+    <div class="sheet-action" data-set="import">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Import from JSON</div><div class="sheet-action-sub">Restore from a backup</div></div>
+    </div>
+    <div class="sheet-action" data-set="pdf">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Download PDF</div><div class="sheet-action-sub">Print-friendly list</div></div>
+    </div>
+    <div class="sheet-action danger" data-set="reset">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9"/><polyline points="3 4 3 12 11 12"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Reset to Defaults</div><div class="sheet-action-sub">Re-seed built-in lists</div></div>
+    </div>
+    <div class="sheet-btns" style="margin-top:14px">
+      <button class="btn btn-glass" data-sheet-close>Close</button>
+    </div>
+  `);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  document.querySelector('[data-set="export"]').onclick = exportJSON;
+  document.querySelector('[data-set="import"]').onclick = ()=>document.getElementById('importFile').click();
+  document.querySelector('[data-set="pdf"]').onclick = ()=>{ forceCloseSheet(); downloadPDF(); };
+  document.querySelector('[data-set="reset"]').onclick = ()=>{
+    forceCloseSheet();
+    confirmDialog('Reset all data?', 'Your added items and changes will be lost. Re-seeds default categories and items.', ()=>{
+      localStorage.removeItem(K_CATS); localStorage.removeItem(K_ITEMS); localStorage.removeItem(K_MIGRATED);
+      seedIfNeeded();
+      renderActivePage();
+      toast('Reset complete');
+    });
+  };
+}
+
+function exportJSON(){
+  forceCloseSheet();
+  const payload = {version:3, exportedAt:new Date().toISOString(), categories:DATA.cats, items:DATA.items};
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'my-collection-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  toast('Exported');
+}
+
+function handleImport(ev){
+  const f = ev.target.files && ev.target.files[0];
+  if(!f) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    try{
+      const data = JSON.parse(e.target.result);
+      if(!data || !data.categories || !data.items) throw new Error('Invalid');
+      confirmDialog('Replace current data?', 'This will overwrite your current categories and items.', ()=>{
+        DATA.cats = data.categories;
+        DATA.items = data.items;
+        TYPES.forEach(t=>{ if(!DATA.cats[t]) DATA.cats[t]=[]; if(!DATA.items[t]) DATA.items[t]=[]; });
+        saveData();
+        renderActivePage();
+        toast('Imported successfully');
+      });
+    }catch(err){ toast('Invalid file'); }
+    ev.target.value = '';
+  };
+  reader.readAsText(f);
+}
+
+function renderActivePage(){
+  const active = NAV[NAV.length-1];
+  if(TYPES.includes(typeOfPage(active))) renderListPage(typeOfPage(active));
+  updateStats();
 }
 
 // ============================================================
 //  STATS + DONUT
 // ============================================================
 function updateStats(){
-  var m=document.querySelectorAll('.movie').length;
-  var w=document.querySelectorAll('.web').length;
-  var as=document.querySelectorAll('.animeSeries').length;
-  var am=document.querySelectorAll('.animeMovie').length;
-  var a=as+am;
-  var totalAll=m+w+a;
-  var total=totalAll||1;
+  const m = DATA.items.movie.length;
+  const w = DATA.items.web.length;
+  const as = DATA.items.animeSeries.length;
+  const am = DATA.items.animeMovie.length;
+  const a = as+am;
+  const tot = m+w+a;
+  const den = tot||1;
 
-  document.getElementById('hm').textContent=m;
-  document.getElementById('hw').textContent=w;
-  document.getElementById('ha').textContent=a;
-  document.getElementById('ht').textContent=totalAll;
+  ['hm','hw','ha','ht'].forEach((id,i)=>{
+    const v = [m,w,a,tot][i];
+    const el = document.getElementById(id); if(el) el.textContent=v;
+  });
+  setText('folderMovieCount', m+' items');
+  setText('folderWebCount', w+' items');
+  setText('folderAnimeCount', a+' items');
+  setText('folderASeriesCount', as+' items');
+  setText('folderAMoviesCount', am+' items');
 
-  document.getElementById('folderMovieCount').textContent=m+' items';
-  document.getElementById('folderWebCount').textContent=w+' items';
-  document.getElementById('folderAnimeCount').textContent=a+' items';
-  document.getElementById('folderASeriesCount').textContent=as+' items';
-  document.getElementById('folderAMoviesCount').textContent=am+' items';
+  setText('mpct', Math.round(m/den*100)+'%');
+  setText('wpct', Math.round(w/den*100)+'%');
+  setText('apct', Math.round(a/den*100)+'%');
+  setW('mbar', m/den*100);
+  setW('wbar', w/den*100);
+  setW('abar', a/den*100);
 
-  document.getElementById('mpct').textContent=Math.round(m/total*100)+'%';
-  document.getElementById('wpct').textContent=Math.round(w/total*100)+'%';
-  document.getElementById('apct').textContent=Math.round(a/total*100)+'%';
-  document.getElementById('mbar').style.width=m/total*100+'%';
-  document.getElementById('wbar').style.width=w/total*100+'%';
-  document.getElementById('abar').style.width=a/total*100+'%';
-
-  document.getElementById('movieTotal').textContent=m;
-  document.getElementById('webTotal').textContent=w;
-  document.getElementById('aserTotal').textContent=as;
-  document.getElementById('amovTotal').textContent=am;
+  // Extra stats
+  const allItems = [...DATA.items.movie, ...DATA.items.web, ...DATA.items.animeSeries, ...DATA.items.animeMovie];
+  const watched = allItems.filter(i=>i.watched).length;
+  const rated = allItems.filter(i=>i.rating>0);
+  const avg = rated.length ? (rated.reduce((s,i)=>s+i.rating,0)/rated.length).toFixed(1) : '—';
+  const favs = allItems.filter(i=>i.favorite).length;
+  const weekAgo = Date.now()-7*24*60*60*1000;
+  const week = allItems.filter(i=>i.createdAt && i.createdAt>weekAgo).length;
+  setText('watchedPct', allItems.length ? Math.round(watched/allItems.length*100)+'%' : '0%');
+  setText('avgRating', avg);
+  setText('favCount', favs);
+  setText('weekAdded', week);
 
   // Donut
-  var chkM=document.querySelector('#dchkM input').checked;
-  var chkW=document.querySelector('#dchkW input').checked;
-  var chkA=document.querySelector('#dchkA input').checked;
-  var vm=chkM?m:0, vw=chkW?w:0, va=chkA?a:0;
-  var vt=vm+vw+va;
-  var dt=vt||1;
-
-  var mp=Math.round(vm/dt*100), wp=Math.round(vw/dt*100), ap=Math.round(va/dt*100);
-  var a1=vm/dt*360, a2=vw/dt*360;
-
-  var ring=document.getElementById('donutRing');
-  ring.style.background=vt
-    ?'conic-gradient(#8b5cf6 0deg '+a1+'deg, #4c9dff '+a1+'deg '+(a1+a2)+'deg, #ff6fb2 '+(a1+a2)+'deg 360deg)'
-    :'conic-gradient(rgba(255,255,255,0.08) 0deg 360deg)';
-
-  document.getElementById('donutTotal').textContent=vt;
-  document.getElementById('dbrMPct').textContent=mp+'%';
-  document.getElementById('dbrWPct').textContent=wp+'%';
-  document.getElementById('dbrAPct').textContent=ap+'%';
-  document.getElementById('dbrMBar').style.width=mp+'%';
-  document.getElementById('dbrWBar').style.width=wp+'%';
-  document.getElementById('dbrABar').style.width=ap+'%';
-
-  document.getElementById('dbrMovie').className='donut-bar-row'+(chkM?'':' off');
-  document.getElementById('dbrWeb').className='donut-bar-row'+(chkW?'':' off');
-  document.getElementById('dbrAnime').className='donut-bar-row'+(chkA?'':' off');
-  document.getElementById('dchkM').className='donut-check'+(chkM?'':' off');
-  document.getElementById('dchkW').className='donut-check'+(chkW?'':' off');
-  document.getElementById('dchkA').className='donut-check'+(chkA?'':' off');
-
-  document.getElementById('dCntM').textContent=m;
-  document.getElementById('dCntW').textContent=w;
-  document.getElementById('dCntA').textContent=a;
-  document.getElementById('dCntT').textContent=totalAll;
+  const chkM = document.querySelector('#dchkM input').checked;
+  const chkW = document.querySelector('#dchkW input').checked;
+  const chkA = document.querySelector('#dchkA input').checked;
+  const vm = chkM?m:0, vw=chkW?w:0, va=chkA?a:0;
+  const vt = vm+vw+va;
+  const dt = vt||1;
+  const mp = Math.round(vm/dt*100), wp=Math.round(vw/dt*100), ap=Math.round(va/dt*100);
+  const a1 = vm/dt*360, a2=vw/dt*360;
+  const ring = document.getElementById('donutRing');
+  if(ring){
+    ring.style.background = vt
+      ? `conic-gradient(#8b5cf6 0deg ${a1}deg, #3b82f6 ${a1}deg ${a1+a2}deg, #ec4899 ${a1+a2}deg 360deg)`
+      : 'conic-gradient(rgba(255,255,255,0.08) 0deg 360deg)';
+  }
+  setText('donutTotal', vt);
+  setText('dbrMPct', mp+'%'); setText('dbrWPct', wp+'%'); setText('dbrAPct', ap+'%');
+  setW('dbrMBar', mp); setW('dbrWBar', wp); setW('dbrABar', ap);
+  document.getElementById('dbrMovie').className = 'dbr-row'+(chkM?'':' off');
+  document.getElementById('dbrWeb').className = 'dbr-row'+(chkW?'':' off');
+  document.getElementById('dbrAnime').className = 'dbr-row'+(chkA?'':' off');
+  document.getElementById('dchkM').className = 'dchk'+(chkM?'':' off');
+  document.getElementById('dchkW').className = 'dchk'+(chkW?'':' off');
+  document.getElementById('dchkA').className = 'dchk'+(chkA?'':' off');
 }
+function setText(id, v){const el=document.getElementById(id); if(el) el.textContent=v;}
+function setW(id, p){const el=document.getElementById(id); if(el) el.style.width=p+'%';}
 
 // ============================================================
 //  PDF
 // ============================================================
 function downloadPDF(){
-  var jsPDF=window.jspdf.jsPDF,doc=new jsPDF();
-  var ph=doc.internal.pageSize.height||297,y=20,lh=7;
-  function checkPage(){if(y>ph-20){doc.addPage();y=20}}
-  doc.setFontSize(20);doc.setTextColor(80,0,160);
-  doc.text('My Collection',105,y,{align:'center'});y+=14;
-  var m=document.querySelectorAll('.movie'),w=document.querySelectorAll('.web');
-  var as=document.querySelectorAll('.animeSeries'),am=document.querySelectorAll('.animeMovie');
-  doc.setFontSize(11);doc.setTextColor(120,40,200);
-  doc.text('Total: '+(m.length+w.length+as.length+am.length),20,y);y+=10;
-  function sec(title,items,rgb){
-    if(!items.length)return;checkPage();
-    doc.setFontSize(13);doc.setTextColor(rgb[0],rgb[1],rgb[2]);
-    doc.text(title+' ('+items.length+')',20,y);y+=8;
-    doc.setFontSize(10);doc.setTextColor(40,40,40);
-    Array.from(items).forEach(function(el,i){checkPage();doc.text((i+1)+'. '+getLabel(el),24,y);y+=lh});
+  const jsPDF = window.jspdf.jsPDF;
+  const doc = new jsPDF();
+  const ph = doc.internal.pageSize.height||297;
+  let y = 20, lh = 7;
+  function check(){if(y>ph-20){doc.addPage();y=20;}}
+  doc.setFontSize(20); doc.setTextColor(80,30,160);
+  doc.text('My Collection', 105, y, {align:'center'}); y+=14;
+  TYPES.forEach(type=>{
+    const items = DATA.items[type];
+    if(!items.length) return;
+    check();
+    doc.setFontSize(14); doc.setTextColor(40,40,60);
+    doc.text(TYPE_META[type].title+' ('+items.length+')', 20, y); y+=8;
+    const cats = [...DATA.cats[type]].sort((a,b)=>a.order-b.order);
+    cats.forEach(cat=>{
+      const inCat = items.filter(i=>i.categoryId===cat.id).sort((a,b)=>a.order-b.order);
+      if(!inCat.length) return;
+      check();
+      doc.setFontSize(11); doc.setTextColor(120,40,200);
+      doc.text(cat.name, 22, y); y+=6;
+      doc.setFontSize(10); doc.setTextColor(40,40,40);
+      inCat.forEach((it,i)=>{ check(); doc.text((i+1)+'. '+it.name+(it.watched?' ✓':'')+(it.rating?' ('+('★'.repeat(it.rating))+')':''), 26, y); y+=lh; });
+      y+=2;
+    });
     y+=4;
-  }
-  sec('Movies',m,[80,0,180]);
-  sec('Web Series',w,[160,0,90]);
-  sec('Anime Series',as,[160,70,0]);
-  sec('Anime Movies',am,[150,60,0]);
+  });
   doc.save('my-collection.pdf');
+}
+
+// ============================================================
+//  TOAST
+// ============================================================
+let toastTimer=null;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
 }
 
 // ============================================================
 //  INIT
 // ============================================================
-(function init(){
-  // Remove deleted builtins
-  document.querySelectorAll('.item[data-builtin="true"]').forEach(function(el){
-    var type=getItemType(el);
-    if(type&&isDeleted(type,getLabel(el)))el.parentNode.removeChild(el);
-  });
-  // Restore user-added
-  var m=getObj(K_ADD);
-  Object.keys(m).forEach(function(type){
-    m[type].forEach(function(item){
-      var text=typeof item==='string'?item:item.text;
-      if(!text||!String(text).trim())return;
-      text=String(text).trim();
-      var cfg=typeConfig(type);
-      var page=document.getElementById(cfg.pageId);
-      if(!page)return;
-      var el=buildItem(type,text,false);
-      var bar=page.querySelector('.total-bar');
-      page.insertBefore(el,bar);
-      attachLongPress(el,type,text,false);
-    });
-  });
-  // Attach long-press to builtins
-  ['movie','web','animeSeries','animeMovie'].forEach(function(type){
-    var cls=typeConfig(type).cls;
-    document.querySelectorAll('.'+cls+'[data-builtin="true"]').forEach(function(el){
-      attachLongPress(el,type,getLabel(el),true);
-    });
-  });
-  renumberAll();
-  updateStats();
-})();
+seedIfNeeded();
+updateStats();
+setTimeout(()=>document.getElementById('splash').classList.add('gone'), 1900);
 </script>
 </body>
 </html>
