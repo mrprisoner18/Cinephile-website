@@ -726,8 +726,6 @@ window.addEventListener('popstate', function(e){
 // ============================================================
 //  RENDER LIST PAGE
 // ============================================================
-const PAGE_STATE = { search:'', selectMode:false, reorderMode:false };
-
 function renderListPage(type){
   const meta = TYPE_META[type];
   const page = document.getElementById(meta.pageId);
