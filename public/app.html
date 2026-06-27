@@ -602,6 +602,7 @@ const K_ADD_V2 = 'col_added_v2';
 const K_MIGRATED = 'col_migrated_v3';
 
 let DATA = {cats:{}, items:{}};
+const PAGE_STATE = { search:'', selectMode:false, reorderMode:false };
 
 function uid(){return 'i_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function loadData(){
