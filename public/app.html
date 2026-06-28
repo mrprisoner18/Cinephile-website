@@ -30,7 +30,12 @@
 html,body{height:100%}
 body{
   font-family:'Poppins',system-ui,-apple-system,sans-serif;
-  background:#0a0418;
+  background:
+    radial-gradient(1200px 800px at 10% -10%, #4c1d95 0%, transparent 60%),
+    radial-gradient(1000px 700px at 110% 20%, #1e3a8a 0%, transparent 55%),
+    radial-gradient(900px 700px at 50% 110%, #be185d 0%, transparent 60%),
+    linear-gradient(160deg,#1b0833 0%, #0b0420 60%, #1a0a3a 100%);
+  background-attachment: fixed;
   color:var(--text);
   min-height:100vh;
   overflow-x:hidden;
