@@ -405,9 +405,31 @@ body.select-mode .item-watched{display:none}
   --glow-purple: 0 0 28px rgba(168,85,247,0.45);
   --glow-pink:   0 0 28px rgba(236,72,153,0.4);
 }
-/* Soft blur the background slightly for added depth */
-.bg-wrap{filter:blur(6px) saturate(120%)}
-.bg-blob{opacity:0.62}
+/* Keep blobs sharp & vivid so frosted glass actually reveals color */
+.bg-wrap{filter:saturate(140%)}
+.bg-blob{opacity:0.85;filter:blur(120px)}
+.bg-blob.b1{background:#a855f7}
+.bg-blob.b2{background:#3b82f6}
+.bg-blob.b3{background:#ec4899}
+.bg-blob.b4{background:#f59e0b;opacity:0.55}
+
+/* Stronger frosted glass: more transparent, deeper blur, brighter rim */
+.glass, .glass-strong, .folder, .cat-card, .total-bar, .stat-card,
+.search-wrap input, .icon-btn, .ctrl-btn, .add-fab, .sheet,
+.sheet-action, .sheet-input, .stat-pill, .donut-hole, .item{
+  backdrop-filter:blur(30px) saturate(200%) brightness(1.08);
+  -webkit-backdrop-filter:blur(30px) saturate(200%) brightness(1.08);
+}
+.glass-strong, .folder, .cat-card, .sheet{
+  background:rgba(255,255,255,0.09);
+  border:1px solid rgba(255,255,255,0.28);
+}
+.cat-card{background:rgba(255,255,255,0.07)}
+.item{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18)}
+/* Glossy top-edge sheen */
+.folder::before, .cat-card::before, .stat-card::before, .hero::before, .glass-strong::before{
+  background:linear-gradient(180deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.08) 32%, transparent 70%);
+}
 
 /* Universal frosted glass intensification */
 .glass, .glass-strong, .folder, .cat-card, .total-bar, .stat-card,
