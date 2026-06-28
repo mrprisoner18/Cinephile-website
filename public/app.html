@@ -702,6 +702,20 @@ function saveData(){
   localStorage.setItem(K_ITEMS, JSON.stringify(DATA.items));
 }
 
+function keepWebSeriesPopularOnly(){
+  if(!DATA.cats.web) DATA.cats.web = [];
+  if(!DATA.items.web) DATA.items.web = [];
+  let popular = DATA.cats.web.find(c=>c.name.trim().toLowerCase()==='popular');
+  if(!popular){
+    popular = {id:'c_web_popular_'+Math.random().toString(36).slice(2,6), name:'Popular', order:0, collapsed:false, builtin:true};
+  }
+  popular.name = 'Popular';
+  popular.order = 0;
+  popular.collapsed = false;
+  DATA.cats.web = [popular];
+  DATA.items.web.forEach((item, idx)=>{ item.categoryId = popular.id; item.order = idx; });
+}
+
 function seedIfNeeded(){
   loadData();
   if(localStorage.getItem(K_MIGRATED)==='1') return;
