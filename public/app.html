@@ -1185,6 +1185,25 @@ function initReorderHandles(type){
   });
 }
 
+// Auto-scroll while dragging near viewport edges
+let _autoScrollRAF = null;
+function autoScroll(clientY){
+  const h = window.innerHeight;
+  const EDGE = 110;       // px from top/bottom that triggers scroll
+  const MAX_SPEED = 22;   // px per frame
+  let speed = 0;
+  if(clientY < EDGE)        speed = -MAX_SPEED * (1 - clientY/EDGE);
+  else if(clientY > h-EDGE) speed =  MAX_SPEED * (1 - (h-clientY)/EDGE);
+  if(_autoScrollRAF){ cancelAnimationFrame(_autoScrollRAF); _autoScrollRAF = null; }
+  if(speed === 0) return;
+  const tick = ()=>{
+    window.scrollBy(0, speed);
+    _autoScrollRAF = requestAnimationFrame(tick);
+  };
+  _autoScrollRAF = requestAnimationFrame(tick);
+}
+function stopAutoScroll(){ if(_autoScrollRAF){ cancelAnimationFrame(_autoScrollRAF); _autoScrollRAF=null; } }
+
 function startItemDrag(startEv, itemEl, type){
   if(!itemEl) return;
   const itemId = itemEl.getAttribute('data-item-id');
