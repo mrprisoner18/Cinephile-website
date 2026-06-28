@@ -1195,6 +1195,7 @@ function startItemDrag(startEv, itemEl, type){
 
   function move(e){
     const x = e.clientX, y = e.clientY;
+    autoScroll(y);
     // find item or cat-body under pointer
     document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
     const els = document.elementsFromPoint(x,y);
@@ -1264,6 +1265,7 @@ function startCatDrag(startEv, catEl, type){
 
   function move(e){
     const x = e.clientX, y = e.clientY;
+    autoScroll(y);
     document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
     const els = document.elementsFromPoint(x,y);
     for(const el of els){
