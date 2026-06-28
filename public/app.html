@@ -383,6 +383,107 @@ body.select-mode .item-watched{display:none}
 /* hide brand icon area on small */
 .brand-icon{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(124,58,237,0.4),inset 0 1px 0 rgba(255,255,255,0.25)}
 .brand-icon svg{width:16px;height:16px;color:#fff}
+
+/* ============================================================
+   PREMIUM GLASSMORPHISM OVERRIDES (Vision Pro style)
+   ============================================================ */
+:root{
+  --glass: rgba(255,255,255,0.10);
+  --glass-strong: rgba(255,255,255,0.14);
+  --border: rgba(255,255,255,0.20);
+  --border-bright: rgba(255,255,255,0.30);
+  --radius-lg: 30px;
+  --radius-md: 24px;
+  --radius-sm: 18px;
+  --shadow-lg: 0 24px 70px rgba(0,0,0,0.55), 0 10px 28px rgba(124,58,237,0.25), inset 0 1px 0 rgba(255,255,255,0.22);
+  --shadow-md: 0 12px 36px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.16);
+  --glow-purple: 0 0 28px rgba(168,85,247,0.45);
+  --glow-pink:   0 0 28px rgba(236,72,153,0.4);
+}
+/* Soft blur the background slightly for added depth */
+.bg-wrap{filter:blur(6px) saturate(120%)}
+.bg-blob{opacity:0.62}
+
+/* Universal frosted glass intensification */
+.glass, .glass-strong, .folder, .cat-card, .total-bar, .stat-card,
+.search-wrap input, .icon-btn, .ctrl-btn, .add-fab, .sheet,
+.sheet-action, .sheet-input, .stat-pill, .donut-hole{
+  backdrop-filter:blur(26px) saturate(190%);
+  -webkit-backdrop-filter:blur(26px) saturate(190%);
+}
+.glass-strong, .folder, .sheet{
+  backdrop-filter:blur(34px) saturate(200%);
+  -webkit-backdrop-filter:blur(34px) saturate(200%);
+}
+
+/* Glossy highlight overlay for cards */
+.folder, .cat-card, .stat-card, .glass-strong, .hero{
+  position:relative;
+}
+.folder::before, .cat-card::before, .stat-card::before{
+  content:'';position:absolute;left:0;right:0;top:0;height:55%;
+  border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.05) 40%, transparent 100%);
+  mix-blend-mode:overlay;opacity:.9;
+}
+.cat-card, .stat-card{overflow:hidden}
+
+/* Premium spacing */
+.page{padding:22px 18px 130px}
+.folder{padding:22px 22px;margin:14px 0}
+.cat-card{margin:16px 0}
+.cat-head{padding:18px 18px}
+.cat-body{padding:0 12px 16px;gap:6px}
+.item{padding:14px 14px;border-radius:16px}
+.hero{padding:28px 24px;margin-bottom:22px}
+.stat-card{padding:24px;margin:22px 0}
+
+/* Floating shadows on key cards */
+.folder{box-shadow:0 24px 60px rgba(0,0,0,0.45), 0 4px 14px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.22)}
+.cat-card{box-shadow:0 18px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.14)}
+
+/* Hover/tap micro-interactions */
+@media (hover:hover){
+  .folder:hover, .cat-card:hover, .item:hover{transform:translateY(-2px) scale(1.015);box-shadow:0 28px 70px rgba(124,58,237,0.35), 0 0 30px rgba(236,72,153,0.18), inset 0 1px 0 rgba(255,255,255,0.22)}
+  .icon-btn:hover, .ctrl-btn:hover, .add-fab:hover{transform:scale(1.05);filter:brightness(1.1)}
+}
+.folder:active, .cat-card:active{transform:scale(0.985)}
+.item:active{transform:scale(0.99)}
+
+/* Glowing glass icons */
+.f-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,0.3), 0 0 22px rgba(168,85,247,0.45), 0 0 36px rgba(236,72,153,0.25)}
+.folder-anime .f-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,0.3), 0 0 22px rgba(236,72,153,0.55), 0 0 36px rgba(168,85,247,0.25)}
+.folder-web   .f-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,0.3), 0 0 22px rgba(59,130,246,0.5),  0 0 36px rgba(168,85,247,0.25)}
+.cat-folder-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,0.25), 0 0 18px rgba(168,85,247,0.45)}
+.icon-btn{box-shadow:0 8px 24px rgba(0,0,0,0.35), 0 0 18px rgba(168,85,247,0.25), inset 0 1px 0 rgba(255,255,255,0.18)}
+.add-fab{box-shadow:0 10px 28px rgba(124,58,237,0.55), 0 0 24px rgba(236,72,153,0.45), inset 0 1px 0 rgba(255,255,255,0.3)}
+.brand-icon{box-shadow:0 8px 22px rgba(124,58,237,0.5), 0 0 18px rgba(236,72,153,0.4), inset 0 1px 0 rgba(255,255,255,0.3)}
+
+/* Glass progress bars with glowing fills */
+.bar-track, .dbr-track{height:9px;background:rgba(255,255,255,0.08);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.14);box-shadow:inset 0 1px 2px rgba(0,0,0,0.35)}
+.bar-fill, .dbr-fill{box-shadow:0 0 12px currentColor, 0 0 20px rgba(168,85,247,0.5)}
+.fill-m{background:linear-gradient(90deg,#8b5cf6,#c4a3ff);box-shadow:0 0 14px rgba(168,85,247,0.7)}
+.fill-w{background:linear-gradient(90deg,#3b82f6,#7dd3fc);box-shadow:0 0 14px rgba(59,130,246,0.7)}
+.fill-a{background:linear-gradient(90deg,#ec4899,#f9a8d4);box-shadow:0 0 14px rgba(236,72,153,0.7)}
+
+/* Donut ring softer glow */
+.donut-ring{box-shadow:0 0 50px rgba(168,85,247,0.45), 0 0 80px rgba(236,72,153,0.25), inset 0 0 24px rgba(0,0,0,0.45)}
+.donut-hole{background:rgba(20,10,40,0.55);border:1px solid rgba(255,255,255,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12)}
+
+/* Items: glassier */
+.item{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.item.on{box-shadow:0 0 0 1px rgba(196,163,255,0.55), 0 12px 30px rgba(124,58,237,0.45), 0 0 22px rgba(236,72,153,0.35), inset 0 1px 0 rgba(255,255,255,0.18)}
+
+/* Stat pills */
+.stat-pill{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15)}
+
+/* Search */
+.search-wrap input{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 18px rgba(0,0,0,0.25)}
+
+/* Bottom sheet glossier */
+.sheet{background:rgba(28,18,58,0.55);border:1px solid rgba(255,255,255,0.22);box-shadow:0 -30px 80px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.2)}
+
+/* Parallax: bg-wrap is moved via JS by translating blobs (handled in script) */
 </style>
 </head>
 <body>
