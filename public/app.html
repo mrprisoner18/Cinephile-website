@@ -246,9 +246,10 @@ body{
 .cat-folder-icon svg{width:16px;height:16px;color:#fff}
 .cat-title{flex:1;font-size:14.5px;font-weight:700;color:var(--text);letter-spacing:-0.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cat-count{font-size:11.5px;font-weight:600;color:var(--text-dim);padding:3px 9px;border-radius:99px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08)}
-.cat-add{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(196,163,255,0.12);border:1px solid rgba(196,163,255,0.2);color:var(--accent);cursor:pointer;flex-shrink:0;transition:all .2s}
-.cat-add:active{background:rgba(196,163,255,0.25);transform:scale(0.92)}
-.cat-add svg{width:14px;height:14px}
+.cat-add,.cat-delete{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(196,163,255,0.12);border:1px solid rgba(196,163,255,0.2);color:var(--accent);cursor:pointer;flex-shrink:0;transition:all .2s}
+.cat-add:active,.cat-delete:active{background:rgba(196,163,255,0.25);transform:scale(0.92)}
+.cat-delete{background:rgba(248,113,113,0.10);border-color:rgba(248,113,113,0.22);color:#fca5a5}
+.cat-add svg,.cat-delete svg{width:14px;height:14px}
 .cat-chevron{transition:transform .3s var(--spring);color:var(--text-dim);display:flex;align-items:center;flex-shrink:0}
 .cat-chevron svg{width:16px;height:16px}
 .cat-card.collapsed .cat-chevron{transform:rotate(-90deg)}
@@ -390,127 +391,84 @@ body.select-mode .item-watched{display:none}
 .brand-icon svg{width:16px;height:16px;color:#fff}
 
 /* ============================================================
-   PREMIUM GLASSMORPHISM OVERRIDES (Vision Pro style)
+   WATER-GLASS DETAILS — keeps the earlier purple-sunset palette
    ============================================================ */
 :root{
-  --glass: rgba(255,255,255,0.10);
-  --glass-strong: rgba(255,255,255,0.14);
-  --border: rgba(255,255,255,0.20);
-  --border-bright: rgba(255,255,255,0.30);
-  --radius-lg: 30px;
-  --radius-md: 24px;
-  --radius-sm: 18px;
-  --shadow-lg: 0 24px 70px rgba(0,0,0,0.55), 0 10px 28px rgba(124,58,237,0.25), inset 0 1px 0 rgba(255,255,255,0.22);
-  --shadow-md: 0 12px 36px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.16);
-  --glow-purple: 0 0 28px rgba(168,85,247,0.45);
-  --glow-pink:   0 0 28px rgba(236,72,153,0.4);
+  --glass: rgba(255,255,255,0.075);
+  --glass-strong: rgba(255,255,255,0.105);
+  --border: rgba(255,255,255,0.18);
+  --border-bright: rgba(255,255,255,0.24);
+  --radius-lg: 28px;
+  --radius-md: 22px;
+  --radius-sm: 16px;
+  --shadow-lg: 0 20px 58px rgba(0,0,0,0.52), 0 8px 24px rgba(124,58,237,0.18), inset 0 1px 0 rgba(255,255,255,0.18);
+  --shadow-md: 0 10px 30px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.13);
 }
-/* Keep blobs sharp & vivid so frosted glass actually reveals color */
-.bg-wrap{filter:saturate(140%)}
-.bg-blob{opacity:0.85;filter:blur(120px)}
-.bg-blob.b1{background:#a855f7}
-.bg-blob.b2{background:#3b82f6}
-.bg-blob.b3{background:#ec4899}
-.bg-blob.b4{background:#f59e0b;opacity:0.55}
+.bg-wrap{filter:none}
+.bg-blob{opacity:0.50;filter:blur(92px)}
+.bg-blob.b1{background:#7c3aed}
+.bg-blob.b2{background:#3b82f6;opacity:0.36}
+.bg-blob.b3{background:#ec4899;opacity:0.42}
+.bg-blob.b4{background:#8b5cf6;opacity:0.34}
 
-/* Stronger frosted glass: more transparent, deeper blur, brighter rim */
 .glass, .glass-strong, .folder, .cat-card, .total-bar, .stat-card,
 .search-wrap input, .icon-btn, .ctrl-btn, .add-fab, .sheet,
-.sheet-action, .sheet-input, .stat-pill, .donut-hole, .item{
-  backdrop-filter:blur(30px) saturate(200%) brightness(1.08);
-  -webkit-backdrop-filter:blur(30px) saturate(200%) brightness(1.08);
+.sheet-action, .sheet-input, .stat-pill, .donut-hole, .item,
+.f-icon, .cat-folder-icon, .sheet-action-icon, .brand-icon, .cat-add, .cat-delete, .item-serial{
+  backdrop-filter:blur(28px) saturate(185%);
+  -webkit-backdrop-filter:blur(28px) saturate(185%);
 }
 .glass-strong, .folder, .cat-card, .sheet{
-  background:rgba(255,255,255,0.09);
-  border:1px solid rgba(255,255,255,0.28);
+  background:rgba(255,255,255,0.085);
+  border:1px solid rgba(255,255,255,0.22);
 }
-.cat-card{background:rgba(255,255,255,0.07)}
-.item{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18)}
-/* Glossy top-edge sheen */
+.cat-card{background:rgba(255,255,255,0.06)}
+.item{background:rgba(255,255,255,0.045);border:1px solid rgba(255,255,255,0.10)}
+
+.folder, .cat-card, .stat-card, .glass-strong, .hero{position:relative}
 .folder::before, .cat-card::before, .stat-card::before, .hero::before, .glass-strong::before{
-  background:linear-gradient(180deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.08) 32%, transparent 70%);
-}
-
-/* Universal frosted glass intensification */
-.glass, .glass-strong, .folder, .cat-card, .total-bar, .stat-card,
-.search-wrap input, .icon-btn, .ctrl-btn, .add-fab, .sheet,
-.sheet-action, .sheet-input, .stat-pill, .donut-hole{
-  backdrop-filter:blur(26px) saturate(190%);
-  -webkit-backdrop-filter:blur(26px) saturate(190%);
-}
-.glass-strong, .folder, .sheet{
-  backdrop-filter:blur(34px) saturate(200%);
-  -webkit-backdrop-filter:blur(34px) saturate(200%);
-}
-
-/* Glossy highlight overlay for cards */
-.folder, .cat-card, .stat-card, .glass-strong, .hero{
-  position:relative;
-}
-.folder::before, .cat-card::before, .stat-card::before{
-  content:'';position:absolute;left:0;right:0;top:0;height:55%;
-  border-radius:inherit;pointer-events:none;
-  background:linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.05) 40%, transparent 100%);
-  mix-blend-mode:overlay;opacity:.9;
+  content:'';position:absolute;left:0;right:0;top:0;height:52%;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0.055) 42%, transparent 100%);
+  mix-blend-mode:screen;opacity:.72;
 }
 .cat-card, .stat-card{overflow:hidden}
 
-/* Premium spacing */
-.page{padding:22px 18px 130px}
-.folder{padding:22px 22px;margin:14px 0}
-.cat-card{margin:16px 0}
-.cat-head{padding:18px 18px}
-.cat-body{padding:0 12px 16px;gap:6px}
-.item{padding:14px 14px;border-radius:16px}
-.hero{padding:28px 24px;margin-bottom:22px}
-.stat-card{padding:24px;margin:22px 0}
+.page{padding:20px 17px 126px}
+.folder{padding:20px 21px;margin:13px 0;box-shadow:var(--shadow-lg)}
+.cat-card{margin:15px 0;box-shadow:var(--shadow-md)}
+.cat-head{padding:17px 16px}
+.cat-body{padding:0 12px 15px;gap:6px}
+.item{padding:13px 14px;border-radius:16px}
+.hero{padding:26px 23px;margin-bottom:20px}
+.stat-card{padding:23px;margin:21px 0}
 
-/* Floating shadows on key cards */
-.folder{box-shadow:0 24px 60px rgba(0,0,0,0.45), 0 4px 14px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.22)}
-.cat-card{box-shadow:0 18px 50px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.14)}
-
-/* Hover/tap micro-interactions */
 @media (hover:hover){
-  .folder:hover, .cat-card:hover, .item:hover{transform:translateY(-2px) scale(1.015);box-shadow:0 28px 70px rgba(124,58,237,0.35), 0 0 30px rgba(236,72,153,0.18), inset 0 1px 0 rgba(255,255,255,0.22)}
-  .icon-btn:hover, .ctrl-btn:hover, .add-fab:hover{transform:scale(1.05);filter:brightness(1.1)}
+  .folder:hover, .cat-card:hover, .item:hover{transform:translateY(-1px) scale(1.01);box-shadow:0 22px 62px rgba(0,0,0,0.44), 0 0 24px rgba(196,163,255,0.20), inset 0 1px 0 rgba(255,255,255,0.2)}
+  .icon-btn:hover, .ctrl-btn:hover, .add-fab:hover{transform:scale(1.035);filter:brightness(1.08)}
 }
-.folder:active, .cat-card:active{transform:scale(0.985)}
-.item:active{transform:scale(0.99)}
+.folder:active, .cat-card:active{transform:scale(0.988)}
+.item:active{transform:scale(0.992)}
 
-/* Glowing glass icons */
-.f-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,0.3), 0 0 22px rgba(168,85,247,0.45), 0 0 36px rgba(236,72,153,0.25)}
-.folder-anime .f-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,0.3), 0 0 22px rgba(236,72,153,0.55), 0 0 36px rgba(168,85,247,0.25)}
-.folder-web   .f-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,0.3), 0 0 22px rgba(59,130,246,0.5),  0 0 36px rgba(168,85,247,0.25)}
-.cat-folder-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,0.25), 0 0 18px rgba(168,85,247,0.45)}
-.icon-btn{box-shadow:0 8px 24px rgba(0,0,0,0.35), 0 0 18px rgba(168,85,247,0.25), inset 0 1px 0 rgba(255,255,255,0.18)}
-.add-fab{box-shadow:0 10px 28px rgba(124,58,237,0.55), 0 0 24px rgba(236,72,153,0.45), inset 0 1px 0 rgba(255,255,255,0.3)}
-.brand-icon{box-shadow:0 8px 22px rgba(124,58,237,0.5), 0 0 18px rgba(236,72,153,0.4), inset 0 1px 0 rgba(255,255,255,0.3)}
+.f-icon, .cat-folder-icon, .sheet-action-icon, .brand-icon, .cat-add, .cat-delete, .item-serial{
+  background:linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.055));
+  border:1px solid rgba(255,255,255,0.22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(255,255,255,0.06), 0 0 18px rgba(168,85,247,0.32), 0 0 30px rgba(236,72,153,0.14);
+}
+.folder-web .f-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,0.30), 0 0 18px rgba(59,130,246,0.30), 0 0 28px rgba(168,85,247,0.16)}
+.folder-anime .f-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,0.30), 0 0 18px rgba(236,72,153,0.34), 0 0 28px rgba(168,85,247,0.16)}
+.icon-btn{background:rgba(255,255,255,0.075);box-shadow:0 8px 24px rgba(0,0,0,0.34), 0 0 18px rgba(168,85,247,0.20), inset 0 1px 0 rgba(255,255,255,0.18)}
+.add-fab{box-shadow:0 10px 28px rgba(124,58,237,0.42), 0 0 22px rgba(236,72,153,0.30), inset 0 1px 0 rgba(255,255,255,0.28)}
 
-/* Glass progress bars with glowing fills */
-.bar-track, .dbr-track{height:9px;background:rgba(255,255,255,0.08);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.14);box-shadow:inset 0 1px 2px rgba(0,0,0,0.35)}
-.bar-fill, .dbr-fill{box-shadow:0 0 12px currentColor, 0 0 20px rgba(168,85,247,0.5)}
-.fill-m{background:linear-gradient(90deg,#8b5cf6,#c4a3ff);box-shadow:0 0 14px rgba(168,85,247,0.7)}
-.fill-w{background:linear-gradient(90deg,#3b82f6,#7dd3fc);box-shadow:0 0 14px rgba(59,130,246,0.7)}
-.fill-a{background:linear-gradient(90deg,#ec4899,#f9a8d4);box-shadow:0 0 14px rgba(236,72,153,0.7)}
-
-/* Donut ring softer glow */
-.donut-ring{box-shadow:0 0 50px rgba(168,85,247,0.45), 0 0 80px rgba(236,72,153,0.25), inset 0 0 24px rgba(0,0,0,0.45)}
-.donut-hole{background:rgba(20,10,40,0.55);border:1px solid rgba(255,255,255,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12)}
-
-/* Items: glassier */
-.item{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-.item.on{box-shadow:0 0 0 1px rgba(196,163,255,0.55), 0 12px 30px rgba(124,58,237,0.45), 0 0 22px rgba(236,72,153,0.35), inset 0 1px 0 rgba(255,255,255,0.18)}
-
-/* Stat pills */
-.stat-pill{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.15)}
-
-/* Search */
-.search-wrap input{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 18px rgba(0,0,0,0.25)}
-
-/* Bottom sheet glossier */
-.sheet{background:rgba(28,18,58,0.55);border:1px solid rgba(255,255,255,0.22);box-shadow:0 -30px 80px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.2)}
-
-/* Parallax: bg-wrap is moved via JS by translating blobs (handled in script) */
+.bar-track, .dbr-track{height:8px;background:rgba(255,255,255,0.075);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.13);box-shadow:inset 0 1px 2px rgba(0,0,0,0.32)}
+.fill-m{background:linear-gradient(90deg,#8b5cf6,#c4a3ff);box-shadow:0 0 14px rgba(168,85,247,0.62)}
+.fill-w{background:linear-gradient(90deg,#3b82f6,#7dd3fc);box-shadow:0 0 14px rgba(59,130,246,0.55)}
+.fill-a{background:linear-gradient(90deg,#ec4899,#f9a8d4);box-shadow:0 0 14px rgba(236,72,153,0.58)}
+.donut-ring{box-shadow:0 0 42px rgba(168,85,247,0.34), 0 0 64px rgba(236,72,153,0.16), inset 0 0 22px rgba(0,0,0,0.44)}
+.donut-hole{background:rgba(20,10,40,0.58);border:1px solid rgba(255,255,255,0.16);box-shadow:inset 0 1px 0 rgba(255,255,255,0.10)}
+.item.on{box-shadow:0 0 0 1px rgba(196,163,255,0.50), 0 10px 28px rgba(124,58,237,0.38), 0 0 18px rgba(236,72,153,0.26), inset 0 1px 0 rgba(255,255,255,0.16)}
+.stat-pill{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.13);box-shadow:inset 0 1px 0 rgba(255,255,255,0.13)}
+.search-wrap input{background:rgba(255,255,255,0.065);border:1px solid rgba(255,255,255,0.16);box-shadow:inset 0 1px 0 rgba(255,255,255,0.10), 0 6px 18px rgba(0,0,0,0.22)}
+.sheet{background:rgba(28,18,58,0.62);border:1px solid rgba(255,255,255,0.20);box-shadow:0 -26px 72px rgba(0,0,0,0.62), inset 0 1px 0 rgba(255,255,255,0.17)}
 </style>
 </head>
 <body>
@@ -744,6 +702,20 @@ function saveData(){
   localStorage.setItem(K_ITEMS, JSON.stringify(DATA.items));
 }
 
+function keepWebSeriesPopularOnly(){
+  if(!DATA.cats.web) DATA.cats.web = [];
+  if(!DATA.items.web) DATA.items.web = [];
+  let popular = DATA.cats.web.find(c=>c.name.trim().toLowerCase()==='popular');
+  if(!popular){
+    popular = {id:'c_web_popular_'+Math.random().toString(36).slice(2,6), name:'Popular', order:0, collapsed:false, builtin:true};
+  }
+  popular.name = 'Popular';
+  popular.order = 0;
+  popular.collapsed = false;
+  DATA.cats.web = [popular];
+  DATA.items.web.forEach((item, idx)=>{ item.categoryId = popular.id; item.order = idx; });
+}
+
 function seedIfNeeded(){
   loadData();
   if(localStorage.getItem(K_MIGRATED)==='1') return;
@@ -919,7 +891,7 @@ function renderCategories(type){
 
   // Favorites virtual section
   const favs = DATA.items[type].filter(i=>i.favorite);
-  if(favs.length){
+  if(type !== 'web' && favs.length){
     const visibleFavs = q ? favs.filter(i=>i.name.toLowerCase().includes(q)) : favs;
     if(visibleFavs.length){
       html += renderCatHtml(type, {id:'__favs', name:'Favorites', collapsed:false, virtual:true}, visibleFavs, q, true);
@@ -950,6 +922,7 @@ function renderCatHtml(type, cat, items, q, isFav){
     ? `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
     : `<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>`;
   const addBtn = isFav ? '' : `<div class="cat-add" data-cat-add="${cat.id}" data-cat-name="${escapeHtml(cat.name)}" aria-label="Add to ${escapeHtml(cat.name)}"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>`;
+  const deleteBtn = (isFav || type==='web') ? '' : `<div class="cat-delete" data-cat-delete="${cat.id}" data-cat-name="${escapeHtml(cat.name)}" aria-label="Delete ${escapeHtml(cat.name)}"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></div>`;
   const handle = isFav ? '' : `<div class="cat-handle" data-cat-handle="${cat.id}"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>`;
   let itemsHtml = '';
   if(items.length===0){
@@ -965,6 +938,7 @@ function renderCatHtml(type, cat, items, q, isFav){
       <div class="cat-title">${highlightText(cat.name, q)}</div>
       <div class="cat-count">${items.length}</div>
       ${addBtn}
+      ${deleteBtn}
       ${handle}
       <div class="cat-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
@@ -992,7 +966,7 @@ function wireListInteractions(type){
   container.querySelectorAll('[data-cat-toggle]').forEach(head=>{
     head.addEventListener('click', e=>{
       // Avoid toggling when clicking add or handle
-      if(e.target.closest('[data-cat-add]') || e.target.closest('[data-cat-handle]')) return;
+      if(e.target.closest('[data-cat-add]') || e.target.closest('[data-cat-delete]') || e.target.closest('[data-cat-handle]')) return;
       const catId = head.getAttribute('data-cat-toggle');
       if(catId === '__favs') return;
       const cat = DATA.cats[type].find(c=>c.id===catId);
@@ -1009,6 +983,15 @@ function wireListInteractions(type){
       const catId = b.getAttribute('data-cat-add');
       const catName = b.getAttribute('data-cat-name');
       promptAddToCategory(type, catId, catName);
+    });
+  });
+  // Per-category delete
+  container.querySelectorAll('[data-cat-delete]').forEach(b=>{
+    b.addEventListener('click', e=>{
+      e.stopPropagation();
+      const catId = b.getAttribute('data-cat-delete');
+      const catName = b.getAttribute('data-cat-name');
+      openDeleteCategorySheet(type, catId, catName);
     });
   });
   // Items
@@ -1490,6 +1473,34 @@ function openDeleteSheet(type, itemId){
   };
 }
 
+function openDeleteCategorySheet(type, catId, catName){
+  const cat = DATA.cats[type].find(c=>c.id===catId);
+  if(!cat) return;
+  if(type==='web'){
+    toast('Web Series keeps only Popular');
+    return;
+  }
+  const count = DATA.items[type].filter(i=>i.categoryId===catId).length;
+  openSheet(`
+    <div class="sheet-title">Delete Category?</div>
+    <div class="sheet-sub">"${escapeHtml(catName)}" and ${count} item(s) inside will be removed permanently.</div>
+    <div class="sheet-btns">
+      <button class="btn btn-glass" data-sheet-close>Cancel</button>
+      <button class="btn btn-primary" id="confCatDel" style="background:linear-gradient(135deg,#dc2626,#ec4899)">Delete</button>
+    </div>
+  `);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  document.getElementById('confCatDel').onclick = ()=>{
+    DATA.items[type] = DATA.items[type].filter(i=>i.categoryId!==catId);
+    DATA.cats[type] = DATA.cats[type].filter(c=>c.id!==catId).map((c,i)=>({...c, order:i}));
+    saveData();
+    forceCloseSheet();
+    renderCategories(type);
+    updateStats();
+    toast('Category deleted');
+  };
+}
+
 function confirmDialog(title, msg, onYes){
   openSheet(`
     <div class="sheet-title">${escapeHtml(title)}</div>
@@ -1508,6 +1519,13 @@ function confirmDialog(title, msg, onYes){
 // ============================================================
 function openAddSheet(type){
   const meta = TYPE_META[type];
+  if(type==='web'){
+    keepWebSeriesPopularOnly();
+    saveData();
+    const popular = DATA.cats.web[0];
+    promptAddToCategory(type, popular.id, popular.name);
+    return;
+  }
   openSheet(`
     <div class="sheet-title">Add a ${meta.addLabel}</div>
     <div class="sheet-sub">Pick a destination</div>
@@ -1673,6 +1691,7 @@ function handleImport(ev){
         DATA.cats = data.categories;
         DATA.items = data.items;
         TYPES.forEach(t=>{ if(!DATA.cats[t]) DATA.cats[t]=[]; if(!DATA.items[t]) DATA.items[t]=[]; });
+        keepWebSeriesPopularOnly();
         saveData();
         renderActivePage();
         toast('Imported successfully');
@@ -1808,6 +1827,8 @@ function toast(msg){
 //  INIT
 // ============================================================
 seedIfNeeded();
+keepWebSeriesPopularOnly();
+saveData();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 1900);
 
