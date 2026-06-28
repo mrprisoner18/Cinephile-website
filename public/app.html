@@ -922,6 +922,7 @@ function renderCatHtml(type, cat, items, q, isFav){
     ? `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
     : `<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>`;
   const addBtn = isFav ? '' : `<div class="cat-add" data-cat-add="${cat.id}" data-cat-name="${escapeHtml(cat.name)}" aria-label="Add to ${escapeHtml(cat.name)}"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>`;
+  const deleteBtn = (isFav || type==='web') ? '' : `<div class="cat-delete" data-cat-delete="${cat.id}" data-cat-name="${escapeHtml(cat.name)}" aria-label="Delete ${escapeHtml(cat.name)}"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></div>`;
   const handle = isFav ? '' : `<div class="cat-handle" data-cat-handle="${cat.id}"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>`;
   let itemsHtml = '';
   if(items.length===0){
@@ -937,6 +938,7 @@ function renderCatHtml(type, cat, items, q, isFav){
       <div class="cat-title">${highlightText(cat.name, q)}</div>
       <div class="cat-count">${items.length}</div>
       ${addBtn}
+      ${deleteBtn}
       ${handle}
       <div class="cat-chevron"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
@@ -964,7 +966,7 @@ function wireListInteractions(type){
   container.querySelectorAll('[data-cat-toggle]').forEach(head=>{
     head.addEventListener('click', e=>{
       // Avoid toggling when clicking add or handle
-      if(e.target.closest('[data-cat-add]') || e.target.closest('[data-cat-handle]')) return;
+      if(e.target.closest('[data-cat-add]') || e.target.closest('[data-cat-delete]') || e.target.closest('[data-cat-handle]')) return;
       const catId = head.getAttribute('data-cat-toggle');
       if(catId === '__favs') return;
       const cat = DATA.cats[type].find(c=>c.id===catId);
@@ -981,6 +983,15 @@ function wireListInteractions(type){
       const catId = b.getAttribute('data-cat-add');
       const catName = b.getAttribute('data-cat-name');
       promptAddToCategory(type, catId, catName);
+    });
+  });
+  // Per-category delete
+  container.querySelectorAll('[data-cat-delete]').forEach(b=>{
+    b.addEventListener('click', e=>{
+      e.stopPropagation();
+      const catId = b.getAttribute('data-cat-delete');
+      const catName = b.getAttribute('data-cat-name');
+      openDeleteCategorySheet(type, catId, catName);
     });
   });
   // Items
