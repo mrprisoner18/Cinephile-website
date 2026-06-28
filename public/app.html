@@ -1239,6 +1239,7 @@ function startItemDrag(startEv, itemEl, type){
     document.removeEventListener('pointerup', up);
     document.removeEventListener('pointercancel', up);
     itemEl.classList.remove('dragging');
+    stopAutoScroll();
     indicator.remove();
     if(!currentDrop){ return; }
     const item = getItem(type, itemId);
@@ -1303,6 +1304,7 @@ function startCatDrag(startEv, catEl, type){
     document.removeEventListener('pointerup', up);
     document.removeEventListener('pointercancel', up);
     catEl.classList.remove('dragging');
+    stopAutoScroll();
     indicator.remove();
     if(!currentDrop) return;
     const movedCat = DATA.cats[type].find(c=>c.id===catId);
