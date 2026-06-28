@@ -30,7 +30,12 @@
 html,body{height:100%}
 body{
   font-family:'Poppins',system-ui,-apple-system,sans-serif;
-  background:#0a0418;
+  background:
+    radial-gradient(1200px 800px at 10% -10%, #4c1d95 0%, transparent 60%),
+    radial-gradient(1000px 700px at 110% 20%, #1e3a8a 0%, transparent 55%),
+    radial-gradient(900px 700px at 50% 110%, #be185d 0%, transparent 60%),
+    linear-gradient(160deg,#1b0833 0%, #0b0420 60%, #1a0a3a 100%);
+  background-attachment: fixed;
   color:var(--text);
   min-height:100vh;
   overflow-x:hidden;
@@ -400,9 +405,31 @@ body.select-mode .item-watched{display:none}
   --glow-purple: 0 0 28px rgba(168,85,247,0.45);
   --glow-pink:   0 0 28px rgba(236,72,153,0.4);
 }
-/* Soft blur the background slightly for added depth */
-.bg-wrap{filter:blur(6px) saturate(120%)}
-.bg-blob{opacity:0.62}
+/* Keep blobs sharp & vivid so frosted glass actually reveals color */
+.bg-wrap{filter:saturate(140%)}
+.bg-blob{opacity:0.85;filter:blur(120px)}
+.bg-blob.b1{background:#a855f7}
+.bg-blob.b2{background:#3b82f6}
+.bg-blob.b3{background:#ec4899}
+.bg-blob.b4{background:#f59e0b;opacity:0.55}
+
+/* Stronger frosted glass: more transparent, deeper blur, brighter rim */
+.glass, .glass-strong, .folder, .cat-card, .total-bar, .stat-card,
+.search-wrap input, .icon-btn, .ctrl-btn, .add-fab, .sheet,
+.sheet-action, .sheet-input, .stat-pill, .donut-hole, .item{
+  backdrop-filter:blur(30px) saturate(200%) brightness(1.08);
+  -webkit-backdrop-filter:blur(30px) saturate(200%) brightness(1.08);
+}
+.glass-strong, .folder, .cat-card, .sheet{
+  background:rgba(255,255,255,0.09);
+  border:1px solid rgba(255,255,255,0.28);
+}
+.cat-card{background:rgba(255,255,255,0.07)}
+.item{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18)}
+/* Glossy top-edge sheen */
+.folder::before, .cat-card::before, .stat-card::before, .hero::before, .glass-strong::before{
+  background:linear-gradient(180deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.08) 32%, transparent 70%);
+}
 
 /* Universal frosted glass intensification */
 .glass, .glass-strong, .folder, .cat-card, .total-bar, .stat-card,
@@ -673,8 +700,7 @@ const SEED = {
     {cat:'Other Movies', items:['Project Hail Mary','Shutter Island','Inception','Interstellar','The Cabin in the Woods','Fight Club (1999)','Micheal (2026)','Obsession']}
   ],
   web: [
-    {cat:'Popular', items:['Stranger Things','Loki','Money Heist','Wednesday','Squid Game','Harry Potter (Series)','Game of Thrones']},
-    {cat:'Other', items:['If wishes could kill','Moon knight (Marvel)','Loki (Marvel)','All of us are dead','Alice in borderland']}
+    {cat:'Popular', items:['Stranger Things','Loki','Money Heist','Wednesday','Squid Game','Harry Potter (Series)','Game of Thrones','If wishes could kill','Moon knight (Marvel)','Loki (Marvel)','All of us are dead','Alice in borderland']}
   ],
   animeSeries: [
     {cat:'All Anime Series', items:['Demon Slayer','Death Note','Solo Leveling','Jujutsu Kaisen','Chainsaw Man','The Fragrant Flower Blooms with Dignity','The Angel Next Door Spoils Me Rotten']},
@@ -1159,6 +1185,25 @@ function initReorderHandles(type){
   });
 }
 
+// Auto-scroll while dragging near viewport edges
+let _autoScrollRAF = null;
+function autoScroll(clientY){
+  const h = window.innerHeight;
+  const EDGE = 110;       // px from top/bottom that triggers scroll
+  const MAX_SPEED = 22;   // px per frame
+  let speed = 0;
+  if(clientY < EDGE)        speed = -MAX_SPEED * (1 - clientY/EDGE);
+  else if(clientY > h-EDGE) speed =  MAX_SPEED * (1 - (h-clientY)/EDGE);
+  if(_autoScrollRAF){ cancelAnimationFrame(_autoScrollRAF); _autoScrollRAF = null; }
+  if(speed === 0) return;
+  const tick = ()=>{
+    window.scrollBy(0, speed);
+    _autoScrollRAF = requestAnimationFrame(tick);
+  };
+  _autoScrollRAF = requestAnimationFrame(tick);
+}
+function stopAutoScroll(){ if(_autoScrollRAF){ cancelAnimationFrame(_autoScrollRAF); _autoScrollRAF=null; } }
+
 function startItemDrag(startEv, itemEl, type){
   if(!itemEl) return;
   const itemId = itemEl.getAttribute('data-item-id');
@@ -1169,6 +1214,7 @@ function startItemDrag(startEv, itemEl, type){
 
   function move(e){
     const x = e.clientX, y = e.clientY;
+    autoScroll(y);
     // find item or cat-body under pointer
     document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
     const els = document.elementsFromPoint(x,y);
@@ -1193,6 +1239,7 @@ function startItemDrag(startEv, itemEl, type){
     document.removeEventListener('pointerup', up);
     document.removeEventListener('pointercancel', up);
     itemEl.classList.remove('dragging');
+    stopAutoScroll();
     indicator.remove();
     if(!currentDrop){ return; }
     const item = getItem(type, itemId);
@@ -1238,6 +1285,7 @@ function startCatDrag(startEv, catEl, type){
 
   function move(e){
     const x = e.clientX, y = e.clientY;
+    autoScroll(y);
     document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
     const els = document.elementsFromPoint(x,y);
     for(const el of els){
@@ -1256,6 +1304,7 @@ function startCatDrag(startEv, catEl, type){
     document.removeEventListener('pointerup', up);
     document.removeEventListener('pointercancel', up);
     catEl.classList.remove('dragging');
+    stopAutoScroll();
     indicator.remove();
     if(!currentDrop) return;
     const movedCat = DATA.cats[type].find(c=>c.id===catId);
