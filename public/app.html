@@ -1473,6 +1473,34 @@ function openDeleteSheet(type, itemId){
   };
 }
 
+function openDeleteCategorySheet(type, catId, catName){
+  const cat = DATA.cats[type].find(c=>c.id===catId);
+  if(!cat) return;
+  if(type==='web'){
+    toast('Web Series keeps only Popular');
+    return;
+  }
+  const count = DATA.items[type].filter(i=>i.categoryId===catId).length;
+  openSheet(`
+    <div class="sheet-title">Delete Category?</div>
+    <div class="sheet-sub">"${escapeHtml(catName)}" and ${count} item(s) inside will be removed permanently.</div>
+    <div class="sheet-btns">
+      <button class="btn btn-glass" data-sheet-close>Cancel</button>
+      <button class="btn btn-primary" id="confCatDel" style="background:linear-gradient(135deg,#dc2626,#ec4899)">Delete</button>
+    </div>
+  `);
+  document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  document.getElementById('confCatDel').onclick = ()=>{
+    DATA.items[type] = DATA.items[type].filter(i=>i.categoryId!==catId);
+    DATA.cats[type] = DATA.cats[type].filter(c=>c.id!==catId).map((c,i)=>({...c, order:i}));
+    saveData();
+    forceCloseSheet();
+    renderCategories(type);
+    updateStats();
+    toast('Category deleted');
+  };
+}
+
 function confirmDialog(title, msg, onYes){
   openSheet(`
     <div class="sheet-title">${escapeHtml(title)}</div>
@@ -1491,6 +1519,13 @@ function confirmDialog(title, msg, onYes){
 // ============================================================
 function openAddSheet(type){
   const meta = TYPE_META[type];
+  if(type==='web'){
+    keepWebSeriesPopularOnly();
+    saveData();
+    const popular = DATA.cats.web[0];
+    promptAddToCategory(type, popular.id, popular.name);
+    return;
+  }
   openSheet(`
     <div class="sheet-title">Add a ${meta.addLabel}</div>
     <div class="sheet-sub">Pick a destination</div>
