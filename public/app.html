@@ -891,7 +891,7 @@ function renderCategories(type){
 
   // Favorites virtual section
   const favs = DATA.items[type].filter(i=>i.favorite);
-  if(favs.length){
+  if(type !== 'web' && favs.length){
     const visibleFavs = q ? favs.filter(i=>i.name.toLowerCase().includes(q)) : favs;
     if(visibleFavs.length){
       html += renderCatHtml(type, {id:'__favs', name:'Favorites', collapsed:false, virtual:true}, visibleFavs, q, true);
@@ -1691,6 +1691,7 @@ function handleImport(ev){
         DATA.cats = data.categories;
         DATA.items = data.items;
         TYPES.forEach(t=>{ if(!DATA.cats[t]) DATA.cats[t]=[]; if(!DATA.items[t]) DATA.items[t]=[]; });
+        keepWebSeriesPopularOnly();
         saveData();
         renderActivePage();
         toast('Imported successfully');
@@ -1826,6 +1827,8 @@ function toast(msg){
 //  INIT
 // ============================================================
 seedIfNeeded();
+keepWebSeriesPopularOnly();
+saveData();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 1900);
 
