@@ -1761,6 +1761,31 @@ function toast(msg){
 seedIfNeeded();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 1900);
+
+// === Subtle parallax on background blobs ===
+(function(){
+  const blobs = document.querySelectorAll('.bg-blob');
+  if(!blobs.length) return;
+  let tx=0, ty=0, cx=0, cy=0;
+  function onMove(e){
+    const t = e.touches ? e.touches[0] : e;
+    const w = window.innerWidth, h = window.innerHeight;
+    tx = ((t.clientX/w)-0.5)*2;
+    ty = ((t.clientY/h)-0.5)*2;
+  }
+  window.addEventListener('mousemove', onMove, {passive:true});
+  window.addEventListener('touchmove', onMove, {passive:true});
+  window.addEventListener('scroll', ()=>{ ty = Math.min(1, window.scrollY/600); }, {passive:true});
+  function loop(){
+    cx += (tx-cx)*0.06; cy += (ty-cy)*0.06;
+    blobs.forEach((b,i)=>{
+      const d = (i+1)*12;
+      b.style.translate = (cx*d)+'px '+(cy*d)+'px';
+    });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
 </script>
 </body>
 </html>
