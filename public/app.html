@@ -286,7 +286,6 @@ body{
 .item.on{background:linear-gradient(135deg,rgba(124,58,237,0.22),rgba(236,72,153,0.18));border-color:rgba(196,163,255,0.5);box-shadow:0 0 0 1px rgba(196,163,255,0.25), 0 8px 24px rgba(124,58,237,0.32), inset 0 1px 0 rgba(255,255,255,0.12)}
 .item-serial{width:28px;height:28px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(196,163,255,0.14);color:var(--accent);font-size:11.5px;font-weight:700;border:1px solid rgba(196,163,255,0.16)}
 .item-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.item-name mark{background:rgba(196,163,255,0.32);color:#fff;padding:0 3px;border-radius:4px}
 .item-star{width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--text-faint);cursor:pointer;flex-shrink:0;transition:all .2s;border-radius:8px}
 .item-star:active{transform:scale(0.85)}
 .item-star.fav{color:#fbbf24}
@@ -791,6 +790,7 @@ function showPage(id){
   if(el) el.classList.add('active');
   window.scrollTo(0,0);
   exitReorderMode(); exitSelectMode();
+  document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
 }
 function go(id){
   if(!PAGES.includes(id)) return;
@@ -883,11 +883,7 @@ function renderListPage(type){
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c])}
 
 function highlightText(text, q){
-  if(!q) return escapeHtml(text);
-  const lower = text.toLowerCase(), needle = q.toLowerCase();
-  const idx = lower.indexOf(needle);
-  if(idx<0) return escapeHtml(text);
-  return escapeHtml(text.slice(0,idx)) + '<mark>' + escapeHtml(text.slice(idx, idx+q.length)) + '</mark>' + escapeHtml(text.slice(idx+q.length));
+  return escapeHtml(text);
 }
 
 function renderCategories(type){
