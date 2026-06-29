@@ -790,6 +790,7 @@ function showPage(id){
   if(el) el.classList.add('active');
   window.scrollTo(0,0);
   exitReorderMode(); exitSelectMode();
+  document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
 }
 function go(id){
   if(!PAGES.includes(id)) return;
