@@ -385,8 +385,8 @@ body.select-mode .item-watched{display:none}
 @keyframes splashOut{to{opacity:0;transform:scale(1.05);pointer-events:none}}
 
 /* === TOAST === */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(120%);padding:12px 22px;border-radius:99px;background:rgba(28,18,58,0.92);backdrop-filter:blur(30px);border:1px solid var(--border-bright);color:#fff;font-size:13.5px;font-weight:600;z-index:99998;box-shadow:var(--shadow-lg);transition:transform .42s var(--spring);max-width:90%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
-.toast.show{transform:translateX(-50%) translateY(0)}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(160%);padding:12px 22px;border-radius:99px;background:rgba(28,18,58,0.92);backdrop-filter:blur(30px);border:1px solid var(--border-bright);color:#fff;font-size:13.5px;font-weight:600;z-index:99998;box-shadow:var(--shadow-lg);transition:transform .42s var(--spring),opacity .25s ease;max-width:90%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;opacity:0;visibility:hidden}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
 
 /* === SCROLLBAR === */
 ::-webkit-scrollbar{width:5px;height:5px}
