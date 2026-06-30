@@ -48,7 +48,7 @@ body{
 }
 /* === ANIMATED GRADIENT BACKGROUND === */
 .bg-wrap{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-.bg-blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:0.55;will-change:transform}
+.bg-blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:0.45;will-change:transform;transform:translateZ(0)}
 .bg-blob.b1{width:520px;height:520px;background:#7c3aed;top:-120px;left:-100px;animation:float1 22s ease-in-out infinite}
 .bg-blob.b2{width:480px;height:480px;background:#3b82f6;top:30%;right:-160px;animation:float2 26s ease-in-out infinite}
 .bg-blob.b3{width:540px;height:540px;background:#ec4899;bottom:-180px;left:20%;animation:float3 30s ease-in-out infinite}
@@ -66,8 +66,8 @@ body{
 /* === GLASS PRIMITIVE === */
 .glass{
   background:var(--glass);
-  backdrop-filter:blur(28px) saturate(180%);
-  -webkit-backdrop-filter:blur(28px) saturate(180%);
+  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
   border:1px solid var(--border);
   box-shadow:var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.1);
   border-radius:var(--radius-md);
@@ -75,8 +75,8 @@ body{
 }
 .glass-strong{
   background:var(--glass-strong);
-  backdrop-filter:blur(34px) saturate(190%);
-  -webkit-backdrop-filter:blur(34px) saturate(190%);
+  backdrop-filter:blur(18px) saturate(170%);
+  -webkit-backdrop-filter:blur(18px) saturate(170%);
   border:1px solid var(--border-bright);
   box-shadow:var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.14);
   border-radius:var(--radius-lg);
@@ -94,8 +94,8 @@ body{
 .icon-btn{
   width:44px;height:44px;border-radius:14px;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;cursor:pointer;
-  background:var(--glass);backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
+  background:var(--glass);backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
   border:1px solid var(--border);
   color:var(--accent);
   transition:all .25s var(--spring);
