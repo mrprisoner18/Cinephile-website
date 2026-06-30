@@ -62,7 +62,7 @@ export default defineConfig(({ mode }) => ({
             },
           },
           {
-            urlPattern: ({ url, request }) => url.origin === self.location.origin && ["style","script","image","font"].includes(request.destination),
+            urlPattern: ({ sameOrigin, request }) => sameOrigin && ["style","script","image","font"].includes(request.destination),
             handler: "CacheFirst",
             options: {
               cacheName: "assets",
