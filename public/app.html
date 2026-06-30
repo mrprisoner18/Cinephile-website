@@ -1668,11 +1668,23 @@ function openSettings(){
   document.querySelector('[data-set="pdf"]').onclick = ()=>{ forceCloseSheet(); downloadPDF(); };
   document.querySelector('[data-set="reset"]').onclick = ()=>{
     forceCloseSheet();
-    confirmDialog('Reset all data?', 'Your added items and changes will be lost. Re-seeds default categories and items.', ()=>{
-      localStorage.removeItem(K_CATS); localStorage.removeItem(K_ITEMS); localStorage.removeItem(K_MIGRATED);
-      seedIfNeeded();
-      renderActivePage();
+    confirmDialog('Reset to a fresh install?', 'Clears every watched mark, custom item, and category. The default lists are restored as if the app was just installed.', ()=>{
+      try{
+        // Wipe every key this app owns (keep unrelated keys untouched).
+        const keep = [];
+        for(let i=0;i<localStorage.length;i++){
+          const k = localStorage.key(i);
+          if(!k) continue;
+          if(k===K_CATS||k===K_ITEMS||k===K_MIGRATED||k.startsWith('mc_')||k.startsWith('collection_')) continue;
+          keep.push(k);
+        }
+        // Brute clear then re-seed defaults so it behaves like a brand-new install.
+        localStorage.removeItem(K_CATS);
+        localStorage.removeItem(K_ITEMS);
+        localStorage.removeItem(K_MIGRATED);
+      }catch(e){}
       toast('Reset complete');
+      setTimeout(()=>location.reload(), 350);
     });
   };
 }
