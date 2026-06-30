@@ -1842,29 +1842,27 @@ saveData();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 1900);
 
-// === Subtle parallax on background blobs ===
+// === Service worker registration (offline support) ===
+// Skips Lovable preview/iframe/dev contexts.
 (function(){
-  const blobs = document.querySelectorAll('.bg-blob');
-  if(!blobs.length) return;
-  let tx=0, ty=0, cx=0, cy=0;
-  function onMove(e){
-    const t = e.touches ? e.touches[0] : e;
-    const w = window.innerWidth, h = window.innerHeight;
-    tx = ((t.clientX/w)-0.5)*2;
-    ty = ((t.clientY/h)-0.5)*2;
+  if(!('serviceWorker' in navigator)) return;
+  var h = location.hostname;
+  var isPreview = h.startsWith('id-preview--') || h.startsWith('preview--')
+    || h === 'lovableproject.com' || h.endsWith('.lovableproject.com')
+    || h === 'lovableproject-dev.com' || h.endsWith('.lovableproject-dev.com')
+    || h === 'beta.lovable.dev' || h.endsWith('.beta.lovable.dev');
+  var inIframe = window.self !== window.top;
+  var killSwitch = new URLSearchParams(location.search).get('sw') === 'off';
+  var isLocal = h === 'localhost' || h === '127.0.0.1' || h.startsWith('192.168.') || h.endsWith('.local');
+  if(isPreview || inIframe || killSwitch || isLocal){
+    if(navigator.serviceWorker.getRegistrations){
+      navigator.serviceWorker.getRegistrations().then(function(rs){
+        rs.forEach(function(r){ var u=(r.active&&r.active.scriptURL)||''; if(u.endsWith('/sw.js')) r.unregister(); });
+      }).catch(function(){});
+    }
+    return;
   }
-  window.addEventListener('mousemove', onMove, {passive:true});
-  window.addEventListener('touchmove', onMove, {passive:true});
-  window.addEventListener('scroll', ()=>{ ty = Math.min(1, window.scrollY/600); }, {passive:true});
-  function loop(){
-    cx += (tx-cx)*0.06; cy += (ty-cy)*0.06;
-    blobs.forEach((b,i)=>{
-      const d = (i+1)*12;
-      b.style.translate = (cx*d)+'px '+(cy*d)+'px';
-    });
-    requestAnimationFrame(loop);
-  }
-  loop();
+  navigator.serviceWorker.register('/sw.js').catch(function(){});
 })();
 </script>
 </body>
