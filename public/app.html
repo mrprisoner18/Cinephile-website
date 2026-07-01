@@ -1657,6 +1657,10 @@ function openSettings(){
       <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9"/><polyline points="3 4 3 12 11 12"/></svg></div>
       <div class="sheet-action-text"><div class="sheet-action-title">Reset to Defaults</div><div class="sheet-action-sub">Re-seed built-in lists</div></div>
     </div>
+    <div class="sheet-action danger" data-set="clear">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Clear My Collection</div><div class="sheet-action-sub">Delete all items, ratings & stats</div></div>
+    </div>
     <div class="sheet-btns" style="margin-top:14px">
       <button class="btn btn-glass" data-sheet-close>Close</button>
     </div>
@@ -1665,6 +1669,18 @@ function openSettings(){
   document.querySelector('[data-set="export"]').onclick = exportJSON;
   document.querySelector('[data-set="import"]').onclick = ()=>document.getElementById('importFile').click();
   document.querySelector('[data-set="pdf"]').onclick = ()=>{ forceCloseSheet(); downloadPDF(); };
+  document.querySelector('[data-set="clear"]').onclick = ()=>{
+    forceCloseSheet();
+    confirmDialog('Clear Collection?', 'This will permanently delete all Movies, Web Series, Anime, Favorites, Watch Status, Ratings, and all collection statistics. This action cannot be undone.', ()=>{
+      try{
+        TYPES.forEach(t=>{ DATA.items[t] = []; });
+        saveData();
+        TYPES.forEach(t=>{ try{ renderCategories(t); }catch(e){} });
+        updateStats();
+      }catch(e){}
+      toast('Collection cleared successfully.');
+    }, {confirmLabel:'Clear Collection', danger:true});
+  };
   document.querySelector('[data-set="reset"]').onclick = ()=>{
     forceCloseSheet();
     confirmDialog('Reset to a fresh install?', 'Clears every watched mark, custom item, and category. The default lists are restored as if the app was just installed.', ()=>{
