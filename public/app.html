@@ -1510,13 +1510,14 @@ function openDeleteCategorySheet(type, catId, catName){
   };
 }
 
-function confirmDialog(title, msg, onYes){
+function confirmDialog(title, msg, onYes, opts){
+  const confirmLabel = (opts && opts.confirmLabel) || 'Confirm';
   openSheet(`
     <div class="sheet-title">${escapeHtml(title)}</div>
     <div class="sheet-sub">${escapeHtml(msg)}</div>
     <div class="sheet-btns">
       <button class="btn btn-glass" data-sheet-close>Cancel</button>
-      <button class="btn btn-primary" id="confYes" style="background:linear-gradient(135deg,#dc2626,#ec4899)">Confirm</button>
+      <button class="btn btn-primary" id="confYes" style="background:linear-gradient(135deg,#dc2626,#ec4899)">${escapeHtml(confirmLabel)}</button>
     </div>
   `);
   document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
