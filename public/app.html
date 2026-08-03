@@ -751,9 +751,6 @@ function seedIfNeeded(){
   loadData();
   if(localStorage.getItem(K_MIGRATED)==='1') return;
   // Read v2 deleted + added for migration
-  loadData();
-  if(localStorage.getItem(K_MIGRATED)==='1') return;
-  // Read v2 deleted + added for migration
   let v2Deleted = [];
   let v2Added = {};
   try{ v2Deleted = JSON.parse(localStorage.getItem(K_DEL_V2)||'[]'); }catch(e){}
