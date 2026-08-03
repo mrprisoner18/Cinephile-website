@@ -1085,10 +1085,6 @@ function wireListInteractions(type){
     const itemId = el.getAttribute('data-item-id');
     wireItem(el, type, itemId);
   });
-  // Drag handles wiring (only when reorder mode active)
-  if(PAGE_STATE.reorderMode){
-    initReorderHandles(type);
-  }
 }
 
 function getItem(type, id){ return DATA.items[type].find(i=>i.id===id); }
@@ -1097,8 +1093,7 @@ function wireItem(el, type, itemId){
   // Tap = highlight (exclusive) OR toggle check in select mode
   el.addEventListener('click', e=>{
     if(e.target.closest('[data-item-star]')) return;
-    if(e.target.closest('[data-item-handle]')) return;
-    if(PAGE_STATE.reorderMode) return;
+    if(DRAG.suppressClick){ return; }
     if(PAGE_STATE.selectMode){
       const cb = el.querySelector('[data-item-check]');
       cb.classList.toggle('checked');
@@ -1114,17 +1109,25 @@ function wireItem(el, type, itemId){
   if(star){
     star.addEventListener('click', e=>{
       e.stopPropagation();
+      if(DRAG.suppressClick) return;
       const it = getItem(type, itemId);
       if(!it) return;
       it.favorite = !it.favorite;
       saveData();
-      renderCategories(type);
+      // Instant visual toggle; full re-render only needed for the favorites filter
+      star.classList.toggle('fav', it.favorite);
+      const svg = star.querySelector('svg');
+      if(svg) svg.setAttribute('fill', it.favorite ? 'currentColor' : 'none');
+      if(PAGE_STATE.favOnly && !it.favorite){
+        const row = star.closest('.item');
+        if(row){ row.style.transition='opacity .16s linear'; row.style.opacity='0'; setTimeout(()=>renderCategories(type), 150); }
+      }
       updateStats();
       toast(it.favorite ? '⭐ Added to favorites' : 'Removed from favorites');
     });
   }
-  // Long-press for action sheet
-  attachLongPress(el, ()=>openActionSheet(type, itemId));
+  // Long-press = pick up & drag; long-press without moving opens the action sheet
+  attachDragOrMenu(el, type, itemId);
 }
 
 // ============================================================
