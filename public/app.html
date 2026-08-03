@@ -297,18 +297,32 @@ body{
 .item-check svg{width:11px;height:11px;display:none}
 .item-check.checked svg{display:block}
 
-/* Reorder/Select mode toggles */
-body.reorder-mode .item-handle{display:flex}
-body.reorder-mode .cat-handle{display:flex}
-body.reorder-mode .item-star{display:none}
-body.reorder-mode .item{cursor:default}
-body.reorder-mode .item.on{background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.06);box-shadow:none}
+/* Select mode toggles */
 body.select-mode .item-check{display:flex}
 body.select-mode .item-star{display:none}
 body.select-mode .item-watched{display:none}
 
-.item.dragging{opacity:0.4}
-.cat-card.dragging{opacity:0.4}
+/* Perf: skip painting off-screen category cards, keep scrolling smooth */
+html{-webkit-text-size-adjust:100%}
+.cat-card{contain:layout style}
+.cat-body{contain:layout style}
+.item{contain:layout style}
+
+/* Drag & drop (long-press) */
+body.dragging-active{overflow:hidden;-webkit-user-select:none;user-select:none}
+.item{touch-action:pan-y}
+.item.drag-src{opacity:0.28;transition:opacity .16s linear}
+.drag-ghost{
+  position:fixed;left:0;top:0;z-index:9500;pointer-events:none;margin:0;
+  will-change:transform;
+  transform-origin:center;
+  box-shadow:0 18px 44px rgba(0,0,0,0.45), 0 0 0 1px rgba(196,163,255,0.35);
+  background:linear-gradient(135deg,rgba(124,58,237,0.34),rgba(236,72,153,0.26));
+  backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
+  border-radius:16px;
+}
+.drag-ghost.lift{transition:transform .16s cubic-bezier(0.22,1,0.36,1)}
+.drag-ghost.drop{transition:transform .19s cubic-bezier(0.22,1,0.36,1), opacity .19s linear}
 .drop-indicator{height:3px;border-radius:99px;background:linear-gradient(90deg,#7c3aed,#ec4899);margin:2px 0;box-shadow:0 0 12px rgba(196,163,255,0.6);animation:pulseGlow 1.2s ease-in-out infinite}
 @keyframes pulseGlow{0%,100%{opacity:0.8}50%{opacity:1}}
 
@@ -636,15 +650,34 @@ const SEED = {
       'Spider-Man: Homecoming (2017)','Thor: Ragnarok (2017)','Black Panther (2018)','Avengers: Infinity War (2018)','Ant-Man and the Wasp (2018)',
       'Captain Marvel (2019)','Avengers: Endgame (2019)','Spider-Man: Far from Home (2019)','Black Widow (2021)','Shang-Chi and the Legend of the Ten Rings (2021)',
       'Eternals (2021)','Spider-Man: No Way Home (2021)','Doctor Strange in the Multiverse of Madness (2022)','Thor: Love and Thunder (2022)','Black Panther: Wakanda Forever (2022)',
-      'Ant-Man and the Wasp: Quantumania (2023)','Guardians of the Galaxy Vol. 3 (2023)','The Marvels (2023)'
+      'Ant-Man and the Wasp: Quantumania (2023)','Guardians of the Galaxy Vol. 3 (2023)','The Marvels (2023)',
+      'Captain America: Brave New World (2025)','Thunderbolts* (2025)','The Fantastic Four: First Steps (2025)','Avengers: Doomsday (2026)','Avengers: Secret Wars (2027)',
+      'Blade (2025)','Spider-Man: Brand New Day (2026)',
+      'Deadpool (2016)','Deadpool 2 (2018)','Deadpool & Wolverine (2024)','Logan (2017)','X-Men Origins: Wolverine (2009)',
+      'X-Men (2000)','X2: X-Men United (2003)','X-Men: The Last Stand (2006)','X-Men: First Class (2011)','The Wolverine (2013)',
+      'X-Men: Days of Future Past (2014)','X-Men: Apocalypse (2016)','Dark Phoenix (2019)','The New Mutants (2020)',
+      'Fantastic Four (2005)','Fantastic Four: Rise of the Silver Surfer (2007)','Fantastic Four (2015)',
+      'Spider-Man (2002)','Spider-Man 2 (2004)','Spider-Man 3 (2007)','The Amazing Spider-Man (2012)','The Amazing Spider-Man 2 (2014)',
+      'Spider-Man: Into the Spider-Verse (2018)','Spider-Man: Across the Spider-Verse (2023)',
+      'Venom (2018)','Venom: Let There Be Carnage (2021)','Venom: The Last Dance (2024)','Morbius (2022)','Kraven the Hunter (2024)','Madame Web (2024)',
+      'Blade (1998)','Blade II (2002)','Blade: Trinity (2004)',
+      'WandaVision','The Falcon and the Winter Soldier','Loki','What If...?','Hawkeye','Moon Knight','Ms. Marvel','She-Hulk: Attorney at Law',
+      'Secret Invasion','Echo','Agatha All Along','Daredevil: Born Again','Ironheart','Wonder Man','Marvel Zombies','Eyes of Wakanda','X-Men \u201997',
+      'Agents of S.H.I.E.L.D.','Daredevil','Jessica Jones','Luke Cage','Iron Fist','The Defenders','The Punisher','Runaways','Cloak & Dagger','Helstrom',
+      'One-Shot: The Consultant','One-Shot: A Funny Thing Happened on the Way to Thor\u2019s Hammer','One-Shot: Item 47','One-Shot: Agent Carter','One-Shot: All Hail the King',
+      'Special: Werewolf by Night','Special: The Guardians of the Galaxy Holiday Special'
     ]},
-    {cat:'Deadpool & Wolverine', items:[
-      'Deadpool (2016)','Deadpool 2 (2018)','Logan (2017)','X-Men Origins: Wolverine (2009)','X-Men: Days of Future Past (2014)',
-      'Deadpool & Wolverine (2024)','Captain America: Brave New World (2025)','Thunderbolts (2025)','The Fantastic Four: First Steps (2025)'
+    {cat:'DC', items:[
+      'Batman Begins (2005)','The Dark Knight (2008)','The Dark Knight Rises (2012)','Batman (1989)','Batman Returns (1992)','Batman Forever (1995)','Batman & Robin (1997)','The Batman (2022)',
+      'Joker (2019)','Joker: Folie \u00e0 Deux (2024)',
+      'Man of Steel (2013)','Batman v Superman: Dawn of Justice (2016)','Superman Returns (2006)','Superman (2025)',
+      'Wonder Woman (2017)','Wonder Woman 1984 (2020)',
+      'Aquaman (2018)','Aquaman and the Lost Kingdom (2023)',
+      'The Flash (2023)','Shazam! (2019)','Shazam! Fury of the Gods (2023)',
+      'Suicide Squad (2016)','The Suicide Squad (2021)','Birds of Prey (2020)',
+      'Justice League (2017)','Zack Snyder\u2019s Justice League (2021)','Black Adam (2022)','Blue Beetle (2023)','Supergirl (2026)',
+      'Peacemaker (Series)','Titans (Series)','Doom Patrol (Series)','Creature Commandos (Series)','Gotham (Series)','Arrow (Series)','The Flash (Series)'
     ]},
-    {cat:'Venom Series', items:['Venom (2018)','Venom: Let There Be Carnage (2021)','Venom: The Last Dance (2024)']},
-    {cat:'Batman Series', items:['Batman Begins (2005)','The Dark Knight (2008)','The Dark Knight Rises (2012)']},
-    {cat:'Joker Series', items:['Joker (2019)','Joker: Folie à Deux (2024)']},
     {cat:'Conjuring Universe', items:[
       'The Conjuring (2013)','Annabelle (2014)','The Conjuring 2 (2016)','Annabelle: Creation (2017)','The Nun (2018)',
       'The Curse of La Llorona (2019)','Annabelle Comes Home (2019)','The Conjuring: The Devil Made Me Do It (2021)','The Nun II (2023)','The Conjuring: Last Rites (2025)'
@@ -699,7 +732,7 @@ const K_ADD_V2 = 'col_added_v2';
 const K_MIGRATED = 'col_migrated_v3';
 
 let DATA = {cats:{}, items:{}};
-const PAGE_STATE = { search:'', selectMode:false, reorderMode:false };
+const PAGE_STATE = { search:'', selectMode:false, favOnly:false };
 
 function uid(){return 'i_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function loadData(){
@@ -726,6 +759,58 @@ function keepWebSeriesPopularOnly(){
   popular.collapsed = false;
   DATA.cats.web = [popular];
   DATA.items.web.forEach((item, idx)=>{ item.categoryId = popular.id; item.order = idx; });
+}
+
+// ---- One-time collection reorganization (merge Marvel/DC folders) ----
+const K_ORG_V4 = 'col_org_v4';
+const MERGE_RULES = [
+  {into:'MCU', match:['mcu','marvel','deadpool','wolverine','venom','x-men','xmen','fantastic four','spider-man','spiderman','blade','one-shot','special presentation']},
+  {into:'DC',  match:['dc','batman','joker','superman','wonder woman','aquaman','flash','shazam','suicide squad','justice league']}
+];
+function reorganizeCollections(){
+  if(localStorage.getItem(K_ORG_V4)==='1') return;
+  const type = 'movie';
+  if(!DATA.cats[type]) return;
+  MERGE_RULES.forEach(rule=>{
+    const lc = n=>String(n||'').trim().toLowerCase();
+    let target = DATA.cats[type].find(c=>lc(c.name)===lc(rule.into));
+    if(!target){
+      target = {id:'c_'+type+'_'+lc(rule.into)+'_'+Math.random().toString(36).slice(2,6), name:rule.into, order:DATA.cats[type].length, collapsed:false, builtin:true};
+      DATA.cats[type].push(target);
+    }
+    target.name = rule.into;
+    // Merge matching sibling categories into the target
+    const doomed = DATA.cats[type].filter(c=>{
+      if(c.id===target.id) return false;
+      const n = lc(c.name);
+      return rule.match.some(m=>n.includes(m));
+    });
+    if(doomed.length){
+      let next = DATA.items[type].filter(i=>i.categoryId===target.id).length;
+      doomed.forEach(c=>{
+        DATA.items[type]
+          .filter(i=>i.categoryId===c.id)
+          .sort((a,b)=>a.order-b.order)
+          .forEach(i=>{ i.categoryId = target.id; i.order = next++; });
+      });
+      const doomedIds = doomed.map(c=>c.id);
+      DATA.cats[type] = DATA.cats[type].filter(c=>!doomedIds.includes(c.id));
+    }
+    // Top up with any seed entries that are missing (preserves existing flags/order)
+    const seedGroup = (SEED[type]||[]).find(g=>lc(g.cat)===lc(rule.into));
+    if(seedGroup){
+      const have = new Set(DATA.items[type].filter(i=>i.categoryId===target.id).map(i=>lc(i.name)));
+      let next = DATA.items[type].filter(i=>i.categoryId===target.id).length;
+      seedGroup.items.forEach(name=>{
+        if(have.has(lc(name))) return;
+        have.add(lc(name));
+        DATA.items[type].push({id:uid(), name, categoryId:target.id, order:next++, watched:false, rating:0, favorite:false, builtin:true, createdAt:Date.now()});
+      });
+    }
+  });
+  DATA.cats[type].sort((a,b)=>a.order-b.order).forEach((c,i)=>c.order=i);
+  saveData();
+  localStorage.setItem(K_ORG_V4,'1');
 }
 
 function seedIfNeeded(){
@@ -789,7 +874,7 @@ function showPage(id){
   const el = document.getElementById(id);
   if(el) el.classList.add('active');
   window.scrollTo(0,0);
-  exitReorderMode(); exitSelectMode();
+  exitSelectMode();
   document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
 }
 function go(id){
@@ -797,7 +882,7 @@ function go(id){
   if(NAV[NAV.length-1]===id) return;
   NAV.push(id);
   history.pushState({pg:id}, '', '#'+id);
-  if(TYPES.includes(typeOfPage(id))) renderListPage(typeOfPage(id));
+  if(TYPES.includes(typeOfPage(id))){ PAGE_STATE.search=''; PAGE_STATE.favOnly=false; renderListPage(typeOfPage(id)); }
   showPage(id);
 }
 function goBack(){ if(NAV.length>1) history.back(); }
@@ -827,7 +912,7 @@ window.addEventListener('popstate', function(e){
   if(NAV.length>1){
     NAV.pop();
     const target = NAV[NAV.length-1];
-    if(TYPES.includes(typeOfPage(target))) renderListPage(typeOfPage(target));
+    if(TYPES.includes(typeOfPage(target))){ PAGE_STATE.search=''; PAGE_STATE.favOnly=false; renderListPage(typeOfPage(target)); }
     showPage(target);
   }else{
     // At home: re-push guard so user must press back again to actually exit
@@ -852,9 +937,9 @@ function renderListPage(type){
         <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         Select
       </button>
-      <button class="ctrl-btn" id="reBtn-${type}" onclick="toggleReorder('${type}')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        Reorder
+      <button class="ctrl-btn ${PAGE_STATE.favOnly?'active':''}" id="favBtn-${type}" onclick="toggleFavFilter('${type}')">
+        <svg fill="${PAGE_STATE.favOnly?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Favorites
       </button>
       <div id="bulk-${type}" style="display:none;align-items:center;gap:8px">
         <button class="ctrl-btn" onclick="selectAllItems('${type}')">All</button>
@@ -875,7 +960,7 @@ function renderListPage(type){
     </div>
     <div id="catContainer-${type}"></div>
     <div class="total-bar">Total: <span id="totalLabel-${type}">0</span></div>
-    <p class="hint">Long-press any item for Edit · Move · Favorite · Delete</p>
+    <p class="hint">Long-press an item to drag & reorder · Tap the star to favorite</p>
   `;
   renderCategories(type);
 }
@@ -898,23 +983,22 @@ function renderCategories(type){
   let html = '';
   let total = 0;
 
-  // Favorites virtual section
-  const favs = DATA.items[type].filter(i=>i.favorite);
-  if(type !== 'web' && favs.length){
-    const visibleFavs = q ? favs.filter(i=>i.name.toLowerCase().includes(q)) : favs;
-    if(visibleFavs.length){
-      html += renderCatHtml(type, {id:'__favs', name:'Favorites', collapsed:false, virtual:true}, visibleFavs, q, true);
-    }
-  }
-
+  const favOnly = !!PAGE_STATE.favOnly;
   cats.forEach(cat=>{
-    const items = itemsByCat[cat.id] || [];
+    let items = itemsByCat[cat.id] || [];
+    if(favOnly) items = items.filter(i=>i.favorite);
     const visibleItems = q ? items.filter(i=>i.name.toLowerCase().includes(q) || cat.name.toLowerCase().includes(q)) : items;
     total += items.length;
+    if(favOnly && visibleItems.length===0) return;
     if(q && visibleItems.length===0 && !cat.name.toLowerCase().includes(q)) return;
     html += renderCatHtml(type, cat, visibleItems, q);
   });
 
+  if(!html){
+    html = favOnly
+      ? '<div class="cat-empty" style="margin-top:20px">No favorites yet. Tap a star to add one.</div>'
+      : (cats.length ? '<div class="cat-empty" style="margin-top:20px">Nothing matches your search.</div>' : '<div class="cat-empty" style="margin-top:20px">No categories yet. Tap + to add one.</div>');
+  }
   if(!cats.length){
     html = '<div class="cat-empty" style="margin-top:20px">No categories yet. Tap + to add one.</div>';
   }
@@ -932,7 +1016,7 @@ function renderCatHtml(type, cat, items, q, isFav){
     : `<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>`;
   const addBtn = isFav ? '' : `<div class="cat-add" data-cat-add="${cat.id}" data-cat-name="${escapeHtml(cat.name)}" aria-label="Add to ${escapeHtml(cat.name)}"><svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>`;
   const deleteBtn = (isFav || type==='web') ? '' : `<div class="cat-delete" data-cat-delete="${cat.id}" data-cat-name="${escapeHtml(cat.name)}" aria-label="Delete ${escapeHtml(cat.name)}"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></div>`;
-  const handle = isFav ? '' : `<div class="cat-handle" data-cat-handle="${cat.id}"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>`;
+  const handle = '';
   let itemsHtml = '';
   if(items.length===0){
     itemsHtml = '<div class="cat-empty">Empty</div>';
@@ -963,8 +1047,7 @@ function renderItemHtml(type, item, serial, q){
     <div class="item-serial">${serial}</div>
     <div class="item-name">${highlightText(item.name, q)}</div>
     <div class="item-watched"><svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-    <div class="item-star ${favCls}" data-item-star><svg fill="${item.favorite?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-    <div class="item-handle" data-item-handle><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+    <div class="item-star ${favCls}" data-item-star aria-label="Toggle favorite"><svg fill="${item.favorite?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
   </div>`;
 }
 
@@ -1008,10 +1091,6 @@ function wireListInteractions(type){
     const itemId = el.getAttribute('data-item-id');
     wireItem(el, type, itemId);
   });
-  // Drag handles wiring (only when reorder mode active)
-  if(PAGE_STATE.reorderMode){
-    initReorderHandles(type);
-  }
 }
 
 function getItem(type, id){ return DATA.items[type].find(i=>i.id===id); }
@@ -1020,8 +1099,7 @@ function wireItem(el, type, itemId){
   // Tap = highlight (exclusive) OR toggle check in select mode
   el.addEventListener('click', e=>{
     if(e.target.closest('[data-item-star]')) return;
-    if(e.target.closest('[data-item-handle]')) return;
-    if(PAGE_STATE.reorderMode) return;
+    if(DRAG.suppressClick){ return; }
     if(PAGE_STATE.selectMode){
       const cb = el.querySelector('[data-item-check]');
       cb.classList.toggle('checked');
@@ -1037,66 +1115,224 @@ function wireItem(el, type, itemId){
   if(star){
     star.addEventListener('click', e=>{
       e.stopPropagation();
+      if(DRAG.suppressClick) return;
       const it = getItem(type, itemId);
       if(!it) return;
       it.favorite = !it.favorite;
       saveData();
-      renderCategories(type);
+      // Instant visual toggle; full re-render only needed for the favorites filter
+      star.classList.toggle('fav', it.favorite);
+      const svg = star.querySelector('svg');
+      if(svg) svg.setAttribute('fill', it.favorite ? 'currentColor' : 'none');
+      if(PAGE_STATE.favOnly && !it.favorite){
+        const row = star.closest('.item');
+        if(row){ row.style.transition='opacity .16s linear'; row.style.opacity='0'; setTimeout(()=>renderCategories(type), 150); }
+      }
       updateStats();
       toast(it.favorite ? '⭐ Added to favorites' : 'Removed from favorites');
     });
   }
-  // Long-press for action sheet
-  attachLongPress(el, ()=>openActionSheet(type, itemId));
+  // Long-press = pick up & drag; long-press without moving opens the action sheet
+  attachDragOrMenu(el, type, itemId);
 }
 
 // ============================================================
-//  LONG-PRESS
+//  LONG-PRESS  →  DRAG & DROP  /  ACTION MENU
 // ============================================================
-function attachLongPress(el, cb){
-  let timer=null, sx=0, sy=0, fired=false;
-  function start(e){
-    if(PAGE_STATE.reorderMode || PAGE_STATE.selectMode) return;
-    const t = e.touches ? e.touches[0] : e;
-    sx=t.clientX; sy=t.clientY; fired=false;
-    timer=setTimeout(()=>{
-      fired=true;
-      if(navigator.vibrate) navigator.vibrate(28);
-      cb();
-    }, 450);
+const DRAG = {
+  active:false, moved:false, suppressClick:false,
+  el:null, ghost:null, type:null, itemId:null,
+  offX:0, offY:0, lastX:0, lastY:0, raf:null, pending:false
+};
+
+function hapticTick(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+
+function attachDragOrMenu(el, type, itemId){
+  let timer=null, sx=0, sy=0, longFired=false, startedDrag=false;
+
+  const clear = ()=>{ if(timer){ clearTimeout(timer); timer=null; } };
+
+  function onDown(e){
+    if(e.pointerType==='mouse' && e.button!==0) return;
+    if(e.target.closest('[data-item-star]')) return;
+    if(PAGE_STATE.selectMode) return;
+    if(DRAG.active) return;
+    sx=e.clientX; sy=e.clientY; longFired=false; startedDrag=false;
+    DRAG.suppressClick = false;
+    clear();
+    timer = setTimeout(()=>{
+      timer=null; longFired=true;
+      hapticTick(18);
+      startedDrag = beginDrag(el, type, itemId, sx, sy);
+    }, 300);
   }
-  function cancel(e){
-    if(!timer) return;
-    if(e && e.changedTouches){
-      const t = e.changedTouches[0];
-      if(Math.abs(t.clientX-sx)>12 || Math.abs(t.clientY-sy)>12){ clearTimeout(timer); timer=null; return; }
+  function onMove(e){
+    if(timer && (Math.abs(e.clientX-sx)>10 || Math.abs(e.clientY-sy)>10)) clear();
+  }
+  function onUp(){
+    clear();
+    // Long-pressed but never dragged → open the action menu
+    if(longFired && startedDrag && !DRAG.moved){
+      DRAG.pendingMenu = true;
     }
-    clearTimeout(timer); timer=null;
   }
-  el.addEventListener('touchstart', start, {passive:true});
-  el.addEventListener('mousedown', start);
-  ['touchend','touchcancel','mouseup','mouseleave'].forEach(ev=>el.addEventListener(ev, cancel));
-  el.addEventListener('touchmove', e=>{
-    if(!timer) return;
-    const t = e.touches[0];
-    if(Math.abs(t.clientX-sx)>12 || Math.abs(t.clientY-sy)>12){ clearTimeout(timer); timer=null; }
-  }, {passive:true});
-  el.addEventListener('click', e=>{ if(fired){ e.stopPropagation(); e.preventDefault(); } }, true);
+
+  el.addEventListener('pointerdown', onDown);
+  el.addEventListener('pointermove', onMove, {passive:true});
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>el.addEventListener(ev, onUp));
+}
+
+function beginDrag(el, type, itemId, x, y){
+  if(PAGE_STATE.favOnly || PAGE_STATE.search) return false; // order is only meaningful on the full list
+  const rect = el.getBoundingClientRect();
+  const ghost = el.cloneNode(true);
+  ghost.className = 'item drag-ghost';
+  ghost.style.width = rect.width+'px';
+  ghost.style.height = rect.height+'px';
+  document.body.appendChild(ghost);
+
+  DRAG.active = true; DRAG.moved = false; DRAG.pendingMenu = false;
+  DRAG.el = el; DRAG.ghost = ghost; DRAG.type = type; DRAG.itemId = itemId;
+  DRAG.offX = x - rect.left; DRAG.offY = y - rect.top;
+  DRAG.lastX = x; DRAG.lastY = y;
+
+  paintGhost(rect.left, rect.top, 1);
+  requestAnimationFrame(()=>{
+    ghost.classList.add('lift');
+    paintGhost(rect.left, rect.top, 1.04);
+  });
+  el.classList.add('drag-src');
+  document.body.classList.add('dragging-active');
+
+  document.addEventListener('pointermove', dragMove, {passive:false});
+  document.addEventListener('pointerup', dragEnd);
+  document.addEventListener('pointercancel', dragEnd);
+  return true;
+}
+
+function paintGhost(left, top, scale){
+  if(!DRAG.ghost) return;
+  DRAG.ghost.style.transform = `translate3d(${left}px,${top}px,0) scale(${scale})`;
+}
+
+function dragMove(e){
+  if(!DRAG.active) return;
+  e.preventDefault();
+  DRAG.lastX = e.clientX; DRAG.lastY = e.clientY;
+  DRAG.moved = true;
+  autoScroll(e.clientY);
+  if(DRAG.pending) return;
+  DRAG.pending = true;
+  requestAnimationFrame(()=>{
+    DRAG.pending = false;
+    if(!DRAG.active) return;
+    paintGhost(DRAG.lastX - DRAG.offX, DRAG.lastY - DRAG.offY, 1.04);
+    repositionDragSource(DRAG.lastX, DRAG.lastY);
+  });
+}
+
+function repositionDragSource(x, y){
+  const el = DRAG.el;
+  if(!el) return;
+  const els = document.elementsFromPoint(x, y);
+  for(const node of els){
+    if(!node.classList) continue;
+    if(node.classList.contains('item') && node!==el && !node.classList.contains('drag-ghost')){
+      const r = node.getBoundingClientRect();
+      const after = (y - r.top) > r.height/2;
+      if(after) node.after(el); else node.before(el);
+      return;
+    }
+    if(node.classList.contains('cat-body')){
+      if(!node.contains(el)) node.appendChild(el);
+      return;
+    }
+  }
+}
+
+function dragEnd(){
+  if(!DRAG.active) return;
+  document.removeEventListener('pointermove', dragMove);
+  document.removeEventListener('pointerup', dragEnd);
+  document.removeEventListener('pointercancel', dragEnd);
+  stopAutoScroll();
+
+  const el = DRAG.el, ghost = DRAG.ghost, type = DRAG.type, itemId = DRAG.itemId;
+  const moved = DRAG.moved, wantMenu = !DRAG.moved;
+  DRAG.active = false;
+  document.body.classList.remove('dragging-active');
+  DRAG.suppressClick = true;
+  setTimeout(()=>{ DRAG.suppressClick = false; }, 320);
+
+  const target = el.getBoundingClientRect();
+  if(ghost){
+    ghost.classList.remove('lift');
+    ghost.classList.add('drop');
+    ghost.style.transform = `translate3d(${target.left}px,${target.top}px,0) scale(1)`;
+    setTimeout(()=>{
+      ghost.remove();
+      el.classList.remove('drag-src');
+    }, 190);
+  } else {
+    el.classList.remove('drag-src');
+  }
+
+  DRAG.el = null; DRAG.ghost = null;
+
+  if(moved){
+    commitDomOrder(type);
+    hapticTick(10);
+  } else if(wantMenu){
+    openActionSheet(type, itemId);
+  }
+}
+
+// Persist order + category from the current DOM layout
+function commitDomOrder(type){
+  const container = document.getElementById('catContainer-'+type);
+  if(!container) return;
+  container.querySelectorAll('.cat-body').forEach(body=>{
+    const catId = body.getAttribute('data-cat-body');
+    if(!catId) return;
+    [...body.querySelectorAll('.item')].forEach((node, idx)=>{
+      const it = getItem(type, node.getAttribute('data-item-id'));
+      if(!it) return;
+      it.categoryId = catId;
+      it.order = idx;
+    });
+  });
+  saveData();
+  renderCategories(type);
+}
+
+// ============================================================
+//  FAVORITES FILTER
+// ============================================================
+function toggleFavFilter(type){
+  PAGE_STATE.favOnly = !PAGE_STATE.favOnly;
+  const btn = document.getElementById('favBtn-'+type);
+  if(btn){
+    btn.classList.toggle('active', PAGE_STATE.favOnly);
+    const svg = btn.querySelector('svg');
+    if(svg) svg.setAttribute('fill', PAGE_STATE.favOnly ? 'currentColor' : 'none');
+  }
+  renderCategories(type);
 }
 
 // ============================================================
 //  SEARCH
 // ============================================================
+let _searchTimer = null;
 function onSearch(type, value){
   PAGE_STATE.search = value;
-  renderCategories(type);
+  if(_searchTimer) clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(()=>{ _searchTimer=null; renderCategories(type); }, 110);
 }
 
 // ============================================================
 //  SELECT MODE
 // ============================================================
 function toggleSelect(type){
-  if(PAGE_STATE.reorderMode) exitReorderMode();
   PAGE_STATE.selectMode = !PAGE_STATE.selectMode;
   document.body.classList.toggle('select-mode', PAGE_STATE.selectMode);
   const btn = document.getElementById('selBtn-'+type);
@@ -1133,49 +1369,6 @@ function deleteSelected(type){
   });
 }
 
-// ============================================================
-//  REORDER MODE
-// ============================================================
-function toggleReorder(type){
-  if(PAGE_STATE.selectMode) exitSelectMode();
-  PAGE_STATE.reorderMode = !PAGE_STATE.reorderMode;
-  document.body.classList.toggle('reorder-mode', PAGE_STATE.reorderMode);
-  const btn = document.getElementById('reBtn-'+type);
-  if(btn){ btn.classList.toggle('active', PAGE_STATE.reorderMode); btn.childNodes[btn.childNodes.length-1].nodeValue = PAGE_STATE.reorderMode ? ' Done' : ' Reorder'; }
-  // Expand all categories during reorder for visibility
-  if(PAGE_STATE.reorderMode){
-    DATA.cats[type].forEach(c=>c.collapsed=false);
-    saveData();
-    renderCategories(type);
-  } else {
-    document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
-  }
-  if(PAGE_STATE.reorderMode) initReorderHandles(type);
-}
-function exitReorderMode(){
-  if(!PAGE_STATE.reorderMode) return;
-  PAGE_STATE.reorderMode=false;
-  document.body.classList.remove('reorder-mode');
-  document.querySelectorAll('.ctrl-btn.active').forEach(b=>{
-    if(b.id.startsWith('reBtn-')){ b.classList.remove('active'); b.childNodes[b.childNodes.length-1].nodeValue=' Reorder'; }
-  });
-  document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
-}
-
-// Pointer-based drag for items + categories
-function initReorderHandles(type){
-  const container = document.getElementById('catContainer-'+type);
-  if(!container) return;
-
-  // Item drag
-  container.querySelectorAll('[data-item-handle]').forEach(handle=>{
-    handle.onpointerdown = e=>{ e.preventDefault(); startItemDrag(e, handle.closest('.item'), type); };
-  });
-  // Cat drag
-  container.querySelectorAll('[data-cat-handle]').forEach(handle=>{
-    handle.onpointerdown = e=>{ e.preventDefault(); startCatDrag(e, handle.closest('.cat-card'), type); };
-  });
-}
 
 // Auto-scroll while dragging near viewport edges
 let _autoScrollRAF = null;
@@ -1195,125 +1388,6 @@ function autoScroll(clientY){
   _autoScrollRAF = requestAnimationFrame(tick);
 }
 function stopAutoScroll(){ if(_autoScrollRAF){ cancelAnimationFrame(_autoScrollRAF); _autoScrollRAF=null; } }
-
-function startItemDrag(startEv, itemEl, type){
-  if(!itemEl) return;
-  const itemId = itemEl.getAttribute('data-item-id');
-  itemEl.setPointerCapture && itemEl.setPointerCapture(startEv.pointerId);
-  itemEl.classList.add('dragging');
-  const indicator = document.createElement('div'); indicator.className='drop-indicator';
-  let currentDrop = null;
-
-  function move(e){
-    const x = e.clientX, y = e.clientY;
-    autoScroll(y);
-    // find item or cat-body under pointer
-    document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
-    const els = document.elementsFromPoint(x,y);
-    let dropTarget = null;
-    for(const el of els){
-      if(el.classList && el.classList.contains('item') && el!==itemEl){ dropTarget = el; break; }
-      if(el.classList && el.classList.contains('cat-body')){ dropTarget = el; break; }
-    }
-    if(!dropTarget) return;
-    if(dropTarget.classList.contains('item')){
-      const rect = dropTarget.getBoundingClientRect();
-      const after = (y - rect.top) > rect.height/2;
-      currentDrop = {kind:'item', target:dropTarget, after};
-      if(after) dropTarget.after(indicator); else dropTarget.before(indicator);
-    } else if(dropTarget.classList.contains('cat-body')){
-      currentDrop = {kind:'catEmpty', target:dropTarget};
-      dropTarget.appendChild(indicator);
-    }
-  }
-  function up(){
-    document.removeEventListener('pointermove', move);
-    document.removeEventListener('pointerup', up);
-    document.removeEventListener('pointercancel', up);
-    itemEl.classList.remove('dragging');
-    stopAutoScroll();
-    indicator.remove();
-    if(!currentDrop){ return; }
-    const item = getItem(type, itemId);
-    if(!item) return;
-    let newCatId = item.categoryId;
-    let newOrder = 0;
-    if(currentDrop.kind==='item'){
-      const targetId = currentDrop.target.getAttribute('data-item-id');
-      const targetItem = getItem(type, targetId);
-      if(!targetItem) return;
-      newCatId = targetItem.categoryId;
-      // Compute order
-      const siblings = DATA.items[type].filter(i=>i.categoryId===newCatId && i.id!==item.id).sort((a,b)=>a.order-b.order);
-      const tIdx = siblings.indexOf(targetItem);
-      const insertIdx = currentDrop.after ? tIdx+1 : tIdx;
-      siblings.splice(insertIdx, 0, item);
-      siblings.forEach((s,i)=>s.order=i);
-    } else if(currentDrop.kind==='catEmpty'){
-      const catBody = currentDrop.target;
-      const cardId = catBody.closest('.cat-card').getAttribute('data-cat-id');
-      if(cardId==='__favs') return;
-      newCatId = cardId;
-      const siblings = DATA.items[type].filter(i=>i.categoryId===newCatId && i.id!==item.id).sort((a,b)=>a.order-b.order);
-      siblings.push(item);
-      siblings.forEach((s,i)=>s.order=i);
-    }
-    item.categoryId = newCatId;
-    saveData();
-    renderCategories(type);
-  }
-  document.addEventListener('pointermove', move);
-  document.addEventListener('pointerup', up);
-  document.addEventListener('pointercancel', up);
-}
-
-function startCatDrag(startEv, catEl, type){
-  if(!catEl) return;
-  const catId = catEl.getAttribute('data-cat-id');
-  if(catId==='__favs') return;
-  catEl.classList.add('dragging');
-  const indicator = document.createElement('div'); indicator.className='drop-indicator';
-  let currentDrop = null;
-
-  function move(e){
-    const x = e.clientX, y = e.clientY;
-    autoScroll(y);
-    document.querySelectorAll('.drop-indicator').forEach(n=>n.remove());
-    const els = document.elementsFromPoint(x,y);
-    for(const el of els){
-      const card = el.closest && el.closest('.cat-card');
-      if(card && card!==catEl && card.getAttribute('data-virtual')!=='1'){
-        const rect = card.getBoundingClientRect();
-        const after = (y - rect.top) > rect.height/2;
-        currentDrop = {target:card, after};
-        if(after) card.after(indicator); else card.before(indicator);
-        return;
-      }
-    }
-  }
-  function up(){
-    document.removeEventListener('pointermove', move);
-    document.removeEventListener('pointerup', up);
-    document.removeEventListener('pointercancel', up);
-    catEl.classList.remove('dragging');
-    stopAutoScroll();
-    indicator.remove();
-    if(!currentDrop) return;
-    const movedCat = DATA.cats[type].find(c=>c.id===catId);
-    const targetCat = DATA.cats[type].find(c=>c.id===currentDrop.target.getAttribute('data-cat-id'));
-    if(!movedCat || !targetCat) return;
-    const ordered = [...DATA.cats[type]].sort((a,b)=>a.order-b.order).filter(c=>c.id!==catId);
-    const tIdx = ordered.indexOf(targetCat);
-    const insertIdx = currentDrop.after ? tIdx+1 : tIdx;
-    ordered.splice(insertIdx, 0, movedCat);
-    ordered.forEach((c,i)=>c.order=i);
-    saveData();
-    renderCategories(type);
-  }
-  document.addEventListener('pointermove', move);
-  document.addEventListener('pointerup', up);
-  document.addEventListener('pointercancel', up);
-}
 
 // ============================================================
 //  SHEETS (bottom-sheet UI for menus and dialogs)
@@ -1866,6 +1940,7 @@ function toast(msg){
 // ============================================================
 seedIfNeeded();
 keepWebSeriesPopularOnly();
+reorganizeCollections();
 saveData();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 900);
