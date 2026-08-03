@@ -726,7 +726,7 @@ const K_ADD_V2 = 'col_added_v2';
 const K_MIGRATED = 'col_migrated_v3';
 
 let DATA = {cats:{}, items:{}};
-const PAGE_STATE = { search:'', selectMode:false, reorderMode:false };
+const PAGE_STATE = { search:'', selectMode:false, favOnly:false };
 
 function uid(){return 'i_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function loadData(){
@@ -931,9 +931,9 @@ function renderListPage(type){
         <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         Select
       </button>
-      <button class="ctrl-btn" id="reBtn-${type}" onclick="toggleReorder('${type}')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        Reorder
+      <button class="ctrl-btn ${PAGE_STATE.favOnly?'active':''}" id="favBtn-${type}" onclick="toggleFavFilter('${type}')">
+        <svg fill="${PAGE_STATE.favOnly?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Favorites
       </button>
       <div id="bulk-${type}" style="display:none;align-items:center;gap:8px">
         <button class="ctrl-btn" onclick="selectAllItems('${type}')">All</button>
@@ -954,7 +954,7 @@ function renderListPage(type){
     </div>
     <div id="catContainer-${type}"></div>
     <div class="total-bar">Total: <span id="totalLabel-${type}">0</span></div>
-    <p class="hint">Long-press any item for Edit · Move · Favorite · Delete</p>
+    <p class="hint">Long-press an item to drag & reorder · Tap the star to favorite</p>
   `;
   renderCategories(type);
 }
