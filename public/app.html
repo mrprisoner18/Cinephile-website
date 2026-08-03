@@ -302,6 +302,12 @@ body.select-mode .item-check{display:flex}
 body.select-mode .item-star{display:none}
 body.select-mode .item-watched{display:none}
 
+/* Perf: skip painting off-screen category cards, keep scrolling smooth */
+html{-webkit-text-size-adjust:100%}
+.cat-card{contain:layout paint style}
+.cat-body{contain:layout paint style}
+.item{contain:layout paint style}
+
 /* Drag & drop (long-press) */
 body.dragging-active{overflow:hidden;-webkit-user-select:none;user-select:none}
 .item{touch-action:pan-y}
