@@ -876,7 +876,7 @@ function go(id){
   if(NAV[NAV.length-1]===id) return;
   NAV.push(id);
   history.pushState({pg:id}, '', '#'+id);
-  if(TYPES.includes(typeOfPage(id))) renderListPage(typeOfPage(id));
+  if(TYPES.includes(typeOfPage(id))){ PAGE_STATE.search=''; PAGE_STATE.favOnly=false; renderListPage(typeOfPage(id)); }
   showPage(id);
 }
 function goBack(){ if(NAV.length>1) history.back(); }
@@ -906,7 +906,7 @@ window.addEventListener('popstate', function(e){
   if(NAV.length>1){
     NAV.pop();
     const target = NAV[NAV.length-1];
-    if(TYPES.includes(typeOfPage(target))) renderListPage(typeOfPage(target));
+    if(TYPES.includes(typeOfPage(target))){ PAGE_STATE.search=''; PAGE_STATE.favOnly=false; renderListPage(typeOfPage(target)); }
     showPage(target);
   }else{
     // At home: re-push guard so user must press back again to actually exit
@@ -1213,7 +1213,6 @@ function dragMove(e){
   if(!DRAG.active) return;
   e.preventDefault();
   DRAG.lastX = e.clientX; DRAG.lastY = e.clientY;
-  if(Math.abs(e.clientX - (DRAG.startX ?? e.clientX)) > 0) {}
   DRAG.moved = true;
   autoScroll(e.clientY);
   if(DRAG.pending) return;
@@ -1317,9 +1316,11 @@ function toggleFavFilter(type){
 // ============================================================
 //  SEARCH
 // ============================================================
+let _searchTimer = null;
 function onSearch(type, value){
   PAGE_STATE.search = value;
-  renderCategories(type);
+  if(_searchTimer) clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(()=>{ _searchTimer=null; renderCategories(type); }, 110);
 }
 
 // ============================================================
