@@ -297,18 +297,26 @@ body{
 .item-check svg{width:11px;height:11px;display:none}
 .item-check.checked svg{display:block}
 
-/* Reorder/Select mode toggles */
-body.reorder-mode .item-handle{display:flex}
-body.reorder-mode .cat-handle{display:flex}
-body.reorder-mode .item-star{display:none}
-body.reorder-mode .item{cursor:default}
-body.reorder-mode .item.on{background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.06);box-shadow:none}
+/* Select mode toggles */
 body.select-mode .item-check{display:flex}
 body.select-mode .item-star{display:none}
 body.select-mode .item-watched{display:none}
 
-.item.dragging{opacity:0.4}
-.cat-card.dragging{opacity:0.4}
+/* Drag & drop (long-press) */
+body.dragging-active{overflow:hidden;-webkit-user-select:none;user-select:none}
+.item{touch-action:pan-y}
+.item.drag-src{opacity:0.28;transition:opacity .16s linear}
+.drag-ghost{
+  position:fixed;left:0;top:0;z-index:9500;pointer-events:none;margin:0;
+  will-change:transform;
+  transform-origin:center;
+  box-shadow:0 18px 44px rgba(0,0,0,0.45), 0 0 0 1px rgba(196,163,255,0.35);
+  background:linear-gradient(135deg,rgba(124,58,237,0.34),rgba(236,72,153,0.26));
+  backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
+  border-radius:16px;
+}
+.drag-ghost.lift{transition:transform .16s cubic-bezier(0.22,1,0.36,1)}
+.drag-ghost.drop{transition:transform .19s cubic-bezier(0.22,1,0.36,1), opacity .19s linear}
 .drop-indicator{height:3px;border-radius:99px;background:linear-gradient(90deg,#7c3aed,#ec4899);margin:2px 0;box-shadow:0 0 12px rgba(196,163,255,0.6);animation:pulseGlow 1.2s ease-in-out infinite}
 @keyframes pulseGlow{0%,100%{opacity:0.8}50%{opacity:1}}
 
