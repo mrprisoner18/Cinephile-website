@@ -747,6 +747,58 @@ function keepWebSeriesPopularOnly(){
   DATA.items.web.forEach((item, idx)=>{ item.categoryId = popular.id; item.order = idx; });
 }
 
+// ---- One-time collection reorganization (merge Marvel/DC folders) ----
+const K_ORG_V4 = 'col_org_v4';
+const MERGE_RULES = [
+  {into:'MCU', match:['mcu','marvel','deadpool','wolverine','venom','x-men','xmen','fantastic four','spider-man','spiderman','blade','one-shot','special presentation']},
+  {into:'DC',  match:['dc','batman','joker','superman','wonder woman','aquaman','flash','shazam','suicide squad','justice league']}
+];
+function reorganizeCollections(){
+  if(localStorage.getItem(K_ORG_V4)==='1') return;
+  const type = 'movie';
+  if(!DATA.cats[type]) return;
+  MERGE_RULES.forEach(rule=>{
+    const lc = n=>String(n||'').trim().toLowerCase();
+    let target = DATA.cats[type].find(c=>lc(c.name)===lc(rule.into));
+    if(!target){
+      target = {id:'c_'+type+'_'+lc(rule.into)+'_'+Math.random().toString(36).slice(2,6), name:rule.into, order:DATA.cats[type].length, collapsed:false, builtin:true};
+      DATA.cats[type].push(target);
+    }
+    target.name = rule.into;
+    // Merge matching sibling categories into the target
+    const doomed = DATA.cats[type].filter(c=>{
+      if(c.id===target.id) return false;
+      const n = lc(c.name);
+      return rule.match.some(m=>n.includes(m));
+    });
+    if(doomed.length){
+      let next = DATA.items[type].filter(i=>i.categoryId===target.id).length;
+      doomed.forEach(c=>{
+        DATA.items[type]
+          .filter(i=>i.categoryId===c.id)
+          .sort((a,b)=>a.order-b.order)
+          .forEach(i=>{ i.categoryId = target.id; i.order = next++; });
+      });
+      const doomedIds = doomed.map(c=>c.id);
+      DATA.cats[type] = DATA.cats[type].filter(c=>!doomedIds.includes(c.id));
+    }
+    // Top up with any seed entries that are missing (preserves existing flags/order)
+    const seedGroup = (SEED[type]||[]).find(g=>lc(g.cat)===lc(rule.into));
+    if(seedGroup){
+      const have = new Set(DATA.items[type].filter(i=>i.categoryId===target.id).map(i=>lc(i.name)));
+      let next = DATA.items[type].filter(i=>i.categoryId===target.id).length;
+      seedGroup.items.forEach(name=>{
+        if(have.has(lc(name))) return;
+        have.add(lc(name));
+        DATA.items[type].push({id:uid(), name, categoryId:target.id, order:next++, watched:false, rating:0, favorite:false, builtin:true, createdAt:Date.now()});
+      });
+    }
+  });
+  DATA.cats[type].sort((a,b)=>a.order-b.order).forEach((c,i)=>c.order=i);
+  saveData();
+  localStorage.setItem(K_ORG_V4,'1');
+}
+
 function seedIfNeeded(){
   loadData();
   if(localStorage.getItem(K_MIGRATED)==='1') return;
