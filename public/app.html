@@ -977,23 +977,22 @@ function renderCategories(type){
   let html = '';
   let total = 0;
 
-  // Favorites virtual section
-  const favs = DATA.items[type].filter(i=>i.favorite);
-  if(type !== 'web' && favs.length){
-    const visibleFavs = q ? favs.filter(i=>i.name.toLowerCase().includes(q)) : favs;
-    if(visibleFavs.length){
-      html += renderCatHtml(type, {id:'__favs', name:'Favorites', collapsed:false, virtual:true}, visibleFavs, q, true);
-    }
-  }
-
+  const favOnly = !!PAGE_STATE.favOnly;
   cats.forEach(cat=>{
-    const items = itemsByCat[cat.id] || [];
+    let items = itemsByCat[cat.id] || [];
+    if(favOnly) items = items.filter(i=>i.favorite);
     const visibleItems = q ? items.filter(i=>i.name.toLowerCase().includes(q) || cat.name.toLowerCase().includes(q)) : items;
     total += items.length;
+    if(favOnly && visibleItems.length===0) return;
     if(q && visibleItems.length===0 && !cat.name.toLowerCase().includes(q)) return;
     html += renderCatHtml(type, cat, visibleItems, q);
   });
 
+  if(!html){
+    html = favOnly
+      ? '<div class="cat-empty" style="margin-top:20px">No favorites yet. Tap a star to add one.</div>'
+      : (cats.length ? '<div class="cat-empty" style="margin-top:20px">Nothing matches your search.</div>' : '<div class="cat-empty" style="margin-top:20px">No categories yet. Tap + to add one.</div>');
+  }
   if(!cats.length){
     html = '<div class="cat-empty" style="margin-top:20px">No categories yet. Tap + to add one.</div>';
   }
