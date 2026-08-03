@@ -1131,37 +1131,187 @@ function wireItem(el, type, itemId){
 }
 
 // ============================================================
-//  LONG-PRESS
+//  LONG-PRESS  →  DRAG & DROP  /  ACTION MENU
 // ============================================================
-function attachLongPress(el, cb){
-  let timer=null, sx=0, sy=0, fired=false;
-  function start(e){
-    if(PAGE_STATE.reorderMode || PAGE_STATE.selectMode) return;
-    const t = e.touches ? e.touches[0] : e;
-    sx=t.clientX; sy=t.clientY; fired=false;
-    timer=setTimeout(()=>{
-      fired=true;
-      if(navigator.vibrate) navigator.vibrate(28);
-      cb();
-    }, 450);
+const DRAG = {
+  active:false, moved:false, suppressClick:false,
+  el:null, ghost:null, type:null, itemId:null,
+  offX:0, offY:0, lastX:0, lastY:0, raf:null, pending:false
+};
+
+function hapticTick(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+
+function attachDragOrMenu(el, type, itemId){
+  let timer=null, sx=0, sy=0, longFired=false, startedDrag=false;
+
+  const clear = ()=>{ if(timer){ clearTimeout(timer); timer=null; } };
+
+  function onDown(e){
+    if(e.pointerType==='mouse' && e.button!==0) return;
+    if(e.target.closest('[data-item-star]')) return;
+    if(PAGE_STATE.selectMode) return;
+    if(DRAG.active) return;
+    sx=e.clientX; sy=e.clientY; longFired=false; startedDrag=false;
+    DRAG.suppressClick = false;
+    clear();
+    timer = setTimeout(()=>{
+      timer=null; longFired=true;
+      hapticTick(18);
+      startedDrag = beginDrag(el, type, itemId, sx, sy);
+    }, 300);
   }
-  function cancel(e){
-    if(!timer) return;
-    if(e && e.changedTouches){
-      const t = e.changedTouches[0];
-      if(Math.abs(t.clientX-sx)>12 || Math.abs(t.clientY-sy)>12){ clearTimeout(timer); timer=null; return; }
+  function onMove(e){
+    if(timer && (Math.abs(e.clientX-sx)>10 || Math.abs(e.clientY-sy)>10)) clear();
+  }
+  function onUp(){
+    clear();
+    // Long-pressed but never dragged → open the action menu
+    if(longFired && startedDrag && !DRAG.moved){
+      DRAG.pendingMenu = true;
     }
-    clearTimeout(timer); timer=null;
   }
-  el.addEventListener('touchstart', start, {passive:true});
-  el.addEventListener('mousedown', start);
-  ['touchend','touchcancel','mouseup','mouseleave'].forEach(ev=>el.addEventListener(ev, cancel));
-  el.addEventListener('touchmove', e=>{
-    if(!timer) return;
-    const t = e.touches[0];
-    if(Math.abs(t.clientX-sx)>12 || Math.abs(t.clientY-sy)>12){ clearTimeout(timer); timer=null; }
-  }, {passive:true});
-  el.addEventListener('click', e=>{ if(fired){ e.stopPropagation(); e.preventDefault(); } }, true);
+
+  el.addEventListener('pointerdown', onDown);
+  el.addEventListener('pointermove', onMove, {passive:true});
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>el.addEventListener(ev, onUp));
+}
+
+function beginDrag(el, type, itemId, x, y){
+  if(PAGE_STATE.favOnly || PAGE_STATE.search) return false; // order is only meaningful on the full list
+  const rect = el.getBoundingClientRect();
+  const ghost = el.cloneNode(true);
+  ghost.className = 'item drag-ghost';
+  ghost.style.width = rect.width+'px';
+  ghost.style.height = rect.height+'px';
+  document.body.appendChild(ghost);
+
+  DRAG.active = true; DRAG.moved = false; DRAG.pendingMenu = false;
+  DRAG.el = el; DRAG.ghost = ghost; DRAG.type = type; DRAG.itemId = itemId;
+  DRAG.offX = x - rect.left; DRAG.offY = y - rect.top;
+  DRAG.lastX = x; DRAG.lastY = y;
+
+  paintGhost(rect.left, rect.top, 1);
+  requestAnimationFrame(()=>{
+    ghost.classList.add('lift');
+    paintGhost(rect.left, rect.top, 1.04);
+  });
+  el.classList.add('drag-src');
+  document.body.classList.add('dragging-active');
+
+  document.addEventListener('pointermove', dragMove, {passive:false});
+  document.addEventListener('pointerup', dragEnd);
+  document.addEventListener('pointercancel', dragEnd);
+  return true;
+}
+
+function paintGhost(left, top, scale){
+  if(!DRAG.ghost) return;
+  DRAG.ghost.style.transform = `translate3d(${left}px,${top}px,0) scale(${scale})`;
+}
+
+function dragMove(e){
+  if(!DRAG.active) return;
+  e.preventDefault();
+  DRAG.lastX = e.clientX; DRAG.lastY = e.clientY;
+  if(Math.abs(e.clientX - (DRAG.startX ?? e.clientX)) > 0) {}
+  DRAG.moved = true;
+  autoScroll(e.clientY);
+  if(DRAG.pending) return;
+  DRAG.pending = true;
+  requestAnimationFrame(()=>{
+    DRAG.pending = false;
+    if(!DRAG.active) return;
+    paintGhost(DRAG.lastX - DRAG.offX, DRAG.lastY - DRAG.offY, 1.04);
+    repositionDragSource(DRAG.lastX, DRAG.lastY);
+  });
+}
+
+function repositionDragSource(x, y){
+  const el = DRAG.el;
+  if(!el) return;
+  const els = document.elementsFromPoint(x, y);
+  for(const node of els){
+    if(!node.classList) continue;
+    if(node.classList.contains('item') && node!==el && !node.classList.contains('drag-ghost')){
+      const r = node.getBoundingClientRect();
+      const after = (y - r.top) > r.height/2;
+      if(after) node.after(el); else node.before(el);
+      return;
+    }
+    if(node.classList.contains('cat-body')){
+      if(!node.contains(el)) node.appendChild(el);
+      return;
+    }
+  }
+}
+
+function dragEnd(){
+  if(!DRAG.active) return;
+  document.removeEventListener('pointermove', dragMove);
+  document.removeEventListener('pointerup', dragEnd);
+  document.removeEventListener('pointercancel', dragEnd);
+  stopAutoScroll();
+
+  const el = DRAG.el, ghost = DRAG.ghost, type = DRAG.type, itemId = DRAG.itemId;
+  const moved = DRAG.moved, wantMenu = !DRAG.moved;
+  DRAG.active = false;
+  document.body.classList.remove('dragging-active');
+  DRAG.suppressClick = true;
+  setTimeout(()=>{ DRAG.suppressClick = false; }, 320);
+
+  const target = el.getBoundingClientRect();
+  if(ghost){
+    ghost.classList.remove('lift');
+    ghost.classList.add('drop');
+    ghost.style.transform = `translate3d(${target.left}px,${target.top}px,0) scale(1)`;
+    setTimeout(()=>{
+      ghost.remove();
+      el.classList.remove('drag-src');
+    }, 190);
+  } else {
+    el.classList.remove('drag-src');
+  }
+
+  DRAG.el = null; DRAG.ghost = null;
+
+  if(moved){
+    commitDomOrder(type);
+    hapticTick(10);
+  } else if(wantMenu){
+    openActionSheet(type, itemId);
+  }
+}
+
+// Persist order + category from the current DOM layout
+function commitDomOrder(type){
+  const container = document.getElementById('catContainer-'+type);
+  if(!container) return;
+  container.querySelectorAll('.cat-body').forEach(body=>{
+    const catId = body.getAttribute('data-cat-body');
+    if(!catId) return;
+    [...body.querySelectorAll('.item')].forEach((node, idx)=>{
+      const it = getItem(type, node.getAttribute('data-item-id'));
+      if(!it) return;
+      it.categoryId = catId;
+      it.order = idx;
+    });
+  });
+  saveData();
+  renderCategories(type);
+}
+
+// ============================================================
+//  FAVORITES FILTER
+// ============================================================
+function toggleFavFilter(type){
+  PAGE_STATE.favOnly = !PAGE_STATE.favOnly;
+  const btn = document.getElementById('favBtn-'+type);
+  if(btn){
+    btn.classList.toggle('active', PAGE_STATE.favOnly);
+    const svg = btn.querySelector('svg');
+    if(svg) svg.setAttribute('fill', PAGE_STATE.favOnly ? 'currentColor' : 'none');
+  }
+  renderCategories(type);
 }
 
 // ============================================================
