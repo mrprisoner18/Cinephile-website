@@ -1996,6 +1996,7 @@ function toast(msg){
 seedIfNeeded();
 keepWebSeriesPopularOnly();
 reorganizeCollections();
+runMigration('col_mcu_movies_only_v5', mcuMoviesOnly);
 saveData();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 900);
