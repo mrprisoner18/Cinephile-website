@@ -867,6 +867,28 @@ function mcuMoviesOnly(){
     .forEach((i,idx)=>i.order=idx);
 }
 
+// ---- Append-only seed top-up (never edits or removes existing user items) ----
+function normName(n){ return String(n||'').toLowerCase().replace(/\([^)]*\)/g,'').replace(/[^a-z0-9]/g,'').trim(); }
+function appendMissingSeed(types){
+  types.forEach(type=>{
+    (SEED[type]||[]).forEach(g=>{
+      let cat = (DATA.cats[type]||[]).find(c=>normName(c.name)===normName(g.cat));
+      if(!cat){
+        cat = {id:'c_'+type+'_'+Math.random().toString(36).slice(2,6), name:g.cat, order:(DATA.cats[type]||[]).length, collapsed:false, builtin:true};
+        DATA.cats[type].push(cat);
+      }
+      const have = new Set((DATA.items[type]||[]).map(i=>normName(i.name)));
+      let next = (DATA.items[type]||[]).filter(i=>i.categoryId===cat.id).length;
+      g.items.forEach(name=>{
+        const k = normName(name);
+        if(have.has(k)) return;
+        have.add(k);
+        DATA.items[type].push({id:uid(), name, categoryId:cat.id, order:next++, watched:false, rating:0, favorite:false, builtin:true, createdAt:Date.now()});
+      });
+    });
+  });
+}
+
 function seedIfNeeded(){
   loadData();
   if(localStorage.getItem(K_MIGRATED)==='1') return;
@@ -1996,6 +2018,7 @@ seedIfNeeded();
 keepWebSeriesPopularOnly();
 reorganizeCollections();
 runMigration('col_mcu_movies_only_v5', mcuMoviesOnly);
+runMigration('col_seed_topup_v6', ()=>appendMissingSeed(['web','animeSeries','animeMovie']));
 saveData();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 900);
