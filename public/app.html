@@ -651,7 +651,7 @@ const SEED = {
       'Captain Marvel (2019)','Avengers: Endgame (2019)','Spider-Man: Far from Home (2019)','Black Widow (2021)','Shang-Chi and the Legend of the Ten Rings (2021)',
       'Eternals (2021)','Spider-Man: No Way Home (2021)','Doctor Strange in the Multiverse of Madness (2022)','Thor: Love and Thunder (2022)','Black Panther: Wakanda Forever (2022)',
       'Ant-Man and the Wasp: Quantumania (2023)','Guardians of the Galaxy Vol. 3 (2023)','The Marvels (2023)',
-      'Captain America: Brave New World (2025)','Thunderbolts* (2025)','The Fantastic Four: First Steps (2025)','Avengers: Doomsday (2026)','Avengers: Secret Wars (2027)',
+      'Captain America: Brave New World (2025)','Thunderbolts* (2025)','The Fantastic Four: First Steps (2025)',
       'Blade (2025)','Spider-Man: Brand New Day (2026)',
       'Deadpool (2016)','Deadpool 2 (2018)','Deadpool & Wolverine (2024)','Logan (2017)','X-Men Origins: Wolverine (2009)',
       'X-Men (2000)','X2: X-Men United (2003)','X-Men: The Last Stand (2006)','X-Men: First Class (2011)','The Wolverine (2013)',
@@ -660,12 +660,7 @@ const SEED = {
       'Spider-Man (2002)','Spider-Man 2 (2004)','Spider-Man 3 (2007)','The Amazing Spider-Man (2012)','The Amazing Spider-Man 2 (2014)',
       'Spider-Man: Into the Spider-Verse (2018)','Spider-Man: Across the Spider-Verse (2023)',
       'Venom (2018)','Venom: Let There Be Carnage (2021)','Venom: The Last Dance (2024)','Morbius (2022)','Kraven the Hunter (2024)','Madame Web (2024)',
-      'Blade (1998)','Blade II (2002)','Blade: Trinity (2004)',
-      'WandaVision','The Falcon and the Winter Soldier','Loki','What If...?','Hawkeye','Moon Knight','Ms. Marvel','She-Hulk: Attorney at Law',
-      'Secret Invasion','Echo','Agatha All Along','Daredevil: Born Again','Ironheart','Wonder Man','Marvel Zombies','Eyes of Wakanda','X-Men \u201997',
-      'Agents of S.H.I.E.L.D.','Daredevil','Jessica Jones','Luke Cage','Iron Fist','The Defenders','The Punisher','Runaways','Cloak & Dagger','Helstrom',
-      'One-Shot: The Consultant','One-Shot: A Funny Thing Happened on the Way to Thor\u2019s Hammer','One-Shot: Item 47','One-Shot: Agent Carter','One-Shot: All Hail the King',
-      'Special: Werewolf by Night','Special: The Guardians of the Galaxy Holiday Special'
+      'Blade (1998)','Blade II (2002)','Blade: Trinity (2004)'
     ]},
     {cat:'DC', items:[
       'Batman Begins (2005)','The Dark Knight (2008)','The Dark Knight Rises (2012)','Batman (1989)','Batman Returns (1992)','Batman Forever (1995)','Batman & Robin (1997)','The Batman (2022)',
@@ -811,6 +806,66 @@ function reorganizeCollections(){
   DATA.cats[type].sort((a,b)=>a.order-b.order).forEach((c,i)=>c.order=i);
   saveData();
   localStorage.setItem(K_ORG_V4,'1');
+}
+
+// ============================================================
+//  SAFE MIGRATION ENGINE (user data always wins)
+// ============================================================
+const K_BACKUP = 'col_backup_pre_migration';
+function makeBackup(){
+  try{
+    localStorage.setItem(K_BACKUP, JSON.stringify({
+      at: Date.now(),
+      cats: localStorage.getItem(K_CATS),
+      items: localStorage.getItem(K_ITEMS)
+    }));
+  }catch(e){}
+}
+function restoreBackup(){
+  try{
+    const b = JSON.parse(localStorage.getItem(K_BACKUP)||'null');
+    if(!b) return false;
+    if(b.cats!=null) localStorage.setItem(K_CATS, b.cats);
+    if(b.items!=null) localStorage.setItem(K_ITEMS, b.items);
+    loadData();
+    return true;
+  }catch(e){ return false; }
+}
+function runMigration(key, fn){
+  if(localStorage.getItem(key)==='1') return;
+  makeBackup();
+  try{
+    fn();
+    saveData();
+    localStorage.setItem(key,'1');
+  }catch(e){
+    console.error('migration failed, restoring backup', key, e);
+    restoreBackup();
+  }
+}
+
+// ---- MCU: movies only (removes built-in series/specials, keeps user data) ----
+const MCU_NON_MOVIES = [
+  'wandavision','the falcon and the winter soldier','loki','what if...?','hawkeye','moon knight','ms. marvel',
+  'she-hulk: attorney at law','secret invasion','echo','agatha all along','daredevil: born again','ironheart',
+  'wonder man','marvel zombies','eyes of wakanda','x-men \u201997','x-men \'97','agents of s.h.i.e.l.d.','daredevil',
+  'jessica jones','luke cage','iron fist','the defenders','the punisher','runaways','cloak & dagger','helstrom',
+  'avengers: doomsday (2026)','avengers: secret wars (2027)'
+];
+function mcuMoviesOnly(){
+  const lc = n=>String(n||'').trim().toLowerCase();
+  const cat = (DATA.cats.movie||[]).find(c=>lc(c.name)==='mcu');
+  if(!cat) return;
+  DATA.items.movie = (DATA.items.movie||[]).filter(i=>{
+    if(i.categoryId!==cat.id) return true;
+    if(i.builtin===false) return true; // never touch manually added titles
+    const n = lc(i.name);
+    if(n.startsWith('one-shot:') || n.startsWith('special:')) return false;
+    return !MCU_NON_MOVIES.includes(n);
+  });
+  DATA.items.movie.filter(i=>i.categoryId===cat.id)
+    .sort((a,b)=>a.order-b.order)
+    .forEach((i,idx)=>i.order=idx);
 }
 
 function seedIfNeeded(){
@@ -1941,6 +1996,7 @@ function toast(msg){
 seedIfNeeded();
 keepWebSeriesPopularOnly();
 reorganizeCollections();
+runMigration('col_mcu_movies_only_v5', mcuMoviesOnly);
 saveData();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 900);
