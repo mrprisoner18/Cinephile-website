@@ -698,11 +698,10 @@ const SEED = {
     {cat:'Other Movies', items:['Project Hail Mary','Shutter Island','Inception','Interstellar','The Cabin in the Woods','Fight Club (1999)','Micheal (2026)','Obsession']}
   ],
   web: [
-    {cat:'Popular', items:['Stranger Things','Loki','Money Heist','Wednesday','Squid Game','Harry Potter (Series)','Game of Thrones','If wishes could kill','Moon knight (Marvel)','Loki (Marvel)','All of us are dead','Alice in borderland']}
+    {cat:'Popular', items:['Stranger Things','Loki(Marvel)','Money Heist','Wednesday','Squid Game(korean)','Harry Potter (Series)','Game of Thrones','If wishes could kill(korean)','Moon knight (Marvel)','All of us are dead(Korean)','Alice in borderland(Japan)','1899','IT: Welcome to Derry','Weak Hero (korean)','Lost','WandaVision(Marvel)']}
   ],
   animeSeries: [
-    {cat:'All Anime Series', items:['Demon Slayer','Death Note','Solo Leveling','Jujutsu Kaisen','Chainsaw Man','The Fragrant Flower Blooms with Dignity','The Angel Next Door Spoils Me Rotten']},
-    {cat:'Slice of Life', items:['My Dress-Up Darling','Alya Sometimes Hides Her Feelings in Russian','Classroom of the Elite']}
+    {cat:'All Anime Series', items:['Demon Slayer','Death Note','Solo Leveling','Jujutsu Kaisen','Chainsaw Man','The Fragrant Flower Blooms with Dignity','The Angel Next Door Spoils Me Rotten','Horimya','Kaguya sama love is war','My Dress-Up Darling','Alya Sometimes Hides Her Feelings in Russian','Classroom of the Elite',"Shikimori's Not Just a Cutie",'Rascal Does Not Dream of Bunny Girl Senpai']}
   ],
   animeMovie: [
     {cat:'All Anime Movies', items:['Weathering With You','Your Name','A Silent Voice','I Want To Eat Your Pancreas','The Garden of the Words','The Tunnel to Summer the Exit of Goodbyes','Suzume']}
@@ -866,6 +865,28 @@ function mcuMoviesOnly(){
   DATA.items.movie.filter(i=>i.categoryId===cat.id)
     .sort((a,b)=>a.order-b.order)
     .forEach((i,idx)=>i.order=idx);
+}
+
+// ---- Append-only seed top-up (never edits or removes existing user items) ----
+function normName(n){ return String(n||'').toLowerCase().replace(/\([^)]*\)/g,'').replace(/[^a-z0-9]/g,'').trim(); }
+function appendMissingSeed(types){
+  types.forEach(type=>{
+    (SEED[type]||[]).forEach(g=>{
+      let cat = (DATA.cats[type]||[]).find(c=>normName(c.name)===normName(g.cat));
+      if(!cat){
+        cat = {id:'c_'+type+'_'+Math.random().toString(36).slice(2,6), name:g.cat, order:(DATA.cats[type]||[]).length, collapsed:false, builtin:true};
+        DATA.cats[type].push(cat);
+      }
+      const have = new Set((DATA.items[type]||[]).map(i=>normName(i.name)));
+      let next = (DATA.items[type]||[]).filter(i=>i.categoryId===cat.id).length;
+      g.items.forEach(name=>{
+        const k = normName(name);
+        if(have.has(k)) return;
+        have.add(k);
+        DATA.items[type].push({id:uid(), name, categoryId:cat.id, order:next++, watched:false, rating:0, favorite:false, builtin:true, createdAt:Date.now()});
+      });
+    });
+  });
 }
 
 function seedIfNeeded(){
@@ -1997,6 +2018,7 @@ seedIfNeeded();
 keepWebSeriesPopularOnly();
 reorganizeCollections();
 runMigration('col_mcu_movies_only_v5', mcuMoviesOnly);
+runMigration('col_seed_topup_v6', ()=>appendMissingSeed(['web','animeSeries','animeMovie']));
 saveData();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 900);
