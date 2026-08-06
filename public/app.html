@@ -2083,6 +2083,8 @@ keepWebSeriesPopularOnly();
 reorganizeCollections();
 runMigration('col_mcu_movies_only_v5', mcuMoviesOnly);
 runMigration('col_seed_topup_v6', ()=>appendMissingSeed(['web','animeSeries','animeMovie']));
+runMigration('col_marvel_seed_topup_v7', ()=>appendMissingSeed(['movie']));
+canonicalizeMarvelOrder();
 saveData();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 900);
