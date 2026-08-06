@@ -1246,6 +1246,7 @@ function wireListInteractions(type){
     head.addEventListener('click', e=>{
       // Avoid toggling when clicking add or handle
       if(e.target.closest('[data-cat-add]') || e.target.closest('[data-cat-delete]') || e.target.closest('[data-cat-handle]')) return;
+      if(DRAG.suppressClick) return;
       const catId = head.getAttribute('data-cat-toggle');
       if(catId === '__favs') return;
       const cat = DATA.cats[type].find(c=>c.id===catId);
