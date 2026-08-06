@@ -1644,6 +1644,7 @@ function openMoveSheet(type, itemId){
       const siblings = DATA.items[type].filter(i=>i.categoryId===cid).sort((a,b)=>a.order-b.order);
       item.categoryId = cid;
       item.order = siblings.length ? Math.max(...siblings.map(s=>s.order))+1 : 0;
+      if(type==='movie') canonicalizeMarvelOrder();
       saveData();
       forceCloseSheet();
       renderCategories(type);
