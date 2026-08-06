@@ -927,6 +927,8 @@ function yearOf(name){ const m=String(name||'').match(/(19|20)\d{2}/); return m?
 // year-aware key so "Fantastic Four (2005)" != "Fantastic Four (2015)"
 function marvelKey(name){ const y=yearOf(name); return normName(name)+(y?('_'+y):''); }
 function canonicalizeMarvelOrder(){
+  // Once the user has hand-ordered movies, their arrangement always wins
+  if(localStorage.getItem('col_marvel_manual')==='1') return;
   const cat = (DATA.cats.movie||[]).find(c=>normName(c.name)==='mcu');
   if(!cat) return;
   const idx = new Map();
@@ -1571,6 +1573,7 @@ function commitDomOrder(type){
       it.order = idx;
     });
   });
+  if(type==='movie') localStorage.setItem('col_marvel_manual','1');
   saveData();
   renderCategories(type);
 }
