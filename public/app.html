@@ -1385,6 +1385,7 @@ function beginDrag(el, type, itemId, x, y){
   document.body.appendChild(ghost);
 
   DRAG.active = true; DRAG.moved = false; DRAG.pendingMenu = false;
+  DRAG.kind = 'item';
   DRAG.el = el; DRAG.ghost = ghost; DRAG.type = type; DRAG.itemId = itemId;
   DRAG.offX = x - rect.left; DRAG.offY = y - rect.top;
   DRAG.lastX = x; DRAG.lastY = y;
@@ -1396,6 +1397,52 @@ function beginDrag(el, type, itemId, x, y){
   });
   el.classList.add('drag-src');
   document.body.classList.add('dragging-active');
+
+  document.addEventListener('pointermove', dragMove, {passive:false});
+  document.addEventListener('pointerup', dragEnd);
+  document.addEventListener('pointercancel', dragEnd);
+  return true;
+}
+
+// ---- Folder (category) drag: long-press the folder header, then drag up/down ----
+function attachCatDrag(head, card, type){
+  let timer=null, sx=0, sy=0;
+  const clear = ()=>{ if(timer){ clearTimeout(timer); timer=null; } };
+  head.addEventListener('pointerdown', e=>{
+    if(e.pointerType==='mouse' && e.button!==0) return;
+    if(e.target.closest('[data-cat-add]') || e.target.closest('[data-cat-delete]')) return;
+    if(PAGE_STATE.selectMode || DRAG.active) return;
+    sx=e.clientX; sy=e.clientY;
+    clear();
+    timer = setTimeout(()=>{ timer=null; hapticTick(18); beginCatDrag(card, type, sx, sy); }, 320);
+  });
+  head.addEventListener('pointermove', e=>{
+    if(timer && (Math.abs(e.clientX-sx)>10 || Math.abs(e.clientY-sy)>10)) clear();
+  }, {passive:true});
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>head.addEventListener(ev, clear));
+}
+
+function beginCatDrag(card, type, x, y){
+  if(PAGE_STATE.favOnly || PAGE_STATE.search) return false;
+  const head = card.querySelector('.cat-head');
+  const rect = head.getBoundingClientRect();
+  const ghost = head.cloneNode(true);
+  ghost.className = 'cat-head drag-ghost';
+  ghost.style.width = rect.width+'px';
+  ghost.style.height = rect.height+'px';
+  document.body.appendChild(ghost);
+
+  DRAG.active = true; DRAG.moved = false; DRAG.pendingMenu = false;
+  DRAG.kind = 'cat';
+  DRAG.el = card; DRAG.ghost = ghost; DRAG.type = type; DRAG.itemId = null;
+  DRAG.offX = x - rect.left; DRAG.offY = y - rect.top;
+  DRAG.lastX = x; DRAG.lastY = y;
+
+  paintGhost(rect.left, rect.top, 1);
+  requestAnimationFrame(()=>{ ghost.classList.add('lift'); paintGhost(rect.left, rect.top, 1.03); });
+  card.classList.add('drag-src');
+  document.body.classList.add('dragging-active');
+  DRAG.suppressClick = true;
 
   document.addEventListener('pointermove', dragMove, {passive:false});
   document.addEventListener('pointerup', dragEnd);
@@ -1427,6 +1474,20 @@ function dragMove(e){
 function repositionDragSource(x, y){
   const el = DRAG.el;
   if(!el) return;
+  if(DRAG.kind === 'cat'){
+    const container = document.getElementById('catContainer-'+DRAG.type);
+    if(!container) return;
+    const cards = [...container.querySelectorAll('.cat-card')].filter(c=>c!==el && c.getAttribute('data-virtual')!=='1');
+    for(const c of cards){
+      const r = c.getBoundingClientRect();
+      if(y >= r.top && y <= r.bottom){
+        const after = (y - r.top) > r.height/2;
+        if(after) c.after(el); else c.before(el);
+        return;
+      }
+    }
+    return;
+  }
   const els = document.elementsFromPoint(x, y);
   for(const node of els){
     if(!node.classList) continue;
@@ -1451,13 +1512,14 @@ function dragEnd(){
   stopAutoScroll();
 
   const el = DRAG.el, ghost = DRAG.ghost, type = DRAG.type, itemId = DRAG.itemId;
-  const moved = DRAG.moved, wantMenu = !DRAG.moved;
+  const kind = DRAG.kind || 'item';
+  const moved = DRAG.moved, wantMenu = !DRAG.moved && kind==='item';
   DRAG.active = false;
   document.body.classList.remove('dragging-active');
   DRAG.suppressClick = true;
   setTimeout(()=>{ DRAG.suppressClick = false; }, 320);
 
-  const target = el.getBoundingClientRect();
+  const target = (kind==='cat' ? el.querySelector('.cat-head') : el).getBoundingClientRect();
   if(ghost){
     ghost.classList.remove('lift');
     ghost.classList.add('drop');
@@ -1473,11 +1535,25 @@ function dragEnd(){
   DRAG.el = null; DRAG.ghost = null;
 
   if(moved){
-    commitDomOrder(type);
+    if(kind==='cat') commitCatOrder(type); else commitDomOrder(type);
     hapticTick(10);
   } else if(wantMenu){
     openActionSheet(type, itemId);
   }
+}
+
+// Persist folder order from the current DOM layout
+function commitCatOrder(type){
+  const container = document.getElementById('catContainer-'+type);
+  if(!container) return;
+  [...container.querySelectorAll('.cat-card')]
+    .filter(c=>c.getAttribute('data-virtual')!=='1')
+    .forEach((card, idx)=>{
+      const cat = DATA.cats[type].find(c=>c.id===card.getAttribute('data-cat-id'));
+      if(cat) cat.order = idx;
+    });
+  saveData();
+  renderCategories(type);
 }
 
 // Persist order + category from the current DOM layout
