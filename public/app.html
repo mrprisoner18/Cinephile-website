@@ -1189,13 +1189,53 @@ function renderCatHtml(type, cat, items, q, isFav){
 function renderItemHtml(type, item, serial, q){
   const watchedCls = item.watched ? 'watched' : '';
   const favCls = item.favorite ? 'fav' : '';
+  let displayName = item.name;
+  let tagHtml = '';
+  if(type==='web'){
+    const t = webOriginTag(item.name);
+    if(t){
+      displayName = stripOriginNote(item.name);
+      tagHtml = `<div class="item-tag tag-${t.toLowerCase()}">${t}</div>`;
+    }
+  }
   return `<div class="item ${watchedCls}" data-item-id="${item.id}" data-type="${type}">
     <div class="item-check" data-item-check><svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
     <div class="item-serial">${serial}</div>
-    <div class="item-name">${highlightText(item.name, q)}</div>
+    <div class="item-name">${highlightText(displayName, q)}</div>
+    ${tagHtml}
     <div class="item-watched"><svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
     <div class="item-star ${favCls}" data-item-star aria-label="Toggle favorite"><svg fill="${item.favorite?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
   </div>`;
+}
+
+// ---- Web series origin tags (short form, shown at the end of the title) ----
+const WEB_ORIGIN_MAP = {
+  'strangerthings':'USA','wednesday':'USA','gameofthrones':'USA','lost':'USA','itwelcometoderry':'USA',
+  'thelastofus':'USA','breakingbad':'USA','dark':'Germany','1899':'Germany',
+  'moneyheist':'Spain','elitegame':'Spain','lacasadepapel':'Spain',
+  'harrypotter':'UK','sherlock':'UK','peakyblinders':'UK','blackmirror':'UK',
+  'squidgame':'Korean','allofusaredead':'Korean','weakhero':'Korean','ifwishescouldkill':'Korean','sweethome':'Korean','vincenzo':'Korean',
+  'aliceinborderland':'Japan','alicainborderland':'Japan','firstlovehatsukoi':'Japan',
+  'loki':'Marvel','moonknight':'Marvel','wandavision':'Marvel','hawkeye':'Marvel','msmarvel':'Marvel',
+  'thefalconandthewintersoldier':'Marvel','agathaallalong':'Marvel','daredevilbornagain':'Marvel','shehulkattorneyatlaw':'Marvel'
+};
+function webOriginTag(name){
+  const raw = String(name||'').toLowerCase();
+  if(/marvel|mcu/.test(raw)) return 'Marvel';
+  if(/korea|k-?drama/.test(raw)) return 'Korean';
+  if(/japan|j-?drama|jdrama/.test(raw)) return 'Japan';
+  if(/\busa|american\b/.test(raw)) return 'USA';
+  if(/spain|spanish/.test(raw)) return 'Spain';
+  if(/\buk\b|british/.test(raw)) return 'UK';
+  if(/german/.test(raw)) return 'Germany';
+  return WEB_ORIGIN_MAP[normName(name)] || '';
+}
+// Removes a trailing origin note like "(korean)" / "(Marvel)" so the tag isn't doubled
+function stripOriginNote(name){
+  return String(name||'')
+    .replace(/\s*[\(\[][^\)\]]*(marvel|mcu|korea[n]?|k-?drama|japan|j-?drama|usa|american|spain|spanish|uk|british|german[y]?)[^\)\]]*[\)\]]\s*/ig,' ')
+    .replace(/\s{2,}/g,' ')
+    .trim() || String(name||'');
 }
 
 function wireListInteractions(type){
