@@ -286,6 +286,12 @@ body{
 .item-star:active{transform:scale(0.85)}
 .item-star.fav{color:#fbbf24}
 .item-star svg{width:14px;height:14px}
+.item-tag{flex-shrink:0;font-size:9.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 7px;border-radius:7px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.16);color:var(--text-dim)}
+.item-tag.tag-marvel{background:rgba(237,41,57,0.18);border-color:rgba(237,41,57,0.35);color:#ff9aa4}
+.item-tag.tag-korean{background:rgba(96,165,250,0.16);border-color:rgba(96,165,250,0.32);color:#a9cbff}
+.item-tag.tag-japan{background:rgba(244,114,182,0.16);border-color:rgba(244,114,182,0.32);color:#ffb2d6}
+.cat-card.drag-src{opacity:.28}
+.cat-head.drag-ghost{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;border-radius:20px;background:rgba(60,30,90,0.85);backdrop-filter:blur(20px);box-shadow:0 18px 40px rgba(0,0,0,0.45)}
 .item-watched{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.3);color:#86efac;opacity:0;transform:scale(0.5);transition:all .25s var(--spring)}
 .item.watched .item-watched{opacity:1;transform:scale(1)}
 .item.watched .item-name{text-decoration:line-through;text-decoration-color:rgba(245,237,255,0.35);color:var(--text-dim)}
