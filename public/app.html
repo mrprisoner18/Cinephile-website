@@ -1278,6 +1278,12 @@ function wireListInteractions(type){
     const itemId = el.getAttribute('data-item-id');
     wireItem(el, type, itemId);
   });
+  // Folders: long-press a folder header to lift & reorder the whole folder
+  container.querySelectorAll('.cat-card').forEach(card=>{
+    if(card.getAttribute('data-virtual')==='1') return;
+    const head = card.querySelector('.cat-head');
+    if(head) attachCatDrag(head, card, type);
+  });
 }
 
 function getItem(type, id){ return DATA.items[type].find(i=>i.id===id); }
