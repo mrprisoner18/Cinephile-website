@@ -286,6 +286,12 @@ body{
 .item-star:active{transform:scale(0.85)}
 .item-star.fav{color:#fbbf24}
 .item-star svg{width:14px;height:14px}
+.item-tag{flex-shrink:0;font-size:9.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 7px;border-radius:7px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.16);color:var(--text-dim)}
+.item-tag.tag-marvel{background:rgba(237,41,57,0.18);border-color:rgba(237,41,57,0.35);color:#ff9aa4}
+.item-tag.tag-korean{background:rgba(96,165,250,0.16);border-color:rgba(96,165,250,0.32);color:#a9cbff}
+.item-tag.tag-japan{background:rgba(244,114,182,0.16);border-color:rgba(244,114,182,0.32);color:#ffb2d6}
+.cat-card.drag-src{opacity:.28}
+.cat-head.drag-ghost{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;border-radius:20px;background:rgba(60,30,90,0.85);backdrop-filter:blur(20px);box-shadow:0 18px 40px rgba(0,0,0,0.45)}
 .item-watched{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.3);color:#86efac;opacity:0;transform:scale(0.5);transition:all .25s var(--spring)}
 .item.watched .item-watched{opacity:1;transform:scale(1)}
 .item.watched .item-name{text-decoration:line-through;text-decoration-color:rgba(245,237,255,0.35);color:var(--text-dim)}
@@ -921,6 +927,8 @@ function yearOf(name){ const m=String(name||'').match(/(19|20)\d{2}/); return m?
 // year-aware key so "Fantastic Four (2005)" != "Fantastic Four (2015)"
 function marvelKey(name){ const y=yearOf(name); return normName(name)+(y?('_'+y):''); }
 function canonicalizeMarvelOrder(){
+  // Once the user has hand-ordered movies, their arrangement always wins
+  if(localStorage.getItem('col_marvel_manual')==='1') return;
   const cat = (DATA.cats.movie||[]).find(c=>normName(c.name)==='mcu');
   if(!cat) return;
   const idx = new Map();
@@ -1101,7 +1109,7 @@ function renderListPage(type){
     </div>
     <div id="catContainer-${type}"></div>
     <div class="total-bar">Total: <span id="totalLabel-${type}">0</span></div>
-    <p class="hint">Long-press an item to drag & reorder · Tap the star to favorite</p>
+    <p class="hint">Long-press an item or a folder header to drag & reorder · Tap the star to favorite</p>
   `;
   renderCategories(type);
 }
@@ -1183,13 +1191,53 @@ function renderCatHtml(type, cat, items, q, isFav){
 function renderItemHtml(type, item, serial, q){
   const watchedCls = item.watched ? 'watched' : '';
   const favCls = item.favorite ? 'fav' : '';
+  let displayName = item.name;
+  let tagHtml = '';
+  if(type==='web'){
+    const t = webOriginTag(item.name);
+    if(t){
+      displayName = stripOriginNote(item.name);
+      tagHtml = `<div class="item-tag tag-${t.toLowerCase()}">${t}</div>`;
+    }
+  }
   return `<div class="item ${watchedCls}" data-item-id="${item.id}" data-type="${type}">
     <div class="item-check" data-item-check><svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
     <div class="item-serial">${serial}</div>
-    <div class="item-name">${highlightText(item.name, q)}</div>
+    <div class="item-name">${highlightText(displayName, q)}</div>
+    ${tagHtml}
     <div class="item-watched"><svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
     <div class="item-star ${favCls}" data-item-star aria-label="Toggle favorite"><svg fill="${item.favorite?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
   </div>`;
+}
+
+// ---- Web series origin tags (short form, shown at the end of the title) ----
+const WEB_ORIGIN_MAP = {
+  'strangerthings':'USA','wednesday':'USA','gameofthrones':'USA','lost':'USA','itwelcometoderry':'USA',
+  'thelastofus':'USA','breakingbad':'USA','dark':'Germany','1899':'Germany',
+  'moneyheist':'Spain','elitegame':'Spain','lacasadepapel':'Spain',
+  'harrypotter':'UK','sherlock':'UK','peakyblinders':'UK','blackmirror':'UK',
+  'squidgame':'Korean','allofusaredead':'Korean','weakhero':'Korean','ifwishescouldkill':'Korean','sweethome':'Korean','vincenzo':'Korean',
+  'aliceinborderland':'Japan','alicainborderland':'Japan','firstlovehatsukoi':'Japan',
+  'loki':'Marvel','moonknight':'Marvel','wandavision':'Marvel','hawkeye':'Marvel','msmarvel':'Marvel',
+  'thefalconandthewintersoldier':'Marvel','agathaallalong':'Marvel','daredevilbornagain':'Marvel','shehulkattorneyatlaw':'Marvel'
+};
+function webOriginTag(name){
+  const raw = String(name||'').toLowerCase();
+  if(/marvel|mcu/.test(raw)) return 'Marvel';
+  if(/korea|k-?drama/.test(raw)) return 'Korean';
+  if(/japan|j-?drama|jdrama/.test(raw)) return 'Japan';
+  if(/\busa|american\b/.test(raw)) return 'USA';
+  if(/spain|spanish/.test(raw)) return 'Spain';
+  if(/\buk\b|british/.test(raw)) return 'UK';
+  if(/german/.test(raw)) return 'Germany';
+  return WEB_ORIGIN_MAP[normName(name)] || '';
+}
+// Removes a trailing origin note like "(korean)" / "(Marvel)" so the tag isn't doubled
+function stripOriginNote(name){
+  return String(name||'')
+    .replace(/\s*[\(\[][^\)\]]*(marvel|mcu|korea[n]?|k-?drama|japan|j-?drama|usa|american|spain|spanish|uk|british|german[y]?)[^\)\]]*[\)\]]\s*/ig,' ')
+    .replace(/\s{2,}/g,' ')
+    .trim() || String(name||'');
 }
 
 function wireListInteractions(type){
@@ -1200,6 +1248,7 @@ function wireListInteractions(type){
     head.addEventListener('click', e=>{
       // Avoid toggling when clicking add or handle
       if(e.target.closest('[data-cat-add]') || e.target.closest('[data-cat-delete]') || e.target.closest('[data-cat-handle]')) return;
+      if(DRAG.suppressClick) return;
       const catId = head.getAttribute('data-cat-toggle');
       if(catId === '__favs') return;
       const cat = DATA.cats[type].find(c=>c.id===catId);
@@ -1231,6 +1280,12 @@ function wireListInteractions(type){
   container.querySelectorAll('.item').forEach(el=>{
     const itemId = el.getAttribute('data-item-id');
     wireItem(el, type, itemId);
+  });
+  // Folders: long-press a folder header to lift & reorder the whole folder
+  container.querySelectorAll('.cat-card').forEach(card=>{
+    if(card.getAttribute('data-virtual')==='1') return;
+    const head = card.querySelector('.cat-head');
+    if(head) attachCatDrag(head, card, type);
   });
 }
 
@@ -1333,6 +1388,7 @@ function beginDrag(el, type, itemId, x, y){
   document.body.appendChild(ghost);
 
   DRAG.active = true; DRAG.moved = false; DRAG.pendingMenu = false;
+  DRAG.kind = 'item';
   DRAG.el = el; DRAG.ghost = ghost; DRAG.type = type; DRAG.itemId = itemId;
   DRAG.offX = x - rect.left; DRAG.offY = y - rect.top;
   DRAG.lastX = x; DRAG.lastY = y;
@@ -1344,6 +1400,52 @@ function beginDrag(el, type, itemId, x, y){
   });
   el.classList.add('drag-src');
   document.body.classList.add('dragging-active');
+
+  document.addEventListener('pointermove', dragMove, {passive:false});
+  document.addEventListener('pointerup', dragEnd);
+  document.addEventListener('pointercancel', dragEnd);
+  return true;
+}
+
+// ---- Folder (category) drag: long-press the folder header, then drag up/down ----
+function attachCatDrag(head, card, type){
+  let timer=null, sx=0, sy=0;
+  const clear = ()=>{ if(timer){ clearTimeout(timer); timer=null; } };
+  head.addEventListener('pointerdown', e=>{
+    if(e.pointerType==='mouse' && e.button!==0) return;
+    if(e.target.closest('[data-cat-add]') || e.target.closest('[data-cat-delete]')) return;
+    if(PAGE_STATE.selectMode || DRAG.active) return;
+    sx=e.clientX; sy=e.clientY;
+    clear();
+    timer = setTimeout(()=>{ timer=null; hapticTick(18); beginCatDrag(card, type, sx, sy); }, 320);
+  });
+  head.addEventListener('pointermove', e=>{
+    if(timer && (Math.abs(e.clientX-sx)>10 || Math.abs(e.clientY-sy)>10)) clear();
+  }, {passive:true});
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>head.addEventListener(ev, clear));
+}
+
+function beginCatDrag(card, type, x, y){
+  if(PAGE_STATE.favOnly || PAGE_STATE.search) return false;
+  const head = card.querySelector('.cat-head');
+  const rect = head.getBoundingClientRect();
+  const ghost = head.cloneNode(true);
+  ghost.className = 'cat-head drag-ghost';
+  ghost.style.width = rect.width+'px';
+  ghost.style.height = rect.height+'px';
+  document.body.appendChild(ghost);
+
+  DRAG.active = true; DRAG.moved = false; DRAG.pendingMenu = false;
+  DRAG.kind = 'cat';
+  DRAG.el = card; DRAG.ghost = ghost; DRAG.type = type; DRAG.itemId = null;
+  DRAG.offX = x - rect.left; DRAG.offY = y - rect.top;
+  DRAG.lastX = x; DRAG.lastY = y;
+
+  paintGhost(rect.left, rect.top, 1);
+  requestAnimationFrame(()=>{ ghost.classList.add('lift'); paintGhost(rect.left, rect.top, 1.03); });
+  card.classList.add('drag-src');
+  document.body.classList.add('dragging-active');
+  DRAG.suppressClick = true;
 
   document.addEventListener('pointermove', dragMove, {passive:false});
   document.addEventListener('pointerup', dragEnd);
@@ -1375,6 +1477,20 @@ function dragMove(e){
 function repositionDragSource(x, y){
   const el = DRAG.el;
   if(!el) return;
+  if(DRAG.kind === 'cat'){
+    const container = document.getElementById('catContainer-'+DRAG.type);
+    if(!container) return;
+    const cards = [...container.querySelectorAll('.cat-card')].filter(c=>c!==el && c.getAttribute('data-virtual')!=='1');
+    for(const c of cards){
+      const r = c.getBoundingClientRect();
+      if(y >= r.top && y <= r.bottom){
+        const after = (y - r.top) > r.height/2;
+        if(after) c.after(el); else c.before(el);
+        return;
+      }
+    }
+    return;
+  }
   const els = document.elementsFromPoint(x, y);
   for(const node of els){
     if(!node.classList) continue;
@@ -1399,13 +1515,14 @@ function dragEnd(){
   stopAutoScroll();
 
   const el = DRAG.el, ghost = DRAG.ghost, type = DRAG.type, itemId = DRAG.itemId;
-  const moved = DRAG.moved, wantMenu = !DRAG.moved;
+  const kind = DRAG.kind || 'item';
+  const moved = DRAG.moved, wantMenu = !DRAG.moved && kind==='item';
   DRAG.active = false;
   document.body.classList.remove('dragging-active');
   DRAG.suppressClick = true;
   setTimeout(()=>{ DRAG.suppressClick = false; }, 320);
 
-  const target = el.getBoundingClientRect();
+  const target = (kind==='cat' ? el.querySelector('.cat-head') : el).getBoundingClientRect();
   if(ghost){
     ghost.classList.remove('lift');
     ghost.classList.add('drop');
@@ -1421,11 +1538,25 @@ function dragEnd(){
   DRAG.el = null; DRAG.ghost = null;
 
   if(moved){
-    commitDomOrder(type);
+    if(kind==='cat') commitCatOrder(type); else commitDomOrder(type);
     hapticTick(10);
   } else if(wantMenu){
     openActionSheet(type, itemId);
   }
+}
+
+// Persist folder order from the current DOM layout
+function commitCatOrder(type){
+  const container = document.getElementById('catContainer-'+type);
+  if(!container) return;
+  [...container.querySelectorAll('.cat-card')]
+    .filter(c=>c.getAttribute('data-virtual')!=='1')
+    .forEach((card, idx)=>{
+      const cat = DATA.cats[type].find(c=>c.id===card.getAttribute('data-cat-id'));
+      if(cat) cat.order = idx;
+    });
+  saveData();
+  renderCategories(type);
 }
 
 // Persist order + category from the current DOM layout
@@ -1442,6 +1573,7 @@ function commitDomOrder(type){
       it.order = idx;
     });
   });
+  if(type==='movie') localStorage.setItem('col_marvel_manual','1');
   saveData();
   renderCategories(type);
 }
