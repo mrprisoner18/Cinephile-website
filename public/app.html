@@ -905,6 +905,7 @@ function appendMissingSeed(types){
 
 function seedIfNeeded(){
   loadData();
+  loadData();
   if(localStorage.getItem(K_MIGRATED)==='1') return;
   // Read v2 deleted + added for migration
   let v2Deleted = [];
