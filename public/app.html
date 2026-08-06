@@ -641,27 +641,40 @@ body.dragging-active{overflow:hidden;-webkit-user-select:none;user-select:none}
 // ============================================================
 //  BUILT-IN SEED DATA
 // ============================================================
+// ---- Canonical Marvel folder order (stable, never randomized) ----
+// Group 1: MCU in release order · then non-MCU franchises kept together
+const MARVEL_ORDER = [
+  // --- MCU (release order) ---
+  'Iron Man (2008)','The Incredible Hulk (2008)','Iron Man 2 (2010)','Thor (2011)','Captain America: The First Avenger (2011)',
+  'The Avengers (2012)','Iron Man 3 (2013)','Thor: The Dark World (2013)','Captain America: The Winter Soldier (2014)','Guardians of the Galaxy (2014)',
+  'Avengers: Age of Ultron (2015)','Ant-Man (2015)','Captain America: Civil War (2016)','Doctor Strange (2016)','Guardians of the Galaxy Vol. 2 (2017)',
+  'Spider-Man: Homecoming (2017)','Thor: Ragnarok (2017)','Black Panther (2018)','Avengers: Infinity War (2018)','Ant-Man and the Wasp (2018)',
+  'Captain Marvel (2019)','Avengers: Endgame (2019)','Spider-Man: Far from Home (2019)','Black Widow (2021)','Shang-Chi and the Legend of the Ten Rings (2021)',
+  'Eternals (2021)','Spider-Man: No Way Home (2021)','Doctor Strange in the Multiverse of Madness (2022)','Thor: Love and Thunder (2022)','Black Panther: Wakanda Forever (2022)',
+  'Ant-Man and the Wasp: Quantumania (2023)','Guardians of the Galaxy Vol. 3 (2023)','The Marvels (2023)',
+  'Captain America: Brave New World (2025)','Thunderbolts* (2025)','Spider-Man: Brand New Day (2026)',
+  // --- Tobey Maguire Spider-Man ---
+  'Spider-Man (2002)','Spider-Man 2 (2004)','Spider-Man 3 (2007)',
+  // --- Andrew Garfield Spider-Man ---
+  'The Amazing Spider-Man (2012)','The Amazing Spider-Man 2 (2014)',
+  // --- Spider-Verse ---
+  'Spider-Man: Into the Spider-Verse (2018)','Spider-Man: Across the Spider-Verse (2023)',
+  // --- X-Men (release order) ---
+  'X-Men (2000)','X2: X-Men United (2003)','X-Men: The Last Stand (2006)','X-Men Origins: Wolverine (2009)','X-Men: First Class (2011)',
+  'The Wolverine (2013)','X-Men: Days of Future Past (2014)','X-Men: Apocalypse (2016)','Logan (2017)','Dark Phoenix (2019)','The New Mutants (2020)',
+  // --- Deadpool ---
+  'Deadpool (2016)','Deadpool 2 (2018)','Deadpool & Wolverine (2024)',
+  // --- Fantastic Four ---
+  'Fantastic Four (2005)','Fantastic Four: Rise of the Silver Surfer (2007)','Fantastic Four (2015)','The Fantastic Four: First Steps (2025)',
+  // --- Blade ---
+  'Blade (1998)','Blade II (2002)','Blade: Trinity (2004)','Blade (2025)',
+  // --- Other Marvel (Sony) ---
+  'Venom (2018)','Venom: Let There Be Carnage (2021)','Venom: The Last Dance (2024)','Morbius (2022)','Kraven the Hunter (2024)','Madame Web (2024)'
+];
+
 const SEED = {
   movie: [
-    {cat:'MCU', items:[
-      'Iron Man (2008)','The Incredible Hulk (2008)','Iron Man 2 (2010)','Thor (2011)','Captain America: The First Avenger (2011)',
-      "The Avengers (2012)",'Iron Man 3 (2013)','Thor: The Dark World (2013)','Captain America: The Winter Soldier (2014)','Guardians of the Galaxy (2014)',
-      'Avengers: Age of Ultron (2015)','Ant-Man (2015)','Captain America: Civil War (2016)','Doctor Strange (2016)','Guardians of the Galaxy Vol. 2 (2017)',
-      'Spider-Man: Homecoming (2017)','Thor: Ragnarok (2017)','Black Panther (2018)','Avengers: Infinity War (2018)','Ant-Man and the Wasp (2018)',
-      'Captain Marvel (2019)','Avengers: Endgame (2019)','Spider-Man: Far from Home (2019)','Black Widow (2021)','Shang-Chi and the Legend of the Ten Rings (2021)',
-      'Eternals (2021)','Spider-Man: No Way Home (2021)','Doctor Strange in the Multiverse of Madness (2022)','Thor: Love and Thunder (2022)','Black Panther: Wakanda Forever (2022)',
-      'Ant-Man and the Wasp: Quantumania (2023)','Guardians of the Galaxy Vol. 3 (2023)','The Marvels (2023)',
-      'Captain America: Brave New World (2025)','Thunderbolts* (2025)','The Fantastic Four: First Steps (2025)',
-      'Blade (2025)','Spider-Man: Brand New Day (2026)',
-      'Deadpool (2016)','Deadpool 2 (2018)','Deadpool & Wolverine (2024)','Logan (2017)','X-Men Origins: Wolverine (2009)',
-      'X-Men (2000)','X2: X-Men United (2003)','X-Men: The Last Stand (2006)','X-Men: First Class (2011)','The Wolverine (2013)',
-      'X-Men: Days of Future Past (2014)','X-Men: Apocalypse (2016)','Dark Phoenix (2019)','The New Mutants (2020)',
-      'Fantastic Four (2005)','Fantastic Four: Rise of the Silver Surfer (2007)','Fantastic Four (2015)',
-      'Spider-Man (2002)','Spider-Man 2 (2004)','Spider-Man 3 (2007)','The Amazing Spider-Man (2012)','The Amazing Spider-Man 2 (2014)',
-      'Spider-Man: Into the Spider-Verse (2018)','Spider-Man: Across the Spider-Verse (2023)',
-      'Venom (2018)','Venom: Let There Be Carnage (2021)','Venom: The Last Dance (2024)','Morbius (2022)','Kraven the Hunter (2024)','Madame Web (2024)',
-      'Blade (1998)','Blade II (2002)','Blade: Trinity (2004)'
-    ]},
+    {cat:'MCU', items: MARVEL_ORDER.slice()},
     {cat:'DC', items:[
       'Batman Begins (2005)','The Dark Knight (2008)','The Dark Knight Rises (2012)','Batman (1989)','Batman Returns (1992)','Batman Forever (1995)','Batman & Robin (1997)','The Batman (2022)',
       'Joker (2019)','Joker: Folie \u00e0 Deux (2024)',
@@ -887,6 +900,58 @@ function appendMissingSeed(types){
       });
     });
   });
+}
+
+// ---- Canonical Marvel ordering (stable across refresh/sync) ----
+const MARVEL_GROUP_RULES = [
+  {key:'andrew',   re:/amazingspiderman/},
+  {key:'tobey',    re:/^spiderman(2|3)?$/},
+  {key:'verse',    re:/spiderverse/},
+  {key:'deadpool', re:/deadpool/},
+  {key:'xmen',     re:/xmen|wolverine|darkphoenix|newmutants|^logan$/},
+  {key:'ff',       re:/fantasticfour/},
+  {key:'blade',    re:/^blade/},
+  {key:'sony',     re:/venom|morbius|kraven|madameweb/}
+];
+function marvelGroupKey(n){
+  const r = MARVEL_GROUP_RULES.find(r=>r.re.test(n));
+  return r ? r.key : null; // null = MCU block
+}
+function yearOf(name){ const m=String(name||'').match(/(19|20)\d{2}/); return m?parseInt(m[0],10):null; }
+// year-aware key so "Fantastic Four (2005)" != "Fantastic Four (2015)"
+function marvelKey(name){ const y=yearOf(name); return normName(name)+(y?('_'+y):''); }
+function canonicalizeMarvelOrder(){
+  const cat = (DATA.cats.movie||[]).find(c=>normName(c.name)==='mcu');
+  if(!cat) return;
+  const idx = new Map();
+  MARVEL_ORDER.forEach((n,i)=>{ if(!idx.has(marvelKey(n))) idx.set(marvelKey(n),i); });
+  const mcuBlockEnd = idx.get(marvelKey('Spider-Man: Brand New Day (2026)'));
+  const items = (DATA.items.movie||[]).filter(i=>i.categoryId===cat.id);
+  const known = [], unknown = [];
+  items.forEach(it=>{ (idx.has(marvelKey(it.name)) ? known : unknown).push(it); });
+  known.sort((a,b)=>idx.get(marvelKey(a.name))-idx.get(marvelKey(b.name)));
+  const out = known.slice();
+  unknown.forEach(it=>{
+    const n = normName(it.name);
+    const g = marvelGroupKey(n);
+    let pos = -1;
+    if(g){
+      for(let i=0;i<out.length;i++){ if(marvelGroupKey(normName(out[i].name))===g) pos=i; }
+    }else{
+      // treat as an MCU movie: slot by release year inside the MCU block
+      const y = yearOf(it.name);
+      if(y!=null){
+        for(let i=0;i<out.length;i++){
+          const oi = idx.get(marvelKey(out[i].name));
+          if(oi==null || oi>mcuBlockEnd) break;
+          const oy = yearOf(out[i].name);
+          if(oy!=null && oy<=y) pos=i;
+        }
+      }
+    }
+    if(pos>=0) out.splice(pos+1,0,it); else out.push(it);
+  });
+  out.forEach((it,i)=>{ it.order = i; });
 }
 
 function seedIfNeeded(){
@@ -1580,6 +1645,7 @@ function openMoveSheet(type, itemId){
       const siblings = DATA.items[type].filter(i=>i.categoryId===cid).sort((a,b)=>a.order-b.order);
       item.categoryId = cid;
       item.order = siblings.length ? Math.max(...siblings.map(s=>s.order))+1 : 0;
+      if(type==='movie') canonicalizeMarvelOrder();
       saveData();
       forceCloseSheet();
       renderCategories(type);
@@ -1775,6 +1841,7 @@ function promptAddToCategory(type, catId, catName){
       id:uid(), name, categoryId:catId, order: siblings.length ? Math.max(...siblings.map(s=>s.order))+1 : 0,
       watched:false, rating:0, favorite:false, builtin:false, createdAt:Date.now()
     });
+    if(type==='movie') canonicalizeMarvelOrder();
     saveData();
     forceCloseSheet();
     renderCategories(type);
@@ -2019,6 +2086,8 @@ keepWebSeriesPopularOnly();
 reorganizeCollections();
 runMigration('col_mcu_movies_only_v5', mcuMoviesOnly);
 runMigration('col_seed_topup_v6', ()=>appendMissingSeed(['web','animeSeries','animeMovie']));
+runMigration('col_marvel_seed_topup_v7', ()=>appendMissingSeed(['movie']));
+canonicalizeMarvelOrder();
 saveData();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 900);
