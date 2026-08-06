@@ -903,8 +903,57 @@ function appendMissingSeed(types){
   });
 }
 
+// ---- Canonical Marvel ordering (stable across refresh/sync) ----
+const MARVEL_GROUP_RULES = [
+  {key:'andrew',   re:/amazingspiderman/},
+  {key:'tobey',    re:/^spiderman(2|3)?$/},
+  {key:'verse',    re:/spiderverse/},
+  {key:'deadpool', re:/deadpool/},
+  {key:'xmen',     re:/xmen|wolverine|darkphoenix|newmutants|^logan$/},
+  {key:'ff',       re:/fantasticfour/},
+  {key:'blade',    re:/^blade/},
+  {key:'sony',     re:/venom|morbius|kraven|madameweb/}
+];
+function marvelGroupKey(n){
+  const r = MARVEL_GROUP_RULES.find(r=>r.re.test(n));
+  return r ? r.key : null; // null = MCU block
+}
+function yearOf(name){ const m=String(name||'').match(/(19|20)\d{2}/); return m?parseInt(m[0],10):null; }
+function canonicalizeMarvelOrder(){
+  const cat = (DATA.cats.movie||[]).find(c=>normName(c.name)==='mcu');
+  if(!cat) return;
+  const idx = new Map();
+  MARVEL_ORDER.forEach((n,i)=>idx.set(normName(n),i));
+  const mcuBlockEnd = idx.get(normName('Spider-Man: Brand New Day (2026)'));
+  const items = (DATA.items.movie||[]).filter(i=>i.categoryId===cat.id);
+  const known = [], unknown = [];
+  items.forEach(it=>{ (idx.has(normName(it.name)) ? known : unknown).push(it); });
+  known.sort((a,b)=>idx.get(normName(a.name))-idx.get(normName(b.name)));
+  const out = known.slice();
+  unknown.forEach(it=>{
+    const n = normName(it.name);
+    const g = marvelGroupKey(n);
+    let pos = -1;
+    if(g){
+      for(let i=0;i<out.length;i++){ if(marvelGroupKey(normName(out[i].name))===g) pos=i; }
+    }else{
+      // treat as an MCU movie: slot by release year inside the MCU block
+      const y = yearOf(it.name);
+      if(y!=null){
+        for(let i=0;i<out.length;i++){
+          const oi = idx.get(normName(out[i].name));
+          if(oi==null || oi>mcuBlockEnd) break;
+          const oy = yearOf(out[i].name);
+          if(oy!=null && oy<=y) pos=i;
+        }
+      }
+    }
+    if(pos>=0) out.splice(pos+1,0,it); else out.push(it);
+  });
+  out.forEach((it,i)=>{ it.order = i; });
+}
+
 function seedIfNeeded(){
-  loadData();
   loadData();
   if(localStorage.getItem(K_MIGRATED)==='1') return;
   // Read v2 deleted + added for migration
