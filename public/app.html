@@ -1839,6 +1839,7 @@ function promptAddToCategory(type, catId, catName){
       id:uid(), name, categoryId:catId, order: siblings.length ? Math.max(...siblings.map(s=>s.order))+1 : 0,
       watched:false, rating:0, favorite:false, builtin:false, createdAt:Date.now()
     });
+    if(type==='movie') canonicalizeMarvelOrder();
     saveData();
     forceCloseSheet();
     renderCategories(type);
