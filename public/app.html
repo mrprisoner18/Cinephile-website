@@ -1211,6 +1211,11 @@ function renderItemHtml(type, item, serial, q){
 }
 
 // ---- Web series origin tags (short form, shown at the end of the title) ----
+const ORIGIN_OPTIONS = ['Marvel','DC','Korean','Japan','USA','UK','Spain','Germany','India','Anime'];
+function tagClass(t){
+  const k = String(t||'').toLowerCase().replace(/[^a-z]/g,'');
+  return ['marvel','dc','korean','japan','usa','uk','spain','germany','india','anime'].includes(k) ? 'tag-'+k : 'tag-custom';
+}
 const WEB_ORIGIN_MAP = {
   'strangerthings':'USA','wednesday':'USA','gameofthrones':'USA','lost':'USA','itwelcometoderry':'USA',
   'thelastofus':'USA','breakingbad':'USA','dark':'Germany','1899':'Germany',
