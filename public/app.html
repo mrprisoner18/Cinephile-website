@@ -1194,10 +1194,10 @@ function renderItemHtml(type, item, serial, q){
   let displayName = item.name;
   let tagHtml = '';
   if(type==='web'){
-    const t = webOriginTag(item.name);
+    const t = (item.origin === undefined || item.origin === null) ? webOriginTag(item.name) : item.origin;
     if(t){
       displayName = stripOriginNote(item.name);
-      tagHtml = `<div class="item-tag tag-${t.toLowerCase()}">${t}</div>`;
+      tagHtml = `<div class="item-tag ${tagClass(t)}">${escapeHtml(t)}</div>`;
     }
   }
   return `<div class="item ${watchedCls}" data-item-id="${item.id}" data-type="${type}">
