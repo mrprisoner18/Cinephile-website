@@ -290,6 +290,17 @@ body{
 .item-tag.tag-marvel{background:rgba(237,41,57,0.18);border-color:rgba(237,41,57,0.35);color:#ff9aa4}
 .item-tag.tag-korean{background:rgba(96,165,250,0.16);border-color:rgba(96,165,250,0.32);color:#a9cbff}
 .item-tag.tag-japan{background:rgba(244,114,182,0.16);border-color:rgba(244,114,182,0.32);color:#ffb2d6}
+.item-tag.tag-dc{background:rgba(37,99,235,0.20);border-color:rgba(37,99,235,0.38);color:#a8c4ff}
+.item-tag.tag-usa{background:rgba(129,140,248,0.16);border-color:rgba(129,140,248,0.32);color:#c3c8ff}
+.item-tag.tag-uk{background:rgba(56,189,248,0.16);border-color:rgba(56,189,248,0.32);color:#a6e4ff}
+.item-tag.tag-spain{background:rgba(251,146,60,0.18);border-color:rgba(251,146,60,0.34);color:#ffcda1}
+.item-tag.tag-germany{background:rgba(250,204,21,0.16);border-color:rgba(250,204,21,0.32);color:#ffe89a}
+.item-tag.tag-india{background:rgba(34,197,94,0.16);border-color:rgba(34,197,94,0.32);color:#a7f3c4}
+.item-tag.tag-anime{background:rgba(168,85,247,0.18);border-color:rgba(168,85,247,0.34);color:#dcb8ff}
+.item-tag.tag-custom{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.20);color:#e6dcff}
+.origin-grid{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
+.origin-chip{padding:7px 10px;flex:0 0 auto!important;width:auto!important;min-width:0}
+.origin-chip.origin-active{box-shadow:0 0 0 2px rgba(236,72,153,0.7), 0 8px 20px rgba(0,0,0,0.3)}
 .cat-card.drag-src{opacity:.28}
 .cat-head.drag-ghost{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;border-radius:20px;background:rgba(60,30,90,0.85);backdrop-filter:blur(20px);box-shadow:0 18px 40px rgba(0,0,0,0.45)}
 .item-watched{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(34,197,94,0.18);border:1px solid rgba(34,197,94,0.3);color:#86efac;opacity:0;transform:scale(0.5);transition:all .25s var(--spring)}
@@ -1194,10 +1205,10 @@ function renderItemHtml(type, item, serial, q){
   let displayName = item.name;
   let tagHtml = '';
   if(type==='web'){
-    const t = webOriginTag(item.name);
+    const t = (item.origin === undefined || item.origin === null) ? webOriginTag(item.name) : item.origin;
     if(t){
       displayName = stripOriginNote(item.name);
-      tagHtml = `<div class="item-tag tag-${t.toLowerCase()}">${t}</div>`;
+      tagHtml = `<div class="item-tag ${tagClass(t)}">${escapeHtml(t)}</div>`;
     }
   }
   return `<div class="item ${watchedCls}" data-item-id="${item.id}" data-type="${type}">
@@ -1211,6 +1222,11 @@ function renderItemHtml(type, item, serial, q){
 }
 
 // ---- Web series origin tags (short form, shown at the end of the title) ----
+const ORIGIN_OPTIONS = ['Marvel','DC','Korean','Japan','USA','UK','Spain','Germany','India','Anime'];
+function tagClass(t){
+  const k = String(t||'').toLowerCase().replace(/[^a-z]/g,'');
+  return ['marvel','dc','korean','japan','usa','uk','spain','germany','india','anime'].includes(k) ? 'tag-'+k : 'tag-custom';
+}
 const WEB_ORIGIN_MAP = {
   'strangerthings':'USA','wednesday':'USA','gameofthrones':'USA','lost':'USA','itwelcometoderry':'USA',
   'thelastofus':'USA','breakingbad':'USA','dark':'Germany','1899':'Germany',
@@ -1956,23 +1972,23 @@ function promptAddToCategory(type, catId, catName){
   const meta = TYPE_META[type];
   openSheet(`
     <div class="sheet-title">Add to ${escapeHtml(catName)}</div>
-    <div class="sheet-sub">Write the name of your ${meta.addLabel}</div>
+    <div class="sheet-sub">Step 1 — What's the name of your ${meta.addLabel}?</div>
     <input class="sheet-input" id="addItemInput" placeholder="e.g. The Dark Knight" autocomplete="off">
     <div class="sheet-btns">
       <button class="btn btn-glass" data-sheet-close>Cancel</button>
-      <button class="btn btn-primary" id="addItemSave">Add</button>
+      <button class="btn btn-primary" id="addItemSave">${type==='web' ? 'Next' : 'Add'}</button>
     </div>
   `);
   setTimeout(()=>document.getElementById('addItemInput').focus(),120);
   document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
-  const submit = ()=>{
-    const name = document.getElementById('addItemInput').value.trim();
-    if(!name) return;
+  const finish = (name, origin)=>{
     const siblings = DATA.items[type].filter(i=>i.categoryId===catId).sort((a,b)=>a.order-b.order);
-    DATA.items[type].push({
+    const rec = {
       id:uid(), name, categoryId:catId, order: siblings.length ? Math.max(...siblings.map(s=>s.order))+1 : 0,
       watched:false, rating:0, favorite:false, builtin:false, createdAt:Date.now()
-    });
+    };
+    if(type==='web') rec.origin = origin || '';
+    DATA.items[type].push(rec);
     if(type==='movie') canonicalizeMarvelOrder();
     saveData();
     forceCloseSheet();
@@ -1980,8 +1996,49 @@ function promptAddToCategory(type, catId, catName){
     updateStats();
     toast('Added to '+catName);
   };
+  const submit = ()=>{
+    const name = document.getElementById('addItemInput').value.trim();
+    if(!name) return;
+    if(type==='web'){ promptOriginSheet(name, o=>finish(name, o)); return; }
+    finish(name, '');
+  };
   document.getElementById('addItemSave').onclick = submit;
   document.getElementById('addItemInput').addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); });
+}
+
+// Step 2 for web series: where does it belong? (styled tag shown after the title)
+function promptOriginSheet(name, onPick){
+  const suggested = webOriginTag(name);
+  const opts = [...new Set([suggested, ...ORIGIN_OPTIONS].filter(Boolean))];
+  const chips = opts.map(o=>`<button class="btn btn-glass origin-chip" data-origin="${escapeHtml(o)}"><span class="item-tag ${tagClass(o)}">${escapeHtml(o)}</span></button>`).join('');
+  openSheet(`
+    <div class="sheet-title">${escapeHtml(stripOriginNote(name))}</div>
+    <div class="sheet-sub">Step 2 — Where does it belong? Pick a tag${suggested?' (suggested: '+escapeHtml(suggested)+')':''}</div>
+    <div class="origin-grid">${chips}</div>
+    <input class="sheet-input" id="originCustom" placeholder="Or type your own, e.g. Turkish" autocomplete="off">
+    <div class="sheet-btns">
+      <button class="btn btn-glass" id="originNone">No tag</button>
+      <button class="btn btn-primary" id="originSave">Add</button>
+    </div>
+  `);
+  let chosen = suggested || '';
+  const mark = ()=>{
+    document.querySelectorAll('[data-origin]').forEach(b=>{
+      b.classList.toggle('origin-active', b.getAttribute('data-origin')===chosen);
+    });
+  };
+  mark();
+  document.querySelectorAll('[data-origin]').forEach(b=>{
+    b.onclick = ()=>{ chosen = b.getAttribute('data-origin'); document.getElementById('originCustom').value=''; mark(); };
+  });
+  document.getElementById('originCustom').addEventListener('input', ()=>{ chosen=''; mark(); });
+  const save = ()=>{
+    const custom = document.getElementById('originCustom').value.trim();
+    onPick(custom || chosen || '');
+  };
+  document.getElementById('originSave').onclick = save;
+  document.getElementById('originNone').onclick = ()=>onPick('');
+  document.getElementById('originCustom').addEventListener('keydown', e=>{ if(e.key==='Enter') save(); });
 }
 
 // ============================================================
