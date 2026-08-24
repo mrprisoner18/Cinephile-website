@@ -1391,9 +1391,20 @@ function wireListInteractions(type){
 function getItem(type, id){ return DATA.items[type].find(i=>i.id===id); }
 
 function wireItem(el, type, itemId){
+  // ⋯ menu = Edit / Delete / Move / Rate …
+  const menu = el.querySelector('[data-item-menu]');
+  if(menu){
+    menu.addEventListener('click', e=>{
+      e.stopPropagation();
+      if(DRAG.suppressClick) return;
+      openActionSheet(type, itemId);
+    });
+    menu.addEventListener('pointerdown', e=>e.stopPropagation());
+  }
   // Tap = highlight (exclusive) OR toggle check in select mode
   el.addEventListener('click', e=>{
     if(e.target.closest('[data-item-star]')) return;
+    if(e.target.closest('[data-item-menu]')) return;
     if(DRAG.suppressClick){ return; }
     if(PAGE_STATE.selectMode){
       const cb = el.querySelector('[data-item-check]');
