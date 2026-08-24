@@ -2106,31 +2106,153 @@ function promptAddToCategory(type, catId, catName){
 }
 
 // Step 2 for web series: where does it belong? (styled tag shown after the title)
+// ------------------------------------------------------------
+//  DYNAMIC WEB-SERIES METADATA  (live provider, no hardcoded titles)
+//  Uses TVmaze (free, no key, CORS-friendly, updated daily) to resolve
+//  country / language / genre for ANY series — including ones released today.
+//  Cache: successes for 7 days. Failures/unknown for 6 hours only, so newly
+//  released titles get re-checked and can become recognised later.
+// ------------------------------------------------------------
+const META_CACHE_KEY = 'col_web_meta_cache_v1';
+const META_TTL_OK = 7*24*60*60*1000;
+const META_TTL_MISS = 6*60*60*1000;
+
+function metaCacheRead(){ try{ return JSON.parse(localStorage.getItem(META_CACHE_KEY)||'{}'); }catch(e){ return {}; } }
+function metaCacheWrite(c){ try{ localStorage.setItem(META_CACHE_KEY, JSON.stringify(c)); }catch(e){} }
+
+// Intelligent title normalisation: case, spacing, punctuation, articles, notes
+function metaKey(name){
+  return String(name||'')
+    .toLowerCase()
+    .normalize('NFKD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/\([^)]*\)|\[[^\]]*\]/g,' ')
+    .replace(/[^a-z0-9]+/g,' ')
+    .replace(/\bs(eason)?\s?\d+\b/g,' ')
+    .trim().replace(/\s+/g,' ');
+}
+
+const COUNTRY_TAG = {
+  KR:'Korean', JP:'Japan', US:'USA', GB:'UK', ES:'Spain', DE:'Germany', IN:'India'
+};
+const LANG_TAG = {
+  korean:'Korean', japanese:'Japan', english:'USA', spanish:'Spain', german:'Germany',
+  hindi:'India', tamil:'India', telugu:'India', malayalam:'India'
+};
+
+// Turns provider metadata into a Cinephile tag (existing tags only, or '')
+function tagFromMeta(m){
+  if(!m) return '';
+  const s = ((m.name||'')+' '+(m.summary||'')+' '+(m.network||'')+' '+(m.webChannel||'')).toLowerCase();
+  const genres = (m.genres||[]).map(g=>String(g).toLowerCase());
+  if(/\bmarvel\b|\bmcu\b/.test(s)) return 'Marvel';
+  if(/\bdc\b|dc comics|dc universe/.test(s)) return 'DC';
+  if(genres.includes('anime')) return 'Anime';
+  if(m.country && COUNTRY_TAG[m.country]) return COUNTRY_TAG[m.country];
+  if(m.language && LANG_TAG[String(m.language).toLowerCase()]) return LANG_TAG[String(m.language).toLowerCase()];
+  return '';
+}
+
+// Live lookup. Never throws, never blocks — resolves {tag, meta, ok}
+async function lookupSeriesMetadata(rawName){
+  const key = metaKey(stripOriginNote(rawName));
+  if(!key) return {ok:false, tag:'', meta:null};
+  const cache = metaCacheRead();
+  const hit = cache[key];
+  const now = Date.now();
+  if(hit && (now - hit.t) < (hit.tag ? META_TTL_OK : META_TTL_MISS)){
+    return {ok:!!hit.tag, tag:hit.tag||'', meta:hit.meta||null, cached:true};
+  }
+  let meta = null;
+  try{
+    // singlesearch handles fuzzy/alternate/original titles well
+    const ctrl = new AbortController();
+    const t = setTimeout(()=>ctrl.abort(), 9000);
+    let res = await fetch('https://api.tvmaze.com/singlesearch/shows?q='+encodeURIComponent(key), {signal:ctrl.signal});
+    if(!res.ok){
+      res = await fetch('https://api.tvmaze.com/search/shows?q='+encodeURIComponent(key), {signal:ctrl.signal});
+      if(res.ok){
+        const arr = await res.json();
+        if(Array.isArray(arr) && arr.length) meta = arr[0].show;
+      }
+    } else {
+      meta = await res.json();
+    }
+    clearTimeout(t);
+  }catch(e){ /* offline / provider down — fall through to manual tagging */ }
+
+  const norm = meta ? {
+    name: meta.name,
+    country: (meta.network && meta.network.country && meta.network.country.code)
+          || (meta.webChannel && meta.webChannel.country && meta.webChannel.country.code) || '',
+    language: meta.language || '',
+    genres: meta.genres || [],
+    premiered: meta.premiered || '',
+    summary: String(meta.summary||'').replace(/<[^>]*>/g,'').slice(0,400),
+    network: (meta.network&&meta.network.name)||'',
+    webChannel: (meta.webChannel&&meta.webChannel.name)||''
+  } : null;
+
+  const tag = tagFromMeta(norm);
+  cache[key] = {t:now, tag, meta:norm};
+  metaCacheWrite(cache);
+  return {ok:!!norm, tag, meta:norm};
+}
+
+// Step 2 for web series: where does it belong? (styled tag shown after the title)
 function promptOriginSheet(name, onPick){
-  const suggested = webOriginTag(name);
-  const opts = [...new Set([suggested, ...ORIGIN_OPTIONS].filter(Boolean))];
+  const localGuess = webOriginTag(name);
+  const opts = [...new Set([localGuess, ...ORIGIN_OPTIONS].filter(Boolean))];
   const chips = opts.map(o=>`<button class="btn btn-glass origin-chip" data-origin="${escapeHtml(o)}"><span class="item-tag ${tagClass(o)}">${escapeHtml(o)}</span></button>`).join('');
   openSheet(`
     <div class="sheet-title">${escapeHtml(stripOriginNote(name))}</div>
-    <div class="sheet-sub">Step 2 — Where does it belong? Pick a tag${suggested?' (suggested: '+escapeHtml(suggested)+')':''}</div>
-    <div class="origin-grid">${chips}</div>
+    <div class="sheet-sub" id="originStatus">Finding series information…</div>
+    <div class="origin-grid" id="originGrid">${chips}</div>
     <input class="sheet-input" id="originCustom" placeholder="Or type your own, e.g. Turkish" autocomplete="off">
     <div class="sheet-btns">
       <button class="btn btn-glass" id="originNone">No tag</button>
       <button class="btn btn-primary" id="originSave">Add</button>
     </div>
   `);
-  let chosen = suggested || '';
+  let chosen = localGuess || '';
+  let userTouched = false; // a manual choice must never be overwritten by the suggestion
   const mark = ()=>{
     document.querySelectorAll('[data-origin]').forEach(b=>{
       b.classList.toggle('origin-active', b.getAttribute('data-origin')===chosen);
     });
   };
-  mark();
-  document.querySelectorAll('[data-origin]').forEach(b=>{
-    b.onclick = ()=>{ chosen = b.getAttribute('data-origin'); document.getElementById('originCustom').value=''; mark(); };
+  const wireChips = ()=>{
+    document.querySelectorAll('[data-origin]').forEach(b=>{
+      b.onclick = ()=>{ userTouched = true; chosen = b.getAttribute('data-origin'); const c=document.getElementById('originCustom'); if(c) c.value=''; mark(); };
+    });
+  };
+  mark(); wireChips();
+  document.getElementById('originCustom').addEventListener('input', ()=>{ userTouched = true; chosen=''; mark(); });
+
+  // Live metadata suggestion — async, never blocks the sheet
+  lookupSeriesMetadata(name).then(r=>{
+    const status = document.getElementById('originStatus');
+    if(!status) return; // sheet closed
+    if(r.tag){
+      if(!userTouched){
+        chosen = r.tag;
+        const grid = document.getElementById('originGrid');
+        if(grid && !grid.querySelector(`[data-origin="${CSS.escape(r.tag)}"]`)){
+          grid.insertAdjacentHTML('afterbegin', `<button class="btn btn-glass origin-chip" data-origin="${escapeHtml(r.tag)}"><span class="item-tag ${tagClass(r.tag)}">${escapeHtml(r.tag)}</span></button>`);
+          wireChips();
+        }
+        mark();
+      }
+      status.textContent = 'Suggested: '+r.tag+(r.meta&&r.meta.premiered?' · '+r.meta.premiered.slice(0,4):'');
+    } else if(r.ok){
+      status.textContent = 'Found “'+(r.meta.name||name)+'” — no matching tag, pick one below.';
+    } else {
+      status.textContent = 'Couldn\'t verify this series — pick a tag manually.';
+    }
+  }).catch(()=>{
+    const status = document.getElementById('originStatus');
+    if(status) status.textContent = 'Couldn\'t verify this series — pick a tag manually.';
   });
-  document.getElementById('originCustom').addEventListener('input', ()=>{ chosen=''; mark(); });
+
   const save = ()=>{
     const custom = document.getElementById('originCustom').value.trim();
     onPick(custom || chosen || '');
@@ -2139,6 +2261,7 @@ function promptOriginSheet(name, onPick){
   document.getElementById('originNone').onclick = ()=>onPick('');
   document.getElementById('originCustom').addEventListener('keydown', e=>{ if(e.key==='Enter') save(); });
 }
+
 
 // ============================================================
 //  SETTINGS / BACKUP
