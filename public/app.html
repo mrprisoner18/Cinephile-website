@@ -1300,6 +1300,7 @@ function renderItemHtml(type, item, serial, q){
     ${tagHtml}
     <div class="item-watched"><svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
     <div class="item-star ${favCls}" data-item-star aria-label="Toggle favorite"><svg fill="${item.favorite?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+    <div class="item-menu" data-item-menu aria-label="More actions"><svg fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></div>
   </div>`;
 }
 
@@ -1390,9 +1391,20 @@ function wireListInteractions(type){
 function getItem(type, id){ return DATA.items[type].find(i=>i.id===id); }
 
 function wireItem(el, type, itemId){
+  // ⋯ menu = Edit / Delete / Move / Rate …
+  const menu = el.querySelector('[data-item-menu]');
+  if(menu){
+    menu.addEventListener('click', e=>{
+      e.stopPropagation();
+      if(DRAG.suppressClick) return;
+      openActionSheet(type, itemId);
+    });
+    menu.addEventListener('pointerdown', e=>e.stopPropagation());
+  }
   // Tap = highlight (exclusive) OR toggle check in select mode
   el.addEventListener('click', e=>{
     if(e.target.closest('[data-item-star]')) return;
+    if(e.target.closest('[data-item-menu]')) return;
     if(DRAG.suppressClick){ return; }
     if(PAGE_STATE.selectMode){
       const cb = el.querySelector('[data-item-check]');
@@ -1789,6 +1801,10 @@ function openActionSheet(type, itemId){
       <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
       <div class="sheet-action-text"><div class="sheet-action-title">Edit Name</div><div class="sheet-action-sub">Rename this item</div></div>
     </div>
+    ${type==='web' ? `<div class="sheet-action" data-act="tag">
+      <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.59 13.41L11 3.83A2 2 0 0 0 9.59 3H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.58a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.58z"/><circle cx="7.5" cy="7.5" r="1"/></svg></div>
+      <div class="sheet-action-text"><div class="sheet-action-title">Change Tag</div><div class="sheet-action-sub">Current: ${escapeHtml((item.origin===undefined||item.origin===null)?(webOriginTag(item.name)||'—'):(item.origin||'—'))}</div></div>
+    </div>` : ''}
     <div class="sheet-action" data-act="move">
       <div class="sheet-action-icon"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
       <div class="sheet-action-text"><div class="sheet-action-title">Move to…</div><div class="sheet-action-sub">Change category</div></div>
@@ -1818,6 +1834,7 @@ function openActionSheet(type, itemId){
       else if(act==='fav'){ item.favorite=!item.favorite; saveData(); renderCategories(type); updateStats(); forceCloseSheet(); toast(item.favorite?'⭐ Added to favorites':'Removed from favorites'); }
       else if(act==='watched'){ item.watched=!item.watched; saveData(); renderCategories(type); updateStats(); forceCloseSheet(); toast(item.watched?'✓ Marked watched':'Unmarked'); }
       else if(act==='rate'){ openRateSheet(type, itemId); }
+      else if(act==='tag'){ promptOriginSheet(item.name, o=>{ item.origin = o; saveData(); forceCloseSheet(); renderCategories(type); toast(o?('Tagged '+o):'Tag removed'); }); }
       else if(act==='delete'){ openDeleteSheet(type, itemId); }
     });
   });
@@ -2089,31 +2106,153 @@ function promptAddToCategory(type, catId, catName){
 }
 
 // Step 2 for web series: where does it belong? (styled tag shown after the title)
+// ------------------------------------------------------------
+//  DYNAMIC WEB-SERIES METADATA  (live provider, no hardcoded titles)
+//  Uses TVmaze (free, no key, CORS-friendly, updated daily) to resolve
+//  country / language / genre for ANY series — including ones released today.
+//  Cache: successes for 7 days. Failures/unknown for 6 hours only, so newly
+//  released titles get re-checked and can become recognised later.
+// ------------------------------------------------------------
+const META_CACHE_KEY = 'col_web_meta_cache_v1';
+const META_TTL_OK = 7*24*60*60*1000;
+const META_TTL_MISS = 6*60*60*1000;
+
+function metaCacheRead(){ try{ return JSON.parse(localStorage.getItem(META_CACHE_KEY)||'{}'); }catch(e){ return {}; } }
+function metaCacheWrite(c){ try{ localStorage.setItem(META_CACHE_KEY, JSON.stringify(c)); }catch(e){} }
+
+// Intelligent title normalisation: case, spacing, punctuation, articles, notes
+function metaKey(name){
+  return String(name||'')
+    .toLowerCase()
+    .normalize('NFKD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/\([^)]*\)|\[[^\]]*\]/g,' ')
+    .replace(/[^a-z0-9]+/g,' ')
+    .replace(/\bs(eason)?\s?\d+\b/g,' ')
+    .trim().replace(/\s+/g,' ');
+}
+
+const COUNTRY_TAG = {
+  KR:'Korean', JP:'Japan', US:'USA', GB:'UK', ES:'Spain', DE:'Germany', IN:'India'
+};
+const LANG_TAG = {
+  korean:'Korean', japanese:'Japan', english:'USA', spanish:'Spain', german:'Germany',
+  hindi:'India', tamil:'India', telugu:'India', malayalam:'India'
+};
+
+// Turns provider metadata into a Cinephile tag (existing tags only, or '')
+function tagFromMeta(m){
+  if(!m) return '';
+  const s = ((m.name||'')+' '+(m.summary||'')+' '+(m.network||'')+' '+(m.webChannel||'')).toLowerCase();
+  const genres = (m.genres||[]).map(g=>String(g).toLowerCase());
+  if(/\bmarvel\b|\bmcu\b/.test(s)) return 'Marvel';
+  if(/\bdc\b|dc comics|dc universe/.test(s)) return 'DC';
+  if(genres.includes('anime')) return 'Anime';
+  if(m.country && COUNTRY_TAG[m.country]) return COUNTRY_TAG[m.country];
+  if(m.language && LANG_TAG[String(m.language).toLowerCase()]) return LANG_TAG[String(m.language).toLowerCase()];
+  return '';
+}
+
+// Live lookup. Never throws, never blocks — resolves {tag, meta, ok}
+async function lookupSeriesMetadata(rawName){
+  const key = metaKey(stripOriginNote(rawName));
+  if(!key) return {ok:false, tag:'', meta:null};
+  const cache = metaCacheRead();
+  const hit = cache[key];
+  const now = Date.now();
+  if(hit && (now - hit.t) < (hit.tag ? META_TTL_OK : META_TTL_MISS)){
+    return {ok:!!hit.tag, tag:hit.tag||'', meta:hit.meta||null, cached:true};
+  }
+  let meta = null;
+  try{
+    // singlesearch handles fuzzy/alternate/original titles well
+    const ctrl = new AbortController();
+    const t = setTimeout(()=>ctrl.abort(), 9000);
+    let res = await fetch('https://api.tvmaze.com/singlesearch/shows?q='+encodeURIComponent(key), {signal:ctrl.signal});
+    if(!res.ok){
+      res = await fetch('https://api.tvmaze.com/search/shows?q='+encodeURIComponent(key), {signal:ctrl.signal});
+      if(res.ok){
+        const arr = await res.json();
+        if(Array.isArray(arr) && arr.length) meta = arr[0].show;
+      }
+    } else {
+      meta = await res.json();
+    }
+    clearTimeout(t);
+  }catch(e){ /* offline / provider down — fall through to manual tagging */ }
+
+  const norm = meta ? {
+    name: meta.name,
+    country: (meta.network && meta.network.country && meta.network.country.code)
+          || (meta.webChannel && meta.webChannel.country && meta.webChannel.country.code) || '',
+    language: meta.language || '',
+    genres: meta.genres || [],
+    premiered: meta.premiered || '',
+    summary: String(meta.summary||'').replace(/<[^>]*>/g,'').slice(0,400),
+    network: (meta.network&&meta.network.name)||'',
+    webChannel: (meta.webChannel&&meta.webChannel.name)||''
+  } : null;
+
+  const tag = tagFromMeta(norm);
+  cache[key] = {t:now, tag, meta:norm};
+  metaCacheWrite(cache);
+  return {ok:!!norm, tag, meta:norm};
+}
+
+// Step 2 for web series: where does it belong? (styled tag shown after the title)
 function promptOriginSheet(name, onPick){
-  const suggested = webOriginTag(name);
-  const opts = [...new Set([suggested, ...ORIGIN_OPTIONS].filter(Boolean))];
+  const localGuess = webOriginTag(name);
+  const opts = [...new Set([localGuess, ...ORIGIN_OPTIONS].filter(Boolean))];
   const chips = opts.map(o=>`<button class="btn btn-glass origin-chip" data-origin="${escapeHtml(o)}"><span class="item-tag ${tagClass(o)}">${escapeHtml(o)}</span></button>`).join('');
   openSheet(`
     <div class="sheet-title">${escapeHtml(stripOriginNote(name))}</div>
-    <div class="sheet-sub">Step 2 — Where does it belong? Pick a tag${suggested?' (suggested: '+escapeHtml(suggested)+')':''}</div>
-    <div class="origin-grid">${chips}</div>
+    <div class="sheet-sub" id="originStatus">Finding series information…</div>
+    <div class="origin-grid" id="originGrid">${chips}</div>
     <input class="sheet-input" id="originCustom" placeholder="Or type your own, e.g. Turkish" autocomplete="off">
     <div class="sheet-btns">
       <button class="btn btn-glass" id="originNone">No tag</button>
       <button class="btn btn-primary" id="originSave">Add</button>
     </div>
   `);
-  let chosen = suggested || '';
+  let chosen = localGuess || '';
+  let userTouched = false; // a manual choice must never be overwritten by the suggestion
   const mark = ()=>{
     document.querySelectorAll('[data-origin]').forEach(b=>{
       b.classList.toggle('origin-active', b.getAttribute('data-origin')===chosen);
     });
   };
-  mark();
-  document.querySelectorAll('[data-origin]').forEach(b=>{
-    b.onclick = ()=>{ chosen = b.getAttribute('data-origin'); document.getElementById('originCustom').value=''; mark(); };
+  const wireChips = ()=>{
+    document.querySelectorAll('[data-origin]').forEach(b=>{
+      b.onclick = ()=>{ userTouched = true; chosen = b.getAttribute('data-origin'); const c=document.getElementById('originCustom'); if(c) c.value=''; mark(); };
+    });
+  };
+  mark(); wireChips();
+  document.getElementById('originCustom').addEventListener('input', ()=>{ userTouched = true; chosen=''; mark(); });
+
+  // Live metadata suggestion — async, never blocks the sheet
+  lookupSeriesMetadata(name).then(r=>{
+    const status = document.getElementById('originStatus');
+    if(!status) return; // sheet closed
+    if(r.tag){
+      if(!userTouched){
+        chosen = r.tag;
+        const grid = document.getElementById('originGrid');
+        if(grid && !grid.querySelector(`[data-origin="${CSS.escape(r.tag)}"]`)){
+          grid.insertAdjacentHTML('afterbegin', `<button class="btn btn-glass origin-chip" data-origin="${escapeHtml(r.tag)}"><span class="item-tag ${tagClass(r.tag)}">${escapeHtml(r.tag)}</span></button>`);
+          wireChips();
+        }
+        mark();
+      }
+      status.textContent = 'Suggested: '+r.tag+(r.meta&&r.meta.premiered?' · '+r.meta.premiered.slice(0,4):'');
+    } else if(r.ok){
+      status.textContent = 'Found “'+(r.meta.name||name)+'” — no matching tag, pick one below.';
+    } else {
+      status.textContent = 'Couldn\'t verify this series — pick a tag manually.';
+    }
+  }).catch(()=>{
+    const status = document.getElementById('originStatus');
+    if(status) status.textContent = 'Couldn\'t verify this series — pick a tag manually.';
   });
-  document.getElementById('originCustom').addEventListener('input', ()=>{ chosen=''; mark(); });
+
   const save = ()=>{
     const custom = document.getElementById('originCustom').value.trim();
     onPick(custom || chosen || '');
@@ -2122,6 +2261,7 @@ function promptOriginSheet(name, onPick){
   document.getElementById('originNone').onclick = ()=>onPick('');
   document.getElementById('originCustom').addEventListener('keydown', e=>{ if(e.key==='Enter') save(); });
 }
+
 
 // ============================================================
 //  SETTINGS / BACKUP
@@ -2362,6 +2502,285 @@ canonicalizeMarvelOrder();
 saveData();
 updateStats();
 setTimeout(()=>document.getElementById('splash').classList.add('gone'), 900);
+
+
+// ============================================================
+//  ARISU — Cinephile AI assistant (floating, draggable, tool-using)
+// ============================================================
+const ARISU = {
+  url: 'https://vqgvlfilboedbcphtlae.supabase.co/functions/v1/arisu-chat',
+  anon: 'sb_publishable_PvyoRYo9LJDtNxXVh0eDZw_zuYFXVs-',
+  msgs: [],      // conversation sent to the model
+  busy: false,
+  open: false
+};
+
+const ARISU_TYPE_LABEL = {movie:'Movie', web:'Web Series', animeSeries:'Anime Series', animeMovie:'Anime Movie'};
+
+function arisuLibrarySummary(){
+  const parts = TYPES.map(t=>{
+    const items = DATA.items[t]||[];
+    return ARISU_TYPE_LABEL[t]+': '+items.length+' titles ('+items.filter(i=>i.watched).length+' watched)';
+  });
+  return parts.join(' · ');
+}
+
+// ---- Tools executed locally (library stays on device) ----
+function arisuSearchLibrary(args){
+  const q = metaKey(args.query||'');
+  const types = (!args.type || args.type==='all') ? TYPES : [args.type];
+  const out = [];
+  types.forEach(t=>{
+    (DATA.items[t]||[]).forEach(it=>{
+      if(q && !metaKey(it.name).includes(q)) return;
+      const tag = t==='web' ? ((it.origin===undefined||it.origin===null) ? webOriginTag(it.name) : it.origin) : '';
+      if(args.tag && String(tag).toLowerCase()!==String(args.tag).toLowerCase()) return;
+      if(args.watched==='yes' && !it.watched) return;
+      if(args.watched==='no' && it.watched) return;
+      out.push({name:stripOriginNote(it.name), type:t, tag:tag||null, watched:!!it.watched, rating:it.rating||0, favorite:!!it.favorite});
+    });
+  });
+  return {count: out.length, results: out.slice(0, 60)};
+}
+
+async function arisuSearchMetadata(args){
+  const r = await lookupSeriesMetadata(args.title||'');
+  if(!r.ok) return {found:false, note:'No verified metadata available for this title right now.'};
+  return {found:true, suggestedTag:r.tag||null, ...r.meta};
+}
+
+function arisuNavigate(args){
+  const map = {home:'home', movie:'movies', web:'web', anime:'anime', animeSeries:'animeSeries', animeMovie:'animeMovies'};
+  const page = map[args.page]||'home';
+  arisuClose();
+  if(page==='home'){ while(NAV.length>1) NAV.pop(); showPage('home'); history.pushState({pg:'home'},'','#home'); }
+  else go(page);
+  return {navigated:page};
+}
+
+function arisuAddToLibrary(args){
+  const type = TYPES.includes(args.type) ? args.type : 'web';
+  const dup = (DATA.items[type]||[]).find(i=>metaKey(i.name)===metaKey(args.title));
+  if(dup) return {added:false, reason:'already_exists', message:stripOriginNote(dup.name)+' is already in your Cinephile library.'};
+  let cats = DATA.cats[type]||[];
+  if(!cats.length){
+    cats = DATA.cats[type] = [{id:'c_'+type+'_'+Math.random().toString(36).slice(2,6), name:'Popular', order:0, collapsed:false, builtin:true}];
+  }
+  const cat = cats[0];
+  const siblings = (DATA.items[type]||[]).filter(i=>i.categoryId===cat.id);
+  const rec = {
+    id:uid(), name:args.title, categoryId:cat.id,
+    order: siblings.length ? Math.max(...siblings.map(s=>s.order))+1 : 0,
+    watched:false, rating:0, favorite:false, builtin:false, createdAt:Date.now()
+  };
+  if(type==='web') rec.origin = args.tag || '';
+  DATA.items[type].push(rec);
+  if(type==='movie') canonicalizeMarvelOrder();
+  saveData();
+  renderActivePage();
+  updateStats();
+  toast('Arisu added '+args.title);
+  return {added:true, title:args.title, type, tag:rec.origin||null, category:cat.name};
+}
+
+// ---- Chat rendering ----
+function arisuRender(){
+  const body = document.getElementById('arisuBody');
+  if(!body) return;
+  if(!ARISU.msgs.filter(m=>m.role==='user'||(m.role==='assistant'&&m.content)).length){
+    body.innerHTML = `<div class="arisu-empty">
+      <h3>Hi, I'm Arisu</h3>
+      <p>Your Cinephile AI · Movies • Web Series • Anime</p>
+      <div class="arisu-chips">
+        <button class="arisu-chip">Recommend something</button>
+        <button class="arisu-chip">What's in my library?</button>
+        <button class="arisu-chip">Search a series</button>
+        <button class="arisu-chip">Add a series</button>
+        <button class="arisu-chip">Find something like Dark</button>
+      </div>
+    </div>`;
+    body.querySelectorAll('.arisu-chip').forEach(b=>{
+      b.onclick = ()=>arisuSend(b.textContent);
+    });
+    return;
+  }
+  body.innerHTML = ARISU.msgs.filter(m=>(m.role==='user'||m.role==='assistant') && m.content)
+    .map(m=>`<div class="arisu-msg ${m.role==='user'?'me':'ai'}">${escapeHtml(m.content)}</div>`).join('');
+  if(ARISU.busy){
+    body.insertAdjacentHTML('beforeend', `<div class="arisu-typing"><span></span><span></span><span></span></div>`);
+  }
+  body.scrollTop = body.scrollHeight;
+}
+
+function arisuPendingAction(text, onYes, yesLabel){
+  const body = document.getElementById('arisuBody');
+  if(!body) return;
+  body.insertAdjacentHTML('beforeend', `<div class="arisu-msg ai">${escapeHtml(text)}</div>
+    <div class="arisu-act"><button class="primary" data-yes>${escapeHtml(yesLabel||'Add')}</button><button data-no>Cancel</button></div>`);
+  body.scrollTop = body.scrollHeight;
+  body.querySelector('[data-yes]').onclick = ()=>{ body.querySelector('.arisu-act').remove(); onYes(); };
+  body.querySelector('[data-no]').onclick = ()=>{
+    body.querySelector('.arisu-act').remove();
+    ARISU.msgs.push({role:'assistant', content:'Okay, cancelled — nothing was changed.'});
+    arisuRender();
+  };
+}
+
+async function arisuCall(){
+  const res = await fetch(ARISU.url, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':ARISU.anon,'Authorization':'Bearer '+ARISU.anon},
+    body: JSON.stringify({messages: ARISU.msgs.slice(-24), librarySummary: arisuLibrarySummary()})
+  });
+  if(!res.ok){
+    let msg = 'Arisu could not reach the AI service.';
+    try{ const j = await res.json(); if(j && j.error) msg = j.error; }catch(e){}
+    throw new Error(msg);
+  }
+  const j = await res.json();
+  return j.message || {role:'assistant', content:''};
+}
+
+async function arisuSend(text){
+  const val = (text||'').trim();
+  if(!val || ARISU.busy) return;
+  const input = document.getElementById('arisuInput');
+  if(input && !text) input.value='';
+  ARISU.msgs.push({role:'user', content:val});
+  if(input) input.value='';
+  ARISU.busy = true; arisuRender();
+  try{
+    for(let step=0; step<6; step++){
+      const m = await arisuCall();
+      const calls = m.tool_calls || [];
+      ARISU.msgs.push(m);
+      if(!calls.length){
+        if(!m.content) ARISU.msgs[ARISU.msgs.length-1] = {role:'assistant', content:"I couldn't produce an answer for that — try rephrasing?"};
+        break;
+      }
+      let waitingForUser = false;
+      for(const c of calls){
+        let args = {};
+        try{ args = JSON.parse(c.function.arguments||'{}'); }catch(e){}
+        let result;
+        const name = c.function.name;
+        if(name==='search_library') result = arisuSearchLibrary(args);
+        else if(name==='search_metadata') result = await arisuSearchMetadata(args);
+        else if(name==='navigate') result = arisuNavigate(args);
+        else if(name==='add_to_library'){
+          const dup = (DATA.items[TYPES.includes(args.type)?args.type:'web']||[]).find(i=>metaKey(i.name)===metaKey(args.title));
+          if(dup){ result = {added:false, reason:'already_exists'}; }
+          else {
+            ARISU.busy = false;
+            result = {status:'awaiting_user_confirmation'};
+            ARISU.msgs.push({role:'tool', tool_call_id:c.id, name, content:JSON.stringify(result)});
+            arisuRender();
+            arisuPendingAction(
+              'I found “'+args.title+'”. Add it to your '+(ARISU_TYPE_LABEL[args.type]||'Web Series')+' library'+(args.tag?' with the '+args.tag+' tag':'')+'?',
+              ()=>{
+                const r = arisuAddToLibrary(args);
+                ARISU.msgs.push({role:'assistant', content: r.added ? ('Added “'+args.title+'” to your '+(ARISU_TYPE_LABEL[args.type]||'Web Series')+' library'+(r.tag?' · '+r.tag:'')+'.') : r.message});
+                arisuRender();
+              }, 'Add');
+            waitingForUser = true;
+            break;
+          }
+        }
+        else result = {error:'unknown tool'};
+        ARISU.msgs.push({role:'tool', tool_call_id:c.id, name, content:JSON.stringify(result)});
+      }
+      if(waitingForUser) return;
+      arisuRender();
+    }
+  }catch(err){
+    ARISU.msgs.push({role:'assistant', content:'⚠️ '+(err.message||'Something went wrong.')});
+  }
+  ARISU.busy = false;
+  arisuRender();
+}
+
+// ---- Floating button: tap = open, hold + drag = move ----
+(function initArisu(){
+  const fab = document.getElementById('arisuFab');
+  const panel = document.getElementById('arisuPanel');
+  if(!fab || !panel) return;
+
+  // Restore last position for this session
+  try{
+    const p = JSON.parse(sessionStorage.getItem('arisu_pos')||'null');
+    if(p){ fab.style.left=p.x+'px'; fab.style.top=p.y+'px'; fab.style.right='auto'; fab.style.bottom='auto'; }
+  }catch(e){}
+
+  let dragging=false, moved=false, sx=0, sy=0, ox=0, oy=0, holdTimer=null, raf=null, nx=0, ny=0;
+
+  const clampPos = (x,y)=>{
+    const r = fab.getBoundingClientRect();
+    const maxX = window.innerWidth - r.width - 8, maxY = window.innerHeight - r.height - 8;
+    return {x: Math.max(8, Math.min(maxX, x)), y: Math.max(8, Math.min(maxY, y))};
+  };
+  const paint = ()=>{
+    raf=null;
+    const p = clampPos(nx, ny);
+    fab.style.left=p.x+'px'; fab.style.top=p.y+'px'; fab.style.right='auto'; fab.style.bottom='auto';
+  };
+
+  fab.addEventListener('pointerdown', e=>{
+    const r = fab.getBoundingClientRect();
+    sx=e.clientX; sy=e.clientY; ox=e.clientX-r.left; oy=e.clientY-r.top;
+    moved=false; dragging=false;
+    holdTimer = setTimeout(()=>{ dragging=true; fab.classList.add('dragging'); hapticTick(12); }, 220);
+    fab.setPointerCapture(e.pointerId);
+  });
+  fab.addEventListener('pointermove', e=>{
+    const dx=Math.abs(e.clientX-sx), dy=Math.abs(e.clientY-sy);
+    if(!dragging && (dx>10||dy>10)){ clearTimeout(holdTimer); dragging=true; fab.classList.add('dragging'); }
+    if(!dragging) return;
+    moved = moved || dx>4 || dy>4;
+    nx = e.clientX-ox; ny = e.clientY-oy;
+    if(!raf) raf = requestAnimationFrame(paint);
+    e.preventDefault();
+  });
+  const endDrag = ()=>{
+    clearTimeout(holdTimer);
+    fab.classList.remove('dragging');
+    if(dragging && moved){
+      const r = fab.getBoundingClientRect();
+      try{ sessionStorage.setItem('arisu_pos', JSON.stringify({x:r.left, y:r.top})); }catch(e){}
+    } else {
+      arisuOpen();
+    }
+    dragging=false;
+  };
+  fab.addEventListener('pointerup', endDrag);
+  fab.addEventListener('pointercancel', ()=>{ clearTimeout(holdTimer); fab.classList.remove('dragging'); dragging=false; });
+
+  window.addEventListener('resize', ()=>{
+    if(fab.style.left){ const r=fab.getBoundingClientRect(); nx=r.left; ny=r.top; paint(); }
+  });
+
+  document.getElementById('arisuClose').onclick = arisuClose;
+  document.getElementById('arisuNew').onclick = ()=>{ ARISU.msgs=[]; arisuRender(); toast('New chat'); };
+  document.getElementById('arisuSend').onclick = ()=>arisuSend(document.getElementById('arisuInput').value);
+  const input = document.getElementById('arisuInput');
+  input.addEventListener('keydown', e=>{
+    if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); arisuSend(input.value); }
+  });
+  input.addEventListener('input', ()=>{ input.style.height='auto'; input.style.height=Math.min(110, input.scrollHeight)+'px'; });
+})();
+
+function arisuOpen(){
+  const panel = document.getElementById('arisuPanel');
+  if(!panel) return;
+  ARISU.open = true;
+  panel.classList.add('open');
+  arisuRender();
+  setTimeout(()=>{ const i=document.getElementById('arisuInput'); if(i) i.focus(); }, 180);
+}
+function arisuClose(){
+  const panel = document.getElementById('arisuPanel');
+  if(panel) panel.classList.remove('open');
+  ARISU.open = false;
+}
 
 // === Service worker registration (offline support) ===
 // Skips Lovable preview/iframe/dev contexts.
