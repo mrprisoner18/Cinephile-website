@@ -1834,6 +1834,7 @@ function openActionSheet(type, itemId){
       else if(act==='fav'){ item.favorite=!item.favorite; saveData(); renderCategories(type); updateStats(); forceCloseSheet(); toast(item.favorite?'⭐ Added to favorites':'Removed from favorites'); }
       else if(act==='watched'){ item.watched=!item.watched; saveData(); renderCategories(type); updateStats(); forceCloseSheet(); toast(item.watched?'✓ Marked watched':'Unmarked'); }
       else if(act==='rate'){ openRateSheet(type, itemId); }
+      else if(act==='tag'){ promptOriginSheet(item.name, o=>{ item.origin = o; saveData(); forceCloseSheet(); renderCategories(type); toast(o?('Tagged '+o):'Tag removed'); }); }
       else if(act==='delete'){ openDeleteSheet(type, itemId); }
     });
   });
