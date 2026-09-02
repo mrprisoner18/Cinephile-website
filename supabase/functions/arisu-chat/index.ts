@@ -110,9 +110,13 @@ Deno.serve(async (req) => {
 
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      headers: {
+        "Lovable-API-Key": apiKey,
+        "X-Lovable-AIG-SDK": "fetch",
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-3.7-flash",
         messages: [
           { role: "system", content: `${SYSTEM_PROMPT}\n\nToday's date: ${today}.\n\nUser's library overview: ${summary || "unknown"}` },
           ...messages,
@@ -123,9 +127,18 @@ Deno.serve(async (req) => {
 
     if (!res.ok) {
       const txt = await res.text();
-      const status = res.status === 429 || res.status === 402 ? res.status : 500;
-      return new Response(JSON.stringify({ error: status === 429 ? "Arisu is busy, try again in a moment." : status === 402 ? "AI credits exhausted." : "AI request failed", detail: txt.slice(0, 300) }), {
-        status,
+      const status = res.status;
+      const message = status === 402
+        ? "AI credits are unavailable. Add credits in Lovable, then try again."
+        : status === 403
+          ? "Lovable AI is blocked by workspace policy. Ask a workspace admin to enable it."
+          : status === 429
+            ? "Arisu is busy right now. Please try again in a moment."
+            : status >= 500
+              ? "Arisu is temporarily unavailable. Please try again."
+              : "Arisu could not process that request.";
+      return new Response(JSON.stringify({ error: message, detail: txt.slice(0, 300) }), {
+        status: status >= 400 && status <= 599 ? status : 502,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

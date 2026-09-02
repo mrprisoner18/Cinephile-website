@@ -1834,7 +1834,7 @@ function openActionSheet(type, itemId){
       else if(act==='fav'){ item.favorite=!item.favorite; saveData(); renderCategories(type); updateStats(); forceCloseSheet(); toast(item.favorite?'⭐ Added to favorites':'Removed from favorites'); }
       else if(act==='watched'){ item.watched=!item.watched; saveData(); renderCategories(type); updateStats(); forceCloseSheet(); toast(item.watched?'✓ Marked watched':'Unmarked'); }
       else if(act==='rate'){ openRateSheet(type, itemId); }
-      else if(act==='tag'){ promptOriginSheet(item.name, o=>{ item.origin = o; saveData(); forceCloseSheet(); renderCategories(type); toast(o?('Tagged '+o):'Tag removed'); }); }
+      else if(act==='tag'){ promptOriginSheet(item.name, o=>{ item.origin = o; saveData(); forceCloseSheet(); renderCategories(type); toast(o?('Tagged '+o):'Tag removed'); }, item.origin || ''); }
       else if(act==='delete'){ openDeleteSheet(type, itemId); }
     });
   });
@@ -1843,10 +1843,14 @@ function openActionSheet(type, itemId){
 function openEditSheet(type, itemId){
   const item = getItem(type, itemId);
   if(!item) return;
+  const currentTag = type==='web' ? ((item.origin===undefined || item.origin===null) ? webOriginTag(item.name) : item.origin) : '';
   openSheet(`
-    <div class="sheet-title">Edit Name</div>
-    <div class="sheet-sub">Update the title for this item</div>
+    <div class="sheet-title">Edit ${type==='web'?'Series':'Title'}</div>
+    <div class="sheet-sub">Update this record without changing its other details</div>
     <input class="sheet-input" id="editInput" value="${escapeHtml(item.name)}" autocomplete="off">
+    ${type==='web' ? `<div class="sheet-sub" style="margin-top:10px">Tag</div>
+      <div class="origin-grid" id="editOriginGrid">${[currentTag,...ORIGIN_OPTIONS].filter((v,i,a)=>v && a.indexOf(v)===i).map(o=>`<button class="btn btn-glass origin-chip ${o===currentTag?'origin-active':''}" data-edit-origin="${escapeHtml(o)}"><span class="item-tag ${tagClass(o)}">${escapeHtml(o)}</span></button>`).join('')}</div>
+      <input class="sheet-input" id="editOrigin" value="${escapeHtml(currentTag)}" placeholder="Custom tag or leave empty" autocomplete="off">` : ''}
     <div class="sheet-btns">
       <button class="btn btn-glass" data-sheet-close>Cancel</button>
       <button class="btn btn-primary" id="editSave">Save</button>
@@ -1854,10 +1858,24 @@ function openEditSheet(type, itemId){
   `);
   setTimeout(()=>document.getElementById('editInput').focus(),120);
   document.querySelector('[data-sheet-close]').onclick = forceCloseSheet;
+  let editTag = currentTag;
+  if(type==='web'){
+    document.querySelectorAll('[data-edit-origin]').forEach(b=>b.onclick=()=>{
+      editTag = b.getAttribute('data-edit-origin') || '';
+      document.getElementById('editOrigin').value = editTag;
+      document.querySelectorAll('[data-edit-origin]').forEach(n=>n.classList.toggle('origin-active', n===b));
+    });
+    document.getElementById('editOrigin').addEventListener('input', e=>{
+      editTag = e.target.value.trim();
+      document.querySelectorAll('[data-edit-origin]').forEach(n=>n.classList.remove('origin-active'));
+    });
+  }
   document.getElementById('editSave').onclick = ()=>{
     const v = document.getElementById('editInput').value.trim();
     if(!v) return;
-    item.name = v; saveData();
+    item.name = v;
+    if(type==='web') item.origin = editTag;
+    saveData();
     forceCloseSheet();
     renderCategories(type);
     toast('Updated');
@@ -2199,7 +2217,7 @@ async function lookupSeriesMetadata(rawName){
 }
 
 // Step 2 for web series: where does it belong? (styled tag shown after the title)
-function promptOriginSheet(name, onPick){
+function promptOriginSheet(name, onPick, initialTag){
   const localGuess = webOriginTag(name);
   const opts = [...new Set([localGuess, ...ORIGIN_OPTIONS].filter(Boolean))];
   const chips = opts.map(o=>`<button class="btn btn-glass origin-chip" data-origin="${escapeHtml(o)}"><span class="item-tag ${tagClass(o)}">${escapeHtml(o)}</span></button>`).join('');
@@ -2213,8 +2231,9 @@ function promptOriginSheet(name, onPick){
       <button class="btn btn-primary" id="originSave">Add</button>
     </div>
   `);
-  let chosen = localGuess || '';
-  let userTouched = false; // a manual choice must never be overwritten by the suggestion
+  const hasInitialTag = initialTag !== undefined;
+  let chosen = hasInitialTag ? String(initialTag || '') : (localGuess || '');
+  let userTouched = hasInitialTag; // a manual choice must never be overwritten by the suggestion
   const mark = ()=>{
     document.querySelectorAll('[data-origin]').forEach(b=>{
       b.classList.toggle('origin-active', b.getAttribute('data-origin')===chosen);
