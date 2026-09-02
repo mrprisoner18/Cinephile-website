@@ -1949,7 +1949,7 @@ function openDeleteSheet(type, itemId){
   const item = getItem(type, itemId);
   if(!item) return;
   openSheet(`
-    <div class="sheet-title">Delete?</div>
+    <div class="sheet-title">Delete this ${type==='web'?'series':'title'}?</div>
     <div class="sheet-sub">"${escapeHtml(item.name)}" will be removed permanently.</div>
     <div class="sheet-btns">
       <button class="btn btn-glass" data-sheet-close>Cancel</button>
@@ -2178,7 +2178,7 @@ async function lookupSeriesMetadata(rawName){
   const hit = cache[key];
   const now = Date.now();
   if(hit && (now - hit.t) < (hit.tag ? META_TTL_OK : META_TTL_MISS)){
-    return {ok:!!hit.tag, tag:hit.tag||'', meta:hit.meta||null, cached:true};
+    return {ok:!!hit.meta, tag:hit.tag||'', meta:hit.meta||null, cached:true};
   }
   let meta = null;
   try{
@@ -2533,6 +2533,15 @@ const ARISU = {
   busy: false,
   open: false
 };
+const ARISU_HISTORY_KEY = 'cinephile_arisu_history_v1';
+try{
+  const saved = JSON.parse(localStorage.getItem(ARISU_HISTORY_KEY)||'[]');
+  if(Array.isArray(saved)) ARISU.msgs = saved.slice(-48);
+}catch(e){ ARISU.msgs=[]; }
+
+function saveArisuHistory(){
+  try{ localStorage.setItem(ARISU_HISTORY_KEY, JSON.stringify(ARISU.msgs.slice(-48))); }catch(e){}
+}
 
 const ARISU_TYPE_LABEL = {movie:'Movie', web:'Web Series', animeSeries:'Anime Series', animeMovie:'Anime Movie'};
 
@@ -2602,6 +2611,18 @@ function arisuAddToLibrary(args){
   return {added:true, title:args.title, type, tag:rec.origin||null, category:cat.name};
 }
 
+function arisuDeleteFromLibrary(args){
+  const type = TYPES.includes(args.type) ? args.type : 'web';
+  const matches = (DATA.items[type]||[]).filter(i=>metaKey(i.name)===metaKey(args.title));
+  if(!matches.length) return {deleted:false, reason:'not_found', message:'I could not find that title in your library.'};
+  if(matches.length>1) return {deleted:false, reason:'multiple_matches', message:'I found more than one matching title. Please open the list and choose the exact item.'};
+  const item = matches[0];
+  DATA.items[type] = DATA.items[type].filter(i=>i.id!==item.id);
+  saveData(); renderActivePage(); updateStats();
+  toast('Arisu deleted '+stripOriginNote(item.name));
+  return {deleted:true, title:stripOriginNote(item.name), type};
+}
+
 // ---- Chat rendering ----
 function arisuRender(){
   const body = document.getElementById('arisuBody');
@@ -2629,6 +2650,7 @@ function arisuRender(){
     body.insertAdjacentHTML('beforeend', `<div class="arisu-typing"><span></span><span></span><span></span></div>`);
   }
   body.scrollTop = body.scrollHeight;
+  saveArisuHistory();
 }
 
 function arisuPendingAction(text, onYes, yesLabel){
@@ -2701,6 +2723,26 @@ async function arisuSend(text){
                 ARISU.msgs.push({role:'assistant', content: r.added ? ('Added “'+args.title+'” to your '+(ARISU_TYPE_LABEL[args.type]||'Web Series')+' library'+(r.tag?' · '+r.tag:'')+'.') : r.message});
                 arisuRender();
               }, 'Add');
+            waitingForUser = true;
+            break;
+          }
+        } else if(name==='delete_from_library'){
+          const deleteType = TYPES.includes(args.type)?args.type:'web';
+          const matches = (DATA.items[deleteType]||[]).filter(i=>metaKey(i.name)===metaKey(args.title));
+          if(matches.length!==1){
+            result = arisuDeleteFromLibrary(args);
+          }else{
+            ARISU.busy = false;
+            result = {status:'awaiting_user_confirmation'};
+            ARISU.msgs.push({role:'tool', tool_call_id:c.id, name, content:JSON.stringify(result)});
+            arisuRender();
+            arisuPendingAction(
+              'Delete “'+stripOriginNote(matches[0].name)+'” from your '+(ARISU_TYPE_LABEL[deleteType]||'library')+'? This cannot be undone.',
+              ()=>{
+                const r = arisuDeleteFromLibrary(args);
+                ARISU.msgs.push({role:'assistant', content:r.deleted ? ('Deleted “'+r.title+'” from your library.') : r.message});
+                arisuRender();
+              }, 'Delete');
             waitingForUser = true;
             break;
           }
