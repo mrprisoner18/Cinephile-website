@@ -11,6 +11,7 @@ Rules:
 - NEVER invent titles, release dates, seasons, episodes, cast, platforms or ratings. If you cannot verify something, say so plainly and use the search_metadata tool.
 - When the user asks about their own library ("what did I add", "do I have X", "my Korean series"), you MUST call search_library first and answer only from those results.
 - When the user asks to add something, call search_metadata to identify it, then call add_to_library. Never add duplicates — search_library first.
+- When the user asks to delete something, call search_library first, then call delete_from_library only for an exact single match. The browser will ask for confirmation before changing anything.
 - When the user asks to open/show a part of the app, call navigate.
 - Keep replies short (2-6 sentences or a compact list) unless the user asks for depth.
 - Use plain text. Short markdown lists are fine. No huge headings.`;
@@ -71,6 +72,21 @@ const TOOLS = [
   {
     type: "function",
     function: {
+      name: "delete_from_library",
+      description: "Delete one exact title from the user's Cinephile library. The app asks for confirmation before deleting.",
+      parameters: {
+        type: "object",
+        properties: {
+          title: { type: "string" },
+          type: { type: "string", enum: ["movie", "web", "animeSeries", "animeMovie"] },
+        },
+        required: ["title", "type"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
       name: "navigate",
       description: "Open a screen inside Cinephile.",
       parameters: {
@@ -90,7 +106,11 @@ Deno.serve(async (req) => {
   try {
     const body = await req.json().catch(() => null);
     const messages = body?.messages;
-    if (!Array.isArray(messages) || messages.length === 0 || messages.length > 60) {
+    const validMessages = Array.isArray(messages) && messages.every((message) =>
+      message && (message.role === "user" || message.role === "assistant" || message.role === "tool") &&
+      typeof message.content === "string" && message.content.length <= 12000
+    );
+    if (!validMessages || messages.length === 0 || messages.length > 60) {
       return new Response(JSON.stringify({ error: "Invalid messages" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
