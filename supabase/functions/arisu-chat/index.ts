@@ -11,6 +11,7 @@ Rules:
 - NEVER invent titles, release dates, seasons, episodes, cast, platforms or ratings. If you cannot verify something, say so plainly and use the search_metadata tool.
 - When the user asks about their own library ("what did I add", "do I have X", "my Korean series"), you MUST call search_library first and answer only from those results.
 - When the user asks to add something, call search_metadata to identify it, then call add_to_library. Never add duplicates — search_library first.
+- When the user asks to delete something, call search_library first, then call delete_from_library only for an exact single match. The browser will ask for confirmation before changing anything.
 - When the user asks to open/show a part of the app, call navigate.
 - Keep replies short (2-6 sentences or a compact list) unless the user asks for depth.
 - Use plain text. Short markdown lists are fine. No huge headings.`;
@@ -71,6 +72,21 @@ const TOOLS = [
   {
     type: "function",
     function: {
+      name: "delete_from_library",
+      description: "Delete one exact title from the user's Cinephile library. The app asks for confirmation before deleting.",
+      parameters: {
+        type: "object",
+        properties: {
+          title: { type: "string" },
+          type: { type: "string", enum: ["movie", "web", "animeSeries", "animeMovie"] },
+        },
+        required: ["title", "type"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
       name: "navigate",
       description: "Open a screen inside Cinephile.",
       parameters: {
@@ -90,7 +106,11 @@ Deno.serve(async (req) => {
   try {
     const body = await req.json().catch(() => null);
     const messages = body?.messages;
-    if (!Array.isArray(messages) || messages.length === 0 || messages.length > 60) {
+    const validMessages = Array.isArray(messages) && messages.every((message) =>
+      message && (message.role === "user" || message.role === "assistant" || message.role === "tool") &&
+      typeof message.content === "string" && message.content.length <= 12000
+    );
+    if (!validMessages || messages.length === 0 || messages.length > 60) {
       return new Response(JSON.stringify({ error: "Invalid messages" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -110,9 +130,13 @@ Deno.serve(async (req) => {
 
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      headers: {
+        "Lovable-API-Key": apiKey,
+        "X-Lovable-AIG-SDK": "fetch",
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-3.7-flash",
         messages: [
           { role: "system", content: `${SYSTEM_PROMPT}\n\nToday's date: ${today}.\n\nUser's library overview: ${summary || "unknown"}` },
           ...messages,
@@ -123,9 +147,18 @@ Deno.serve(async (req) => {
 
     if (!res.ok) {
       const txt = await res.text();
-      const status = res.status === 429 || res.status === 402 ? res.status : 500;
-      return new Response(JSON.stringify({ error: status === 429 ? "Arisu is busy, try again in a moment." : status === 402 ? "AI credits exhausted." : "AI request failed", detail: txt.slice(0, 300) }), {
-        status,
+      const status = res.status;
+      const message = status === 402
+        ? "AI credits are unavailable. Add credits in Lovable, then try again."
+        : status === 403
+          ? "Lovable AI is blocked by workspace policy. Ask a workspace admin to enable it."
+          : status === 429
+            ? "Arisu is busy right now. Please try again in a moment."
+            : status >= 500
+              ? "Arisu is temporarily unavailable. Please try again."
+              : "Arisu could not process that request.";
+      return new Response(JSON.stringify({ error: message, detail: txt.slice(0, 300) }), {
+        status: status >= 400 && status <= 599 ? status : 502,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
