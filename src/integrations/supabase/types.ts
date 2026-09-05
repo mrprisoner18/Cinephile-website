@@ -14,13 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      entertainment_cache: {
+        Row: {
+          cache_key: string
+          expires_at: string
+          fetched_at: string
+          payload: Json
+          updated_at: string
+        }
+        Insert: {
+          cache_key: string
+          expires_at: string
+          fetched_at?: string
+          payload?: Json
+          updated_at?: string
+        }
+        Update: {
+          cache_key?: string
+          expires_at?: string
+          fetched_at?: string
+          payload?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      upsert_entertainment_cache: {
+        Args: { p_cache_key: string; p_expires_at: string; p_payload: Json }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
