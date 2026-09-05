@@ -9,6 +9,9 @@ Identity:
 
 Rules:
 - NEVER invent titles, release dates, seasons, episodes, cast, platforms or ratings. If you cannot verify something, say so plainly and use the search_metadata tool.
+- For current, latest, today, this week, upcoming, trending, availability, news, release, episode, trailer, review, or other time-sensitive questions, you MUST use live_web_search before answering.
+- Use live_web_search results as evidence. Mention when a source was checked and say clearly when current information could not be verified.
+- For stable title facts, use search_metadata when appropriate. Do not present stale model knowledge as current.
 - When the user asks about their own library ("what did I add", "do I have X", "my Korean series"), you MUST call search_library first and answer only from those results.
 - When the user asks to add something, call search_metadata to identify it, then call add_to_library. Never add duplicates — search_library first.
 - When the user asks to delete something, call search_library first, then call delete_from_library only for an exact single match. The browser will ask for confirmation before changing anything.
@@ -17,6 +20,22 @@ Rules:
 - Use plain text. Short markdown lists are fine. No huge headings.`;
 
 const TOOLS = [
+  {
+    type: "function",
+    function: {
+      name: "live_web_search",
+      description:
+        "Search the live web for current entertainment information and verified sources. Required for latest, today, this week, upcoming, trending, availability, news, release, episode, trailer, review, and other time-sensitive questions.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: { type: "string", description: "A precise web search query." },
+          timeRange: { type: "string", enum: ["none", "day", "week", "month", "year"], description: "Optional freshness window." },
+        },
+        required: ["query"],
+      },
+    },
+  },
   {
     type: "function",
     function: {
@@ -127,6 +146,7 @@ Deno.serve(async (req) => {
 
     const summary = typeof body?.librarySummary === "string" ? body.librarySummary.slice(0, 1500) : "";
     const today = new Date().toISOString().slice(0, 10);
+    const now = new Date().toISOString();
 
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -138,7 +158,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3.7-flash",
         messages: [
-          { role: "system", content: `${SYSTEM_PROMPT}\n\nToday's date: ${today}.\n\nUser's library overview: ${summary || "unknown"}` },
+           { role: "system", content: `${SYSTEM_PROMPT}\n\nCurrent UTC date: ${today}. Current UTC timestamp: ${now}.\n\nUser's library overview: ${summary || "unknown"}` },
           ...messages,
         ],
         tools: TOOLS,
