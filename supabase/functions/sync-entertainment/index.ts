@@ -11,13 +11,6 @@ function json(data: unknown, status = 200) {
   });
 }
 
-function isPublishableSchedulerCall(req: Request) {
-  const expected = Deno.env.get("SUPABASE_ANON_KEY");
-  const headerKey = req.headers.get("apikey");
-  const authorization = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
-  return Boolean(expected && (headerKey === expected || authorization === expected));
-}
-
 async function search(query: string, firecrawlKey: string, lovableKey: string) {
   const response = await fetch(SEARCH_URL, {
     method: "POST",
@@ -38,7 +31,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   const cronAuth = authenticateCronRequest(req);
-  if (cronAuth && !isPublishableSchedulerCall(req)) return json({ error: "Unauthorized" }, 401);
+  if (cronAuth) return new Response(cronAuth.body, { status: cronAuth.status, headers: corsHeaders });
 
   try {
     const lovableKey = Deno.env.get("LOVABLE_API_KEY");
