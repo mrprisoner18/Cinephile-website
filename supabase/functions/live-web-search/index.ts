@@ -44,7 +44,11 @@ Deno.serve(async (req) => {
     }
 
     const payload = await response.json();
-    const rows = Array.isArray(payload?.data) ? payload.data : [];
+    const rows = Array.isArray(payload?.data)
+      ? payload.data
+      : Array.isArray(payload?.results)
+        ? payload.results
+        : [];
     const results = rows.slice(0, 6).map((row: Record<string, unknown>) => ({
       title: typeof row.title === "string" ? row.title.slice(0, 220) : "Untitled result",
       url: typeof row.url === "string" ? row.url : "",
