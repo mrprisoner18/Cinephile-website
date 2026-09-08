@@ -29,7 +29,11 @@ async function search(query: string, firecrawlKey: string, lovableKey: string) {
   });
   if (!response.ok) throw new Error(`Search failed with ${response.status}`);
   const data = await response.json();
-  return Array.isArray(data?.data) ? data.data.slice(0, 8) : [];
+  return Array.isArray(data?.data)
+    ? data.data.slice(0, 8)
+    : Array.isArray(data?.results)
+      ? data.results.slice(0, 8)
+      : [];
 }
 
 Deno.serve(async (req) => {
