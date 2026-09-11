@@ -31,9 +31,13 @@ async function search(query: string, firecrawlKey: string, lovableKey: string) {
   const data = await response.json();
   return Array.isArray(data?.data)
     ? data.data.slice(0, 8)
-    : Array.isArray(data?.results)
-      ? data.results.slice(0, 8)
-      : [];
+    : Array.isArray(data?.data?.web)
+      ? data.data.web.slice(0, 8)
+      : Array.isArray(data?.data?.news)
+        ? data.data.news.slice(0, 8)
+        : Array.isArray(data?.results)
+          ? data.results.slice(0, 8)
+          : [];
 }
 
 Deno.serve(async (req) => {
