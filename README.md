@@ -1,6 +1,48 @@
 # Cinephile
+🎬 Cinephile – Your Personal Entertainment Library
 
-I added an HTML code in that, change the design into an ascended image, combined all those three themes into one for series, one for web series, and one for movies, one for animes, and convert all the themes into... I need to build an app from that, so make correct of navigation system. Navigation system is like if I press back button in my phone, it should come. If I am in the movies list, it should come back from, uh, homepage. And if I click any list, it should came back. If I press back in my phone, it should came back to homepage of that HTML file, means movies and series list of homepage. It is not working like that, so re- fix that and the icons, when the website opens, it is showing, but when I created an app, there the icons of movies and that are not showing. They're showing only question mark. So fix that.
+Everything you've watched. All in one place.
+
+Cinephile is a personal entertainment collection platform that helps users keep track of movies, web series, K-Dramas and anime they have watched.
+
+Instead of forgetting titles or maintaining separate lists, Cinephile lets you build and manage your own digital entertainment library.
+
+✨ Features
+
+- 🎥 Personal Collection: Store the names of movies, web series, K-Dramas and anime you've watched.
+- 🌍 Language Identification: View the language associated with each title.
+- 🏷️ Automatic Classification: Identify whether a title is a movie, series, K-Drama or anime.
+- 📚 Organized Library: Keep all your watched entertainment in one place.
+- 🔎 Search and Filter: Find titles by name, language, category or genre.
+- 🎯 Recommendations: Discover new entertainment based on your interests and collection.
+- 🤖 AI Entertainment Chatbot: Get help finding titles and exploring entertainment.
+- 📱 Responsive Interface: Access your collection on different devices.
+
+🎯 Purpose
+
+Cinephile aims to make managing your entertainment history simple and enjoyable.
+
+It works like a personal digital diary for everything you have watched.
+
+🚀 Future Improvements
+
+- Personal watchlists.
+- Ratings and personal reviews.
+- Watch dates and viewing history.
+- Advanced collection statistics.
+- Smarter AI-powered recommendations.
+- Improved conversational assistant.
+
+🛠️ Development
+
+Built with Lovable AI.
+
+Project: Cinephile
+Category: Personal Entertainment Library
+Status: In Development
+
+Your entertainment journey, organized in one place. 🍿
+
 
 This project was built with [Lovable](https://lovable.dev).
 
